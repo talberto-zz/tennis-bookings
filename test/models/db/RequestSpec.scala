@@ -17,7 +17,6 @@ class RequestSpec extends Specification {
 
   "Request" should {
     "success" in new WithApplication {
-        Dao.requests.list
         success
     }
   }
