@@ -1,6 +1,10 @@
 @* index Template File *@
-@()
+@import models.db.Request
+
+@(requests: Seq[Request])
 
 @main("Requests index") {
-	<h2>This is a requests index test!!</h2>	
+	@for(request <- requests) {
+		@views.html.request.view(request)	
+	}
 }

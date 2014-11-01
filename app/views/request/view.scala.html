@@ -1,0 +1,11 @@
+@* view Template File *@
+@import models.db.Request
+
+@(request: Request)
+
+<dl>
+	<dt>Id</dt>
+	<dd>@request.id</dd>
+	<dt>Date</dt>
+	<dd>@request.date</dd>
+</dl>

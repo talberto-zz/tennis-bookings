@@ -1,10 +1,10 @@
 package models.db
 
+import play.api.db._
+import play.api.Play.current
 import scala.slick.driver.PostgresDriver.simple._
 import org.joda.time.DateTime
 import java.sql.Timestamp
-import play.api.db._
-import play.api.Play.current
 import scala.slick.driver.PostgresDriver.simple.Database
 
 object Sandbox {
@@ -19,19 +19,22 @@ object Converters {
     )
 }
 
+case class Request(id: Int, date: DateTime)
 /**
  * @author tomas
  */
-class Request(tag: Tag) extends Table[(Int,DateTime)](tag, "requests") {
-    import Converters.dateTimeColumnType
+class Requests(tag: Tag) extends Table[Request](tag, "requests") {
+  import Converters.dateTimeColumnType
     
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def date = column[DateTime]("date")
-  def * = (id, date)
+  def * = (id, date) <> (Request.tupled, Request.unapply)
 }
 
 object Dao {
-    import Sandbox.session
+  import Sandbox.session
     
-  val requests = TableQuery[Request]
+  private val requests = TableQuery[Requests]
+  
+  def allRequests = requests.list
 }
