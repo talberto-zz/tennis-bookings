@@ -7,13 +7,13 @@ import org.junit.runner._
 import play.api.test._
 import play.api.test.Helpers._
 
-import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.chrome.ChromeDriver
 
 @RunWith(classOf[JUnitRunner])
 class LoginPageSpec extends Specification {
-  val driver = new FirefoxDriver()
-  val user = sys.env("user")
-  val pass = sys.env("password")
+  val driver = new ChromeDriver()
+  val user = sys.props("user")
+  val pass = sys.props("password")
   
   "LoginPage" should {
     "should login" in {

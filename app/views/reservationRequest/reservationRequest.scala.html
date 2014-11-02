@@ -1,0 +1,10 @@
+@* reservationRequest Template File *@
+@import models.db.ReservationRequest
+
+@(request: ReservationRequest)
+<dl>
+	<dt>Id</dt>
+	<dd>@request.id</dd>
+	<dt>Date</dt>
+	<dd>@request.date</dd>
+</dl>

@@ -1,3 +1,5 @@
+import play.PlayImport.PlayKeys._
+
 name := """tennis-reservations"""
 
 version := "1.0-SNAPSHOT"
@@ -18,5 +20,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "jquery" % "2.1.1",
   "org.webjars" % "bootstrap" % "3.3.0"
 )
+
+routesImport += "models.Binders._"
 
 net.virtualvoid.sbt.graph.Plugin.graphSettings

@@ -1,0 +1,10 @@
+@* index Template File *@
+@import models.db.ReservationRequest
+
+@(requests: Seq[ReservationRequest])
+
+@main("Requests index") {
+	@for(request <- requests) {
+		@reservationRequest(request)	
+	}
+}
