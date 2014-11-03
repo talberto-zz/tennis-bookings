@@ -1,5 +1,6 @@
 package controllers
 
+import scala.language.implicitConversions // remove implicit conversion warnings
 import play.api.libs.json._
 
 object EnumUtils {

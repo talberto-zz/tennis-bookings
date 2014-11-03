@@ -22,7 +22,7 @@ object ReservationRequests extends Controller {
       "id" -> number,
       "date" -> longNumber,
       "state" -> number
-    )(ReservationRequest.apply)(ReservationRequest.unapply _)
+    )(ReservationRequest.apply)(ReservationRequest.unapply)
   )
   
   def index = Action { implicit req =>
@@ -34,19 +34,19 @@ object ReservationRequests extends Controller {
     }
   }
   
-  def newForm = {
-    
+  def newForm = Action {
+    Ok(views.html.reservationRequest.newForm(requestForm))
   }
   
-  def create(reservationRequest: ReservationRequest) = {
-    
+  def create = Action {
+    Ok(views.html.index("Dummy msg"))
   }
   
   def show(id: String) = Action { implicit req =>
     val request: ReservationRequest = ReservationRequest(234, new DateTime(), PENDING)
     
     render {
-      case Accepts.Html() => Ok(reservationRequest.view(request))
+      case Accepts.Html() => Ok(reservationRequest.show(request))
       case Accepts.Json() => Ok(Json.toJson(request))
     }
   }

@@ -1,0 +1,14 @@
+@* newForm Template File *@
+@import play.api.data.Form
+@import controllers.reservation.routes
+@import models.db.ReservationRequest
+
+@(requestForm: Form[ReservationRequest])
+
+@main("New reservation request") {
+	@helper.form(action = routes.ReservationRequests.create()) {
+		@helper.inputText(requestForm("id"))
+		@helper.inputDate(requestForm("date"))
+		@helper.inputText(requestForm("state"))
+	}
+}
