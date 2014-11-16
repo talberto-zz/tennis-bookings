@@ -13,14 +13,14 @@ object Binders {
         state <- intBinder.bind(key + ".state", params)
       } yield {
         (id, date, state) match {
-          case (Right(id), Right(date), Right(state)) => Right(ReservationRequest(id, date, state))
+          case (Right(id), Right(date), Right(state)) => Right(ReservationRequest(Some(id), date, state))
           case _ => Left("Unable to bind a ReservationRequest")
         }
       }
     }
     
     override def unbind(key: String, request: ReservationRequest): String = {
-      intBinder.unbind(key + ".id", request.id) + "&" + longBinder.unbind(key + ".date", request.date.getMillis) + "&" + intBinder.unbind(key + ".state", request.state.id)
+      intBinder.unbind(key + ".id", request.id.get) + "&" + longBinder.unbind(key + ".date", request.date.getMillis) + "&" + intBinder.unbind(key + ".state", request.state.id)
     }
   }
 }

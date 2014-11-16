@@ -7,8 +7,8 @@
 
 @main("New reservation request") {
 	@helper.form(action = routes.ReservationRequests.create()) {
-		@helper.inputText(requestForm("id"))
 		@helper.inputDate(requestForm("date"))
 		@helper.inputText(requestForm("state"))
+		<button>Submit</button>
 	}
 }

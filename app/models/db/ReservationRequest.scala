@@ -30,11 +30,11 @@ object Implicits {
   
   implicit def stateToInt(state: State): Int = state.id
   
-  implicit def resReqApplyRawToApply(f: (Int, Long, Int) => ReservationRequest): (Int, DateTime, State) => ReservationRequest = (id: Int, date: DateTime, state: State) => f(id, date, state)
+  implicit def resReqApplyRawToApply(f: (Option[Int], Long, Int) => ReservationRequest): (Option[Int], DateTime, State) => ReservationRequest = (id: Option[Int], date: DateTime, state: State) => f(id, date, state)
   
-  implicit def resReqApplyToApplyRaw(f: (Int, DateTime, State) => ReservationRequest): (Int, Long, Int) => ReservationRequest = (id: Int, date: Long, state: Int) => f(id, date, state)
+  implicit def resReqApplyToApplyRaw(f: (Option[Int], DateTime, State) => ReservationRequest): (Option[Int], Long, Int) => ReservationRequest = (id: Option[Int], date: Long, state: Int) => f(id, date, state)
   
-  implicit def resReqUnapplyToUnapplyRaw(f: (ReservationRequest) => Option[(Int, DateTime, State)]): (ReservationRequest) => Option[(Int, Long, Int)] = {
+  implicit def resReqUnapplyToUnapplyRaw(f: (ReservationRequest) => Option[(Option[Int], DateTime, State)]): (ReservationRequest) => Option[(Option[Int], Long, Int)] = {
     (req: ReservationRequest) => {
       val option = f(req)
       option match {
@@ -44,7 +44,7 @@ object Implicits {
     }
   }
   
-  implicit def resReqOptToResReqRawOpt(opt: Option[(Int, DateTime, State)]): Option[(Int, Long, Int)] = {
+  implicit def resReqOptToResReqRawOpt(opt: Option[(Option[Int], DateTime, State)]): Option[(Option[Int], Long, Int)] = {
     opt match {
       case Some((id, date, state)) => Some((id, date, state))
       case _ => None
@@ -66,12 +66,12 @@ object Converters {
     )  
 }
 
-class ReservationRequest private(val id: Int, val date: DateTime, val state: State)
+class ReservationRequest private(val id: Option[Int], val date: DateTime, val state: State)
 
 object ReservationRequest {
-  def apply(id: Int, date: DateTime, state: State) = new ReservationRequest(id, date, state)
+  def apply(id: Option[Int] = None, date: DateTime, state: State): ReservationRequest = new ReservationRequest(id, date, state)
   
-  def unapply(req: ReservationRequest): Option[(Int, DateTime, State)] = Option(req.id, req.date, req.state)
+  def unapply(req: ReservationRequest): Option[(Option[Int], DateTime, State)] = Option(req.id, req.date, req.state)
 }
 
 /**
@@ -83,13 +83,34 @@ class ReservationRequests(tag: Tag) extends Table[ReservationRequest](tag, "requ
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def date = column[DateTime]("date")
   def state = column[State]("state")
-  def * = (id, date, state) <> ((ReservationRequest.apply _).tupled, ReservationRequest.unapply)
+  def * = (id.?, date, state) <> ((ReservationRequest.apply _).tupled, ReservationRequest.unapply)
 }
 
-object Dao {
+object ReservationRequestRepository {
   import Sandbox.session
     
-  val requests = TableQuery[ReservationRequests]
+  private val requests = TableQuery[ReservationRequests]
   
-  def allRequests = requests.list
+  private val requestById = Compiled((id: ConstColumn[Int]) => requests filter(_.id === id))
+
+  def findAll: Seq[ReservationRequest] = requests.list
+  
+  def findById(id: Int): Option[ReservationRequest] = requestById(id).firstOption
+  
+  def insert(resReq: ReservationRequest): ReservationRequest = {
+    val id = (requests returning requests.map(_.id)) += resReq
+    ReservationRequest(Some(id), resReq.date, resReq.state)
+  }
+  
+  def update(resReq: ReservationRequest) = {
+    requests filter(_.id === resReq.id) map(r => (r.date, r.state)) update(resReq.date, resReq.state)
+  }
+  
+  def delete(id: Int) = {
+    requests filter(_.id === id) delete
+  }
+  
+  def delete(resReq: ReservationRequest): Unit = {
+    delete(resReq.id.get)
+  }
 }
