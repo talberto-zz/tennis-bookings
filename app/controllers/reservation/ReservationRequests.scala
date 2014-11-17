@@ -12,31 +12,30 @@ import org.joda.time.DateTime
 import models.db.ReservationRequest
 import models.db.ReservationRequestRepository
 import models.db.Implicits._
-import models.db.State
-import models.db.State._
+import models.db.Status
 import views.html._
 import controllers.EnumUtils._
 
 object ReservationRequests extends Controller {
-  implicit val stateFormat = enumFormat(State)
+  implicit val statusFormat = enumFormat(models.db.Status)
 //  implicit val requestFormat = Json.format[ReservationRequest]
   implicit val requestReads: Reads[ReservationRequest] = (
     (JsPath \ "id").read[Option[Int]] and
     (JsPath \ "date").read[DateTime] and
-    (JsPath \ "state").read[State]
+    (JsPath \ "status").read[models.db.Status.Status]
   ) (ReservationRequest.apply _)
   
   implicit val requestWrites: Writes[ReservationRequest] = (
     (JsPath \ "id").write[Option[Int]] and
     (JsPath \ "date").write[DateTime] and
-    (JsPath \ "state").write[State]
+    (JsPath \ "status").write[models.db.Status.Status]
   ) (unlift(ReservationRequest.unapply))
   
   val requestForm = Form(
     mapping(
       "id" -> Forms.optional(number),
       "date" -> longNumber,
-      "state" -> number
+      "status" -> number
     )(ReservationRequest.apply)(ReservationRequest.unapply)
   )
   

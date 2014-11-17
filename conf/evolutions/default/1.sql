@@ -2,7 +2,7 @@
 create table "requests" (
 	"id" serial not null,
 	"date" timestamp not null,
-	"state" integer not null);
+	"status" integer not null);
 
 create unique index "idx_requests_id" on "requests" ("id");
 alter table "requests" add constraint "pk_requests" primary key using index "idx_requests_id";
