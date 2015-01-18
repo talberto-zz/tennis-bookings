@@ -18,7 +18,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.slick" %% "slick" % "2.1.0",
   "com.typesafe.play" %% "play-slick" % "0.8.0",
   "org.webjars" % "jquery" % "2.1.1",
-  "org.webjars" % "bootstrap" % "3.3.0"
+  "org.webjars" % "bootstrap" % "3.3.0",
+  "org.webjars" % "angularjs" % "1.3.2"
 )
 
 routesImport += "models.Binders._"

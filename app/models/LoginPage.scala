@@ -1,4 +1,4 @@
-package reservation
+package models
 
 import org.openqa.selenium._
 

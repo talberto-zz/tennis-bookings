@@ -1,0 +1,14 @@
+@* view Template File *@
+@import models.Booking
+@import helper._
+
+@(booking: Form[Booking])
+
+@form(action = routes.BookingsController.create()) {
+	<p>
+		@inputText(booking("status"))
+	</p>
+	<p>
+		@inputDate(booking("date"))
+	</p>	
+}
