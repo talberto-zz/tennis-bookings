@@ -29,9 +29,9 @@ private class Bookings(tag: Tag) extends Table[Booking](tag, "bookings") {
   import Converters._
   
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def date = column[DateTime]("date")
+  def dateTime = column[DateTime]("dateTime")
   def status = column[Booking.Status.Status]("status")
-  def * = (id.?, date, status) <> ((Booking.apply _).tupled, Booking.unapply)
+  def * = (id.?, dateTime, status) <> ((Booking.apply _).tupled, Booking.unapply)
 }
 
 /**
@@ -58,11 +58,11 @@ object BookingsRepository {
   
   def insert(booking: Booking): Booking = {
     val id = (bookings returning bookings.map(_.id)) += booking
-    Booking(Some(id), booking.date, booking.status)
+    Booking(Some(id), booking.dateTime, booking.status)
   }
   
   def update(booking: Booking) = {
-    bookings.filter(_.id === booking.id).map(b => (b.date, b.status)).update(booking.date, booking.status)
+    bookings.filter(_.id === booking.id).map(b => (b.dateTime, b.status)).update(booking.dateTime, booking.status)
   }
   
   def delete(id: Long) = {

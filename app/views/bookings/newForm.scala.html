@@ -4,11 +4,16 @@
 
 @(booking: Form[Booking])
 
-@form(action = routes.BookingsController.create()) {
-	<p>
-		@inputText(booking("status"))
-	</p>
-	<p>
-		@inputDate(booking("date"))
-	</p>	
+@* Get's the list of options for the enumeration Booking.Status *@
+@statusOptions = @{
+	Booking.Status.values.map(v => (v.id.toString, v.toString)).toSeq
+}
+
+@main("New Booking") {
+	
+	@form(action = routes.BookingsController.create(), 'id -> "newBooking") {
+		@select(booking("status"), statusOptions, 'required -> true)
+		@inputDateTime(booking("dateTime"), 'required -> true)
+		<button>Submit</button>
+	}
 }

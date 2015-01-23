@@ -23,7 +23,7 @@ object Binders {
     }
     
     override def unbind(key: String, booking: Booking): String = {
-      longBinder.unbind(key + ".id", booking.id.get) + "&" + longBinder.unbind(key + ".date", booking.date.getMillis) + "&" + intBinder.unbind(key + ".status", booking.status.id)
+      longBinder.unbind(key + ".id", booking.id.get) + "&" + longBinder.unbind(key + ".date", booking.dateTime.getMillis) + "&" + intBinder.unbind(key + ".status", booking.status.id)
     }
   }
 }

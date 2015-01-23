@@ -16,25 +16,35 @@ import views.html._
 import controllers.EnumUtils._
 
 object BookingsController extends Controller {
-  /* IMPLICITS */
-  implicit val statusFormat = enumFormat(Booking.Status)
-  //  implicit val requestFormat = Json.format[Booking]
-  implicit val requestReads: Reads[Booking] = (
-    (JsPath \ "id").read[Option[Long]] and
-    (JsPath \ "date").read[DateTime] and
-    (JsPath \ "status").read[Booking.Status.Status]
-  ) (Booking.apply _)
+  /**
+   * 
+   */
+  object Implicits {
+    implicit val statusFormat: Format[Booking.Status.Value]= enumFormat(Booking.Status)
+    //  implicit val requestFormat = Json.format[Booking]
+    implicit val requestReads: Reads[Booking] = (
+      (JsPath \ "id").read[Option[Long]] and
+      (JsPath \ "dateTime").read[DateTime] and
+      (JsPath \ "status").read[Booking.Status.Status]
+    ) (Booking.apply _)
+    
+    implicit val requestWrites: Writes[Booking] = (
+      (JsPath \ "id").write[Option[Long]] and
+      (JsPath \ "dateTime").write[DateTime] and
+      (JsPath \ "status").write[Booking.Status.Status]
+    ) (unlift(Booking.unapply))
+  }
   
-  implicit val requestWrites: Writes[Booking] = (
-    (JsPath \ "id").write[Option[Long]] and
-    (JsPath \ "date").write[DateTime] and
-    (JsPath \ "status").write[Booking.Status.Status]
-  ) (unlift(Booking.unapply))
+  object CustomFormats {
+    val status: Mapping[Booking.Status.Value] = Forms.of[Booking.Status.Value]
+  }
+  
+  import Implicits._
   
   val bookingForm = Form(
     mapping(
       "id" -> Forms.optional(longNumber),
-      "date" -> longNumber,
+      "dateTime" -> longNumber,
       "status" -> number
     )(Booking.apply)(Booking.unapply)
   )
@@ -57,9 +67,15 @@ object BookingsController extends Controller {
   }
   
   def create = Action { implicit req =>
-    val booking = Booking(None, null, null)
-    
-    Ok(views.html.bookings.index(Nil))
+    bookingForm.bindFromRequest.fold(
+      formWithErrors => {
+        BadRequest(views.html.bookings.newForm(formWithErrors))
+      },
+      booking => {
+        BookingsRepository.insert(booking)
+        Redirect(routes.BookingsController.index())
+      }
+    )
   }
 
 //  def newForm = Action { implicit req =>
