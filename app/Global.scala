@@ -1,13 +1,14 @@
-import play.GlobalSettings
 import play.api._
-import play.libs.F._
-import play.mvc._
-import play.mvc.Http.RequestHeader
-import play.mvc.Results._
+import play.api.libs.concurrent.Execution.Implicits._
+import play.api.mvc._
+import play.api.mvc.Results._
+import scala.concurrent.Future
 
 object Global extends GlobalSettings {
   
-  override def onHandlerNotFound(request: RequestHeader): Promise[Result] = {
-    redirect(controllers.routes.BookingsController.index())
+  override def onHandlerNotFound(request: RequestHeader): Future[Result] = {
+    Future {
+      Redirect(controllers.routes.BookingsController.index())
+    }
   }  
 }

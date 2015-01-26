@@ -66,8 +66,7 @@ object BookingsRepository {
    * Inserts a Booking in the repository
    */
   private def insert(booking: Booking): Booking = {
-    val id = (bookings returning bookings.map(_.id)) += booking
-    Booking(Some(id), booking.dateTime, booking.status)
+    (bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=Some(id))))) += booking
   }
   
   def create(dateTime: DateTime): Booking = {

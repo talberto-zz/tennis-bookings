@@ -22,6 +22,4 @@ libraryDependencies ++= Seq(
   "org.webjars" % "angularjs" % "1.3.2"
 )
 
-routesImport += "models.Binders._"
-
 net.virtualvoid.sbt.graph.Plugin.graphSettings
