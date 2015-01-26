@@ -15,10 +15,12 @@ import controllers.EnumUtils._
  */
 object BookingsController extends Controller {
 
+  val logger: Logger = Logger(this.getClass)
+  
   val bookingForm = Form(
     mapping(
       "id" -> ignored(None.asInstanceOf[Option[Long]]), // Set the id always to None
-      "dateTime" -> jodaDate,
+      "dateTime" -> jodaDate("yyyy-MM-dd HH:mm"),
       "status" -> ignored(Booking.Status.PENDING) // Set the status always to PENDING
     )(Booking.apply)(Booking.unapply)
   )
@@ -41,11 +43,14 @@ object BookingsController extends Controller {
   }
   
   def create = Action { implicit req =>
+    logger.debug("Received booking creation request")
     bookingForm.bindFromRequest.fold(
       formWithErrors => {
+        logger.debug("Form contains errors, sending redirection")
         BadRequest(views.html.bookings.newForm(formWithErrors))
       },
       booking => {
+        logger.debug("Form doesn't contains errors, creating new booking")
         BookingsRepository.create(booking.dateTime)
         Redirect(routes.BookingsController.index())
       }

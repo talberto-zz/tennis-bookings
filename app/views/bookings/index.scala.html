@@ -1,4 +1,23 @@
 @* index Template File *@
 @import models.Booking
 
-@(requests: Seq[Booking])
+@(bookings: Seq[Booking])
+
+@main("Bookings") {
+	<table>
+		<thead>
+			<tr>
+				<th>Status</th>
+				<th>Date</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+		@for(booking <- bookings) {
+			<tr><td>@booking.status</td><td>@booking.dateTime</td><td>Delete</td></tr>
+		}
+		</tbody>
+	</table>
+	
+	<a href="@routes.BookingsController.newForm()">New</a>
+}
