@@ -10,7 +10,7 @@ import java.sql.Timestamp
 /**
  * @author tomas
  */
-private class Bookings(tag: Tag) extends Table[Booking](tag, "bookings") {
+class Bookings(tag: Tag) extends Table[Booking](tag, "bookings") {
   /**
    * Column converters for use with the type Booking
    */
@@ -47,18 +47,33 @@ object BookingsRepository {
   }
   
   import Sandbox.session
-    
+  
   private val bookings = TableQuery[Bookings]
   
   private val requestById = Compiled((id: ConstColumn[Long]) => bookings filter(_.id === id))
 
+  /**
+   * Retrieve all the Booking's
+   */
   def findAll: Seq[Booking] = bookings.list
   
+  /**
+   * Finds a Booking given it's id
+   */
   def findById(id: Long): Option[Booking] = requestById(id).firstOption
   
-  def insert(booking: Booking): Booking = {
+  /**
+   * Inserts a Booking in the repository
+   */
+  private def insert(booking: Booking): Booking = {
     val id = (bookings returning bookings.map(_.id)) += booking
     Booking(Some(id), booking.dateTime, booking.status)
+  }
+  
+  def create(dateTime: DateTime): Booking = {
+    val booking = Booking(dateTime = dateTime)
+    
+    insert(booking)
   }
   
   def update(booking: Booking) = {

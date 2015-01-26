@@ -4,48 +4,22 @@ import play.api._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.mvc._
-import play.api.libs.json._ // JSON library
-import play.api.libs.json.Reads._ // Custom validation helpers
-import play.api.libs.json.Writes._ // Custom validation helpers
-import play.api.libs.functional.syntax._ // Combinator syntax
 import org.joda.time.DateTime
 import models.Booking
-import models.Booking.Implicits._
 import models.BookingsRepository
 import views.html._
 import controllers.EnumUtils._
 
+/**
+ * Controller for Booking's
+ */
 object BookingsController extends Controller {
-  /**
-   * 
-   */
-  object Implicits {
-    implicit val statusFormat: Format[Booking.Status.Value]= enumFormat(Booking.Status)
-    //  implicit val requestFormat = Json.format[Booking]
-    implicit val requestReads: Reads[Booking] = (
-      (JsPath \ "id").read[Option[Long]] and
-      (JsPath \ "dateTime").read[DateTime] and
-      (JsPath \ "status").read[Booking.Status.Status]
-    ) (Booking.apply _)
-    
-    implicit val requestWrites: Writes[Booking] = (
-      (JsPath \ "id").write[Option[Long]] and
-      (JsPath \ "dateTime").write[DateTime] and
-      (JsPath \ "status").write[Booking.Status.Status]
-    ) (unlift(Booking.unapply))
-  }
-  
-  object CustomFormats {
-    val status: Mapping[Booking.Status.Value] = Forms.of[Booking.Status.Value]
-  }
-  
-  import Implicits._
-  
+
   val bookingForm = Form(
     mapping(
-      "id" -> Forms.optional(longNumber),
-      "dateTime" -> longNumber,
-      "status" -> number
+      "id" -> ignored(None.asInstanceOf[Option[Long]]), // Set the id always to None
+      "dateTime" -> jodaDate,
+      "status" -> ignored(Booking.Status.PENDING) // Set the status always to PENDING
     )(Booking.apply)(Booking.unapply)
   )
   
@@ -72,7 +46,7 @@ object BookingsController extends Controller {
         BadRequest(views.html.bookings.newForm(formWithErrors))
       },
       booking => {
-        BookingsRepository.insert(booking)
+        BookingsRepository.create(booking.dateTime)
         Redirect(routes.BookingsController.index())
       }
     )

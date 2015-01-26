@@ -51,7 +51,7 @@ object Booking {
     def unapply(v: Int) = Status(v)
   }
   
-  def apply(id: Option[Long] = None, dateTime: DateTime, status: Status.Status): Booking = new Booking(id, dateTime, status)
+  def apply(id: Option[Long] = None, dateTime: DateTime, status: Status.Status = Status.PENDING): Booking = new Booking(id, dateTime, status)
   
   def unapply(booking: Booking): Option[(Option[Long], DateTime, Status.Status)] = Option(booking.id, booking.dateTime, booking.status)
 }

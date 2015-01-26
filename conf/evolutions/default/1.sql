@@ -1,12 +1,12 @@
 # --- !Ups
-create table "requests" (
-	"id" serial not null,
-	"date" timestamp not null,
-	"status" integer not null);
+create table "bookings" (
+	"id" BIGSERIAL NOT NULL,
+	"dateTime" TIMESTAMP NOT NULL,
+	"status" INTEGER NOT NULL);
 
-create unique index "idx_requests_id" on "requests" ("id");
-alter table "requests" add constraint "pk_requests" primary key using index "idx_requests_id";
+create unique index "idx_bookings_id" on "bookings" ("id");
+alter table "bookings" add constraint "pk_bookings" primary key using index "idx_bookings_id";
 
 # --- !Downs
-alter table "requests" drop constraint "pk_requests";
-drop table "requests";
+alter table "bookings" drop constraint "pk_bookings";
+drop table "bookings";
