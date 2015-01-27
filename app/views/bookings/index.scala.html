@@ -1,7 +1,19 @@
 @* index Template File *@
 @import models.Booking
+@import helper._
 
 @(bookings: Seq[Booking])
+
+@delete(id: Long) = {
+    @form(action = routes.BookingsController.delete(id), 'id -> s"delete_$id") {
+        <input type="hidden" name="id" value="@id" />
+    }
+    <a href="#" onclick="$('#delete_@id').submit();">Delete</a>
+}
+
+@edit(id: Long) = {
+    <a href="@routes.BookingsController.edit(id)">Edit</a>
+}
 
 @main("Bookings") {
 <div class="panel panel-primary">
@@ -22,7 +34,7 @@
                 <tr>
                     <td>@booking.status</td>
                     <td>@booking.dateTime</td>
-                    <td>Delete</td>
+                    <td>@delete(booking.id.get) @edit(booking.id.get)</td>
                 </tr>
                 }
             </tbody>

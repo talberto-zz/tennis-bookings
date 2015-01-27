@@ -17,7 +17,8 @@
   
   <logger name="play" level="DEBUG" />
   <logger name="application" level="DEBUG" />
-  <logger name="controllers" level="DEBUG" />
+  <logger name="controllers" level="TRACE" />
+  <logger name="models" level="TRACE" />
   
   <!-- Off these ones as they are annoying, and anyway we manage configuration ourself -->
   <logger name="com.avaje.ebean.config.PropertyMapLoader" level="OFF" />

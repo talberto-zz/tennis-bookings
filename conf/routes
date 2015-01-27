@@ -9,8 +9,18 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET		/bookings					controllers.BookingsController.index
 POST	/bookings					controllers.BookingsController.create
 GET		/bookings/newForm				controllers.BookingsController.newForm
-#GET		/bookings/:id/edit			controllers.BookingsController.edit(id: Long)
+GET		/bookings/:id/edit			controllers.BookingsController.edit(id: Long)
 GET		/bookings/:id				controllers.BookingsController.show(id: Long)
+POST	/bookings/:id				controllers.BookingsController.update(id: Long)
+#PUT		/bookings/:id				controllers.BookingsController.update
+POST	/bookings/:id/delete		controllers.BookingsController.delete(id: Long)
+
+# Rest routes taken from Rails
+#GET		/bookings					controllers.BookingsController.index
+#POST	/bookings					controllers.BookingsController.create
+#GET		/bookings/newForm				controllers.BookingsController.newForm
+#GET		/bookings/:id/edit			controllers.BookingsController.edit(id: Long)
+#GET		/bookings/:id				controllers.BookingsController.show(id: Long)
 #PATCH	/bookings/:id				controllers.BookingsController.update
 #PUT		/bookings/:id				controllers.BookingsController.update
 #DELETE	/bookings/:id				controllers.BookingsController.destroy

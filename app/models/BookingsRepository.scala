@@ -3,6 +3,7 @@ package models
 import scala.language.implicitConversions // remove implicit conversion warnings
 import play.api.db._
 import play.api.Play.current
+import play.api.Logger
 import scala.slick.driver.PostgresDriver.simple._
 import org.joda.time.DateTime
 import java.sql.Timestamp
@@ -48,6 +49,8 @@ object BookingsRepository {
   
   import Sandbox.session
   
+  val logger: Logger = Logger(this.getClass)
+  
   private val bookings = TableQuery[Bookings]
   
   private val requestById = Compiled((id: ConstColumn[Long]) => bookings filter(_.id === id))
@@ -55,35 +58,39 @@ object BookingsRepository {
   /**
    * Retrieve all the Booking's
    */
-  def findAll: Seq[Booking] = bookings.list
+  def findAll: Seq[Booking] = {
+    logger.trace("findAll()")
+    bookings.list
+  }
   
   /**
    * Finds a Booking given it's id
    */
-  def findById(id: Long): Option[Booking] = requestById(id).firstOption
+  def findById2(id: Long): Option[Booking] = {
+    logger.trace(s"findById2($id)")
+    bookings filter(_.id === id) firstOption
+  }
   
-  /**
-   * Inserts a Booking in the repository
-   */
-  private def insert(booking: Booking): Booking = {
-    (bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=Some(id))))) += booking
+  def findById(id: Long): Option[Booking] = {
+    logger.trace(s"findById($id)")
+    val booking = findById2(id)
+    logger.debug(s"findById($id) = $booking")
+    booking
   }
   
   def create(dateTime: DateTime): Booking = {
+    logger.trace(s"create($dateTime)")
     val booking = Booking(dateTime = dateTime)
-    
-    insert(booking)
+    (bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=Some(id))))) += booking
   }
   
-  def update(booking: Booking) = {
+  def update(id: Long, booking: Booking) = {
+    logger.trace(s"update($id, $booking)")
     bookings.filter(_.id === booking.id).map(b => (b.dateTime, b.status)).update(booking.dateTime, booking.status)
   }
   
   def delete(id: Long) = {
+    logger.trace(s"delete($id)")
     bookings.filter(_.id === id).delete
-  }
-  
-  def delete(booking: Booking): Unit = {
-    delete(booking.id.get)
   }
 }

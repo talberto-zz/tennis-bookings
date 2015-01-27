@@ -2,6 +2,7 @@ package controllers
 
 import play.api._
 import play.api.data._
+import play.api.data.format.Formatter
 import play.api.data.Forms._
 import play.api.mvc._
 import org.joda.time.DateTime
@@ -16,7 +17,21 @@ object BookingsController extends Controller {
 
   val logger: Logger = Logger(this.getClass)
   
-  val bookingForm = Form(
+  /** Formatter status */
+  val statusFormatter = new Formatter[Booking.Status.Value] {
+    def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Booking.Status.Value] = {
+      val status: Option[Booking.Status.Value] = data.get(key).map(Booking.Status.withName(_))
+      
+      data.get(key).toRight(FormError(key, s"Couldn't find key $key"))
+      Right(Booking.Status.PENDING)
+    }
+    
+    def unbind(key: String, value: Booking.Status.Value): Map[String, String] = {
+      Map("status" -> "PENDING")
+    }
+  }
+  
+  val createBookingForm: Form[Booking] = Form(
     mapping(
       "id" -> ignored(None.asInstanceOf[Option[Long]]), // Set the id always to None
       "dateTime" -> jodaDate("yyyy-MM-dd HH:mm"),
@@ -24,6 +39,19 @@ object BookingsController extends Controller {
     )(Booking.apply)(Booking.unapply)
   )
   
+  val bookingForm: Form[Booking] = Form(
+    mapping(
+      "id" -> optional(longNumber),
+      "dateTime" -> jodaDate("yyyy-MM-dd HH:mm"),
+      "status" -> ignored(Booking.Status.PENDING) // Set the status always to PENDING
+    )(Booking.apply)(Booking.unapply)
+  )
+  
+  val idForm = Form(
+    single(
+      "id" -> longNumber    
+    )    
+  )
   /* ACTIONS */
   def index = Action { implicit req =>
     val bookings = BookingsRepository.findAll
@@ -43,9 +71,9 @@ object BookingsController extends Controller {
   
   def create = Action { implicit req =>
     logger.debug("Received booking creation request")
-    bookingForm.bindFromRequest.fold(
+    createBookingForm.bindFromRequest.fold(
       formWithErrors => {
-        logger.debug("Form contains errors, sending redirection")
+        logger.debug("Form contains errors, sending bad request")
         BadRequest(views.html.bookings.newForm(formWithErrors))
       },
       booking => {
@@ -54,6 +82,38 @@ object BookingsController extends Controller {
         Redirect(routes.BookingsController.index())
       }
     )
+  }
+  
+  def edit(id: Long) = Action { implicit request =>
+    logger.debug("Received edit request")
+    val booking = BookingsRepository.findById(id).get
+    bookingForm.fill(booking)
+    logger.debug(s"bookingForm: [$bookingForm]")
+    logger.debug(s"booking from bookingForm: [${bookingForm.get}]")
+    val bookingFormId = bookingForm("id")
+    logger.debug(s"bookingFormId: [$bookingFormId]")
+    Ok(views.html.bookings.edit(bookingForm))
+  }
+  
+  def update(id: Long) = Action { implicit request =>
+    logger.debug("Received booking update request")
+    bookingForm.bindFromRequest.fold(
+      formWithErrors => {
+        logger.debug("Form contains errors, sending bad request")
+        BadRequest(views.html.bookings.edit(formWithErrors))
+      },
+      booking => {
+        logger.debug("Form doesn't contains errors, updating booking")
+        BookingsRepository.update(id, booking)
+        Redirect(routes.BookingsController.index())
+      }
+    )
+  }
+  
+  def delete(id: Long) = Action { implicit request =>
+    logger.debug(s"Received booking deletion request for id [$id]")
+    BookingsRepository.delete(id)
+    Redirect(routes.BookingsController.index())
   }
 
 //  def newForm = Action { implicit req =>
