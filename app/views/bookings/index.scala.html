@@ -4,20 +4,31 @@
 @(bookings: Seq[Booking])
 
 @main("Bookings") {
-	<table>
-		<thead>
-			<tr>
-				<th>Status</th>
-				<th>Date</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-		@for(booking <- bookings) {
-			<tr><td>@booking.status</td><td>@booking.dateTime</td><td>Delete</td></tr>
-		}
-		</tbody>
-	</table>
-	
-	<a href="@routes.BookingsController.newForm()">New</a>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h2 class="panel-title">Bookings List</h2>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(booking <- bookings) {
+                <tr>
+                    <td>@booking.status</td>
+                    <td>@booking.dateTime</td>
+                    <td>Delete</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        <a href="@routes.BookingsController.newForm()">New</a>
+    </div>
+</div>
 }

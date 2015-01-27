@@ -8,7 +8,6 @@ import org.joda.time.DateTime
 import models.Booking
 import models.BookingsRepository
 import views.html._
-import controllers.EnumUtils._
 
 /**
  * Controller for Booking's
