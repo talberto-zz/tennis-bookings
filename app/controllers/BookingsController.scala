@@ -1,14 +1,17 @@
 package controllers
 
+import models.Booking
+import models.BookingsRepository
+import org.joda.time.DateTime
 import play.api._
 import play.api.data._
 import play.api.data.format.Formatter
 import play.api.data.Forms._
 import play.api.mvc._
-import org.joda.time.DateTime
-import models.Booking
-import models.BookingsRepository
+import scala.util.control.Exception.catching
 import views.html._
+
+
 
 /**
  * Controller for Booking's
@@ -17,17 +20,23 @@ object BookingsController extends Controller {
 
   val logger: Logger = Logger(this.getClass)
   
+  def logErrors(form: Form[_]) = {
+    for()
+  }
+  
   /** Formatter status */
-  val statusFormatter = new Formatter[Booking.Status.Value] {
+  implicit val statusFormatter = new Formatter[Booking.Status.Value] {
     def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Booking.Status.Value] = {
-      val status: Option[Booking.Status.Value] = data.get(key).map(Booking.Status.withName(_))
-      
-      data.get(key).toRight(FormError(key, s"Couldn't find key $key"))
-      Right(Booking.Status.PENDING)
+      try {
+        val status: Option[Booking.Status.Value] = data.get(key).map(Booking.Status.withName(_))
+        status.toRight(Seq(FormError(key, s"Couldn't find key $key")))
+      } catch {
+        case e: java.util.NoSuchElementException => Left(Seq(FormError(key, s"No status for input ${data(key)}")))
+      }
     }
     
     def unbind(key: String, value: Booking.Status.Value): Map[String, String] = {
-      Map("status" -> "PENDING")
+      Map(key -> value.toString)
     }
   }
   
@@ -43,7 +52,7 @@ object BookingsController extends Controller {
     mapping(
       "id" -> optional(longNumber),
       "dateTime" -> jodaDate("yyyy-MM-dd HH:mm"),
-      "status" -> ignored(Booking.Status.PENDING) // Set the status always to PENDING
+      "status" -> of[Booking.Status.Value] // Set the status always to PENDING
     )(Booking.apply)(Booking.unapply)
   )
   
@@ -87,12 +96,8 @@ object BookingsController extends Controller {
   def edit(id: Long) = Action { implicit request =>
     logger.debug("Received edit request")
     val booking = BookingsRepository.findById(id).get
-    bookingForm.fill(booking)
-    logger.debug(s"bookingForm: [$bookingForm]")
-    logger.debug(s"booking from bookingForm: [${bookingForm.get}]")
-    val bookingFormId = bookingForm("id")
-    logger.debug(s"bookingFormId: [$bookingFormId]")
-    Ok(views.html.bookings.edit(bookingForm))
+    val editForm = bookingForm.fill(booking)
+    Ok(views.html.bookings.edit(editForm))
   }
   
   def update(id: Long) = Action { implicit request =>
