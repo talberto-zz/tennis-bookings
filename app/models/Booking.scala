@@ -4,7 +4,7 @@ import scala.language.implicitConversions // remove implicit conversion warnings
 import org.joda.time.DateTime
 import java.sql.Timestamp
 
-case class Booking(id: Option[Long] = None, dateTime: DateTime, status: Booking.Status.Status = Booking.Status.PENDING)
+case class Booking(id: Long = null.asInstanceOf[Long], dateTime: DateTime, status: Booking.Status.Status = Booking.Status.PENDING)
 
 object Booking {
   

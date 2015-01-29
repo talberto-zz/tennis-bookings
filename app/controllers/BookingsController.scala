@@ -20,10 +20,6 @@ object BookingsController extends Controller {
 
   val logger: Logger = Logger(this.getClass)
   
-  def logErrors(form: Form[_]) = {
-    for()
-  }
-  
   /** Formatter status */
   implicit val statusFormatter = new Formatter[Booking.Status.Value] {
     def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Booking.Status.Value] = {
@@ -40,19 +36,11 @@ object BookingsController extends Controller {
     }
   }
   
-  val createBookingForm: Form[Booking] = Form(
-    mapping(
-      "id" -> ignored(None.asInstanceOf[Option[Long]]), // Set the id always to None
-      "dateTime" -> jodaDate("yyyy-MM-dd HH:mm"),
-      "status" -> ignored(Booking.Status.PENDING) // Set the status always to PENDING
-    )(Booking.apply)(Booking.unapply)
-  )
-  
   val bookingForm: Form[Booking] = Form(
     mapping(
-      "id" -> optional(longNumber),
+      "id" -> ignored(null.asInstanceOf[Long]), // Set the id always null Long
       "dateTime" -> jodaDate("yyyy-MM-dd HH:mm"),
-      "status" -> of[Booking.Status.Value] // Set the status always to PENDING
+      "status" -> ignored(Booking.Status.PENDING) // Set the status always to PENDING
     )(Booking.apply)(Booking.unapply)
   )
   
@@ -80,7 +68,7 @@ object BookingsController extends Controller {
   
   def create = Action { implicit req =>
     logger.debug("Received booking creation request")
-    createBookingForm.bindFromRequest.fold(
+    bookingForm.bindFromRequest.fold(
       formWithErrors => {
         logger.debug("Form contains errors, sending bad request")
         BadRequest(views.html.bookings.newForm(formWithErrors))
@@ -109,7 +97,7 @@ object BookingsController extends Controller {
       },
       booking => {
         logger.debug("Form doesn't contains errors, updating booking")
-        BookingsRepository.update(id, booking)
+        BookingsRepository.updateDateTime(id, booking.dateTime)
         Redirect(routes.BookingsController.index())
       }
     )
@@ -120,90 +108,4 @@ object BookingsController extends Controller {
     BookingsRepository.delete(id)
     Redirect(routes.BookingsController.index())
   }
-
-//  def newForm = Action { implicit req =>
-//    views.html.bookings.newForm
-//  }
-//  
-//  def edit = Action { implicit req =>
-//    val booking = BookingRepository.findById(id)
-//    
-//    views.html.bookings.edit(booking)
-//  }
-//  
-//  def create = Action { implicit req =>
-//    views.html.bookings.newForm
-//  }
-//  
-//  def update = Action { implicit req =>
-//    views.html.bookings.newForm
-//  }
-//  
-//  def destroy = Action { implicit req =>
-//    views.html.bookings.newForm
-//  }
-
-//  def index = Action { implicit req =>
-//    val allRequests: Seq[Booking] = BookingRepository.findAll
-//    
-//    render {
-//      case Accepts.Html() => Ok(Booking.index(allRequests))
-//      case Accepts.Json() => Ok(Json.toJson(allRequests))
-//    }
-//  }
-//  
-//  def newForm = Action {
-//    Ok(views.html.Booking.newForm(requestForm))
-//  }
-//  
-//  def create = Action { implicit request: Request[AnyContent] =>
-//    render {
-//      case Accepts.Html() => createAny
-//      case Accepts.Json() => createJson
-//    }
-//  }
-//  
-//  def createAny(implicit request: Request[AnyContent]) = { 
-//    requestForm.bindFromRequest.fold(
-//      formWithErrors => {
-//        BadRequest(views.html.Booking.newForm(formWithErrors))
-//      },
-//      Booking => {
-//        BookingRepository.insert(Booking)
-//        Redirect(routes.Bookings.index())
-//      }
-//    )
-//  }
-//  
-//  def createJson(implicit request: Request[AnyContent]) = { 
-//    val jsonBody = request.body.asJson
-//    jsonBody match {
-//      case Some(jsValue) => {
-//        val resReq = jsValue.validate[Booking]
-//        resReq.fold(
-//          errors => {
-//            BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors)))
-//          },
-//          resReq => { 
-//            BookingRepository.insert(resReq)
-//            Ok(Json.obj("status" ->"OK", "message" -> (s"Reservation request saved")))
-//          })
-//      }
-//      case None => BadRequest(Json.obj("status" -> "KO", "message" -> "Json not valid"))
-//    }
-//  }
-//  
-//  def show(id: String) = Action { implicit req =>
-//    try {
-//      val LongId: Long = id.toLong
-//      val resReq = BookingRepository.findById(LongId)
-//    
-//      resReq match {
-//        case Some(resReq) => Ok(Json.toJson(resReq))
-//        case None => BadRequest(Json.obj("status" -> "KO", "message" -> s"Couldn't find a request with id ${id}"))
-//      }
-//    } catch {
-//      case e: NumberFormatException => BadRequest(Json.obj("status" -> "KO", "message" -> s"Cannot parse ${id} as a Longeger"))
-//    }
-//  }
 }

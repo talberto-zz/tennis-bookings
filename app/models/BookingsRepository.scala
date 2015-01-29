@@ -32,7 +32,7 @@ class Bookings(tag: Tag) extends Table[Booking](tag, "bookings") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def dateTime = column[DateTime]("dateTime")
   def status = column[Booking.Status.Status]("status")
-  def * = (id.?, dateTime, status) <> ((Booking.apply _).tupled, Booking.unapply)
+  def * = (id, dateTime, status) <> ((Booking.apply _).tupled, Booking.unapply)
 }
 
 /**
@@ -81,12 +81,17 @@ object BookingsRepository {
   def create(dateTime: DateTime): Booking = {
     logger.trace(s"create($dateTime)")
     val booking = Booking(dateTime = dateTime)
-    (bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=Some(id))))) += booking
+    (bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=id)))) += booking
   }
   
   def update(id: Long, booking: Booking) = {
     logger.trace(s"update($id, $booking)")
     bookings.filter(_.id === booking.id).map(b => (b.dateTime, b.status)).update(booking.dateTime, booking.status)
+  }
+  
+  def updateDateTime(id: Long, dateTime: DateTime) = {
+    logger.trace(s"update($id, $dateTime)")
+    bookings.filter(_.id === id).map(b => (b.dateTime)).update(dateTime)
   }
   
   def delete(id: Long) = {
