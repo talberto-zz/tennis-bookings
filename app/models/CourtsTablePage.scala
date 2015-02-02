@@ -1,12 +1,13 @@
 package models
 
 import play.api.Logger
+import play.api.Configuration
 
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.By
 
-class CourtsTablePage private(val driver: WebDriver, val url: String) {
+class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageConf) {
   val logger: Logger = Logger(this.getClass)
   val actions: Actions = new Actions(driver)
   
@@ -18,7 +19,7 @@ class CourtsTablePage private(val driver: WebDriver, val url: String) {
     
     // Find the box representing the court
     val selector = s"${hourNo}_0_${courtNo}"
-    logger.debug(s"Selector [$selector]")
+    logger.debug(s"Double clicking on element identified by css selector [$selector]")
     val courtElem = driver.findElement(By.id(selector))
     // Make double click
     actions.doubleClick(courtElem).perform()
@@ -26,7 +27,13 @@ class CourtsTablePage private(val driver: WebDriver, val url: String) {
 }
 
 object CourtsTablePage {
-  def apply(driver: WebDriver, url: String) = new CourtsTablePage(driver, url)
+  def apply(driver: WebDriver, conf: CourtsTablePageConf) = new CourtsTablePage(driver, conf)
+}
+
+case class CourtsTablePageConf(val url: String)
+
+object CourtsTablePageConf {
+  def apply(conf: Configuration): CourtsTablePageConf = CourtsTablePageConf(conf.getString("courtsTablePage.url").get)
 }
 
 /**

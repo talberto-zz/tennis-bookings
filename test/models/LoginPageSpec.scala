@@ -41,7 +41,7 @@ trait LoginPageSpecBeforeAfter extends BeforeAfter {
   val username = conf.getString("loginPage.username").get
   val password = conf.getString("loginPage.password").get
   val driver: WebDriver = new ChromeDriver
-  val loginPage = LoginPage(driver, url, username, password)
+  val loginPage = LoginPage(driver, LoginPageConf(conf))
   
   def before = {
     

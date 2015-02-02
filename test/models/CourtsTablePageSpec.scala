@@ -33,7 +33,7 @@ trait CourtsTablePageSpecBeforeAfter extends After {
   
   // Navigate to the page
   driver.get(url)
-  val courtsTablePage = CourtsTablePage(driver, url)
+  val courtsTablePage = CourtsTablePage(driver, CourtsTablePageConf(conf))
   
   def after = {
     courtsTablePage.driver.close

@@ -33,7 +33,7 @@ trait ChoosePartnerPageSpecBeforeAfter extends After {
   
   // Navigate to the page
   driver.get(url)
-  val choosePartnerPage = ChoosePartnerPage(driver, url)
+  val choosePartnerPage = ChoosePartnerPage(driver, ChoosePartnerPageConf(conf))
   
   def after = {
     choosePartnerPage.driver.close
