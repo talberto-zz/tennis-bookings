@@ -1,12 +1,21 @@
 package models
 
-import scala.language.implicitConversions // remove implicit conversion warnings
-import org.joda.time.DateTime
 import java.sql.Timestamp
 
-case class Booking(id: Long = null.asInstanceOf[Long], dateTime: DateTime, status: Booking.Status.Status = Booking.Status.PENDING)
+import org.joda.time.LocalDate
+import org.joda.time.LocalTime
+import org.joda.time.DateTime
+
+import scala.language.implicitConversions // remove implicit conversion warnings
+
+case class Booking(id: Long = null.asInstanceOf[Long], dateTime: DateTime, court: Int, status: Booking.Status.Status = Booking.Status.PENDING) {
+  val date = dateTime.toLocalDate()
+  val time = dateTime.toLocalTime()
+}
 
 object Booking {
+  
+  def fromDateAndTime(id: Long, date: LocalDate, time: LocalTime, court: Int, status: Booking.Status.Status): Booking = Booking(id, date.toDateTime(time), court, status)
   
   /**
    * Status for a Booking

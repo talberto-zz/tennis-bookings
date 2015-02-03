@@ -2,16 +2,18 @@ package controllers
 
 import models.Booking
 import models.BookingsRepository
+
 import org.joda.time.DateTime
+
 import play.api._
 import play.api.data._
 import play.api.data.format.Formatter
 import play.api.data.Forms._
 import play.api.mvc._
+
 import scala.util.control.Exception.catching
+
 import views.html._
-
-
 
 /**
  * Controller for Booking's
@@ -40,6 +42,7 @@ object BookingsController extends Controller {
     mapping(
       "id" -> ignored(null.asInstanceOf[Long]), // Set the id always null Long
       "dateTime" -> jodaDate("yyyy-MM-dd HH:mm"),
+      "court" -> number,
       "status" -> ignored(Booking.Status.PENDING) // Set the status always to PENDING
     )(Booking.apply)(Booking.unapply)
   )
@@ -75,7 +78,7 @@ object BookingsController extends Controller {
       },
       booking => {
         logger.debug("Form doesn't contains errors, creating new booking")
-        BookingsRepository.create(booking.dateTime)
+        BookingsRepository.create(booking.dateTime, booking.court)
         Redirect(routes.BookingsController.index())
       }
     )

@@ -17,11 +17,11 @@ class TennisSite {
   lazy val courtsTablePage = CourtsTablePage(driver, courtsTablePageConf)
   lazy val choosePartnerPage = ChoosePartnerPage(driver, choosePartnerPageConf)
   
-  def book(date: LocalDate = LocalDate.now, hour: Hours.Hours, court: Courts.Courts) = {
-    logger.trace(s"book($date, $hour, $court)")
+  def book(booking: Booking) = {
+    logger.trace(s"book($booking)")
     loginPage.get
     loginPage.doLogin
-    courtsTablePage.book(court, hour)
+    courtsTablePage.book(booking)
     choosePartnerPage.choose
   }
 }

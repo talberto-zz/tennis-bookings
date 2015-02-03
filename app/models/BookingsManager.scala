@@ -15,25 +15,25 @@ class BookingsManager(val tennisSite: TennisSite, val bookingsScheduler: Booking
   
   val logger = Logger(getClass)
   
-  def book(date: LocalDate = LocalDate.now, hour: Hours.Hours, court: Courts.Courts): Unit = {
-    logger.trace(s"booking($date, $hour, $court)")
-    if(canBookToday(date)) {
-      tryToBook(date, hour, court)
+  def book(booking: Booking): Unit = {
+    logger.trace(s"booking($booking)")
+    if(canBookToday(booking)) {
+      tryToBook(booking)
     } else {
-      scheduleBooking(date, hour, court)
+      scheduleBooking(booking)
     }
   }
   
-  def canBookToday(date: LocalDate) = LocalDate.now.plusDays(3).isAfter(date)
+  def canBookToday(booking: Booking) = LocalDate.now.plusDays(3).isAfter(booking.date)
   
-  def tryToBook(date: LocalDate = LocalDate.now, hour: Hours.Hours, court: Courts.Courts) = {
-    logger.debug(s"Trying to book today ($date, $hour, $court)")
-    tennisSite.book(date, hour, court)
+  def tryToBook(booking: Booking) = {
+    logger.debug(s"Trying to book today ($booking)")
+    tennisSite.book(booking)
   }
   
-  def scheduleBooking(date: LocalDate = LocalDate.now, hour: Hours.Hours, court: Courts.Courts) = {
-    logger.debug(s"Will attempt to schedule later ($date, $hour, $court)")
-    bookingsScheduler.scheduleBooking(this, date, hour, court)
+  def scheduleBooking(booking: Booking) = {
+    logger.debug(s"Will attempt to schedule later ($booking)")
+    bookingsScheduler.scheduleBooking(this, booking)
   }
 }
 
@@ -47,11 +47,11 @@ class BookingsScheduler {
   val scheduler: Scheduler = actorSystem.scheduler
   implicit val executor = actorSystem.dispatcher
   
-  def scheduleBooking(bookingsManager: BookingsManager, date: LocalDate = LocalDate.now, hour: Hours.Hours, court: Courts.Courts) = {
-    logger.debug(s"Will attempt to schedule later ($date, $hour, $court)")
+  def scheduleBooking(bookingsManager: BookingsManager, booking: Booking) = {
+    logger.debug(s"Will attempt to schedule later ($booking)")
     def task = new Runnable {
       def run = {
-        bookingsManager.book(date, hour, court)
+        bookingsManager.book(booking)
       }
     }
     scheduler.schedule(

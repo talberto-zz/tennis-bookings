@@ -1,6 +1,6 @@
 package models
 
-import org.joda.time.LocalDate
+import org.joda.time.DateTime
 
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
@@ -27,17 +27,17 @@ class BookingsManagerSpec extends Specification { def is = s2"""
     val bookingsManager = BookingsManager(tennisSite, bookingsScheduler)
     
     def e1 = {
-      val date = LocalDate.now()
-      bookingsManager.book(date, Hours.HOUR_17, Courts.COURT_15)
-      there was one(tennisSite).book(date, Hours.HOUR_17, Courts.COURT_15)
-      there was no(bookingsScheduler).scheduleBooking(any[BookingsManager], any[LocalDate], any[Hours.Hours], any[Courts.Courts])
+      val booking = Booking(dateTime = DateTime.now(), court = 15)
+      bookingsManager.book(booking)
+      there was one(tennisSite).book(booking)
+      there was no(bookingsScheduler).scheduleBooking(any[BookingsManager], any[Booking])
     }
     
     def e2 = {
-      val date = LocalDate.now().plusDays(4)
-      bookingsManager.book(date, Hours.HOUR_17, Courts.COURT_15)
-      there was no(tennisSite).book(any[LocalDate], any[Hours.Hours], any[Courts.Courts])
-      there was one(bookingsScheduler).scheduleBooking(bookingsManager, date, Hours.HOUR_17, Courts.COURT_15)
+      val booking = Booking(dateTime = DateTime.now().plusDays(4), court = 15)
+      bookingsManager.book(booking)
+      there was no(tennisSite).book(any[Booking])
+      there was one(bookingsScheduler).scheduleBooking(bookingsManager, booking)
     }
   }
 }

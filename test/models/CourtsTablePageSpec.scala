@@ -1,5 +1,7 @@
 package models
 
+import org.joda.time.DateTime
+
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
 
@@ -16,7 +18,8 @@ class CourtsTablePageSpec extends Specification {
   
   "The 'CourtsTablePage'" should {
     "open the 'ChoosePartnerPage' when clicked twice over a court" in new CourtsTablePageSpecBeforeAfter {
-      courtsTablePage.book(Courts.COURT_15, Hours.HOUR_17)
+      val booking = Booking(dateTime = DateTime.now().withHourOfDay(17), court = 15)
+      courtsTablePage.book(booking)
       
       courtsTablePage.driver.getCurrentUrl must equalTo(destUrl)
     }

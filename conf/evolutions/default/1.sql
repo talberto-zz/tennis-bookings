@@ -2,6 +2,7 @@
 create table "bookings" (
 	"id" BIGSERIAL NOT NULL,
 	"dateTime" TIMESTAMP NOT NULL,
+	"court" smallint NOT NULL,
 	"status" INTEGER NOT NULL);
 
 create unique index "idx_bookings_id" on "bookings" ("id");

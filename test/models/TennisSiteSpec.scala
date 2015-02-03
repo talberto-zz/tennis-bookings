@@ -6,6 +6,8 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.specs2.mutable._
 import org.specs2.runner._
 
+import org.joda.time.DateTime
+
 import org.junit.runner.RunWith
 
 import play.api.Configuration
@@ -15,7 +17,8 @@ import play.api.test.FakeApplication
 class TennisSiteSpec extends Specification {
   "The 'TennisSite'" should {
     "book a court successfully" in new TennisSiteSpecBeforeAfter {
-      tennisSite.book(court = Courts.COURT_15, hour = Hours.HOUR_17)
+      val booking = Booking(dateTime = DateTime.now().withHourOfDay(17), court = 15)
+      tennisSite.book(booking)
       success
     }
   }
