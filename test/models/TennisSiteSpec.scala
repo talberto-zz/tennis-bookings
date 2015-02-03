@@ -15,7 +15,7 @@ import play.api.test.FakeApplication
 class TennisSiteSpec extends Specification {
   "The 'TennisSite'" should {
     "book a court successfully" in new TennisSiteSpecBeforeAfter {
-      tennisSite.book(Courts.COURT_15, Hours.HOUR_17)
+      tennisSite.book(court = Courts.COURT_15, hour = Hours.HOUR_17)
       success
     }
   }
