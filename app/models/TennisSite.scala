@@ -26,13 +26,13 @@ class TennisSite {
   }
 }
 
+object TennisSite {
+  def apply(configuration: Configuration): TennisSite = new TennisSite with WithConfiguration { lazy val conf = configuration }
+}
+
 trait WithConfiguration {
   def conf: Configuration
   val loginPageConf: LoginPageConf = LoginPageConf(conf)
   val courtsTablePageConf: CourtsTablePageConf = CourtsTablePageConf(conf)
   val choosePartnerPageConf: ChoosePartnerPageConf = ChoosePartnerPageConf(conf)
-}
-
-class DefaultTennisSite(override val conf: Configuration) extends TennisSite with WithConfiguration {
-  
 }

@@ -39,7 +39,7 @@ class Bookings(tag: Tag) extends Table[Booking](tag, "bookings") {
 /**
  * Repository for Booking
  */
-object BookingsRepository {
+class BookingsRepository {
   /**
    * Holds the session for use in the repository
    */
@@ -59,7 +59,7 @@ object BookingsRepository {
   /**
    * Retrieve all the Booking's
    */
-  def findAll: Seq[Booking] = {
+  def list: Seq[Booking] = {
     logger.trace("findAll()")
     bookings.list
   }
@@ -72,7 +72,7 @@ object BookingsRepository {
     bookings filter(_.id === id) firstOption
   }
   
-  def findById(id: Long): Option[Booking] = {
+  def find(id: Long): Option[Booking] = {
     logger.trace(s"findById($id)")
     val booking = findById2(id)
     logger.debug(s"findById($id) = $booking")
@@ -99,4 +99,8 @@ object BookingsRepository {
     logger.trace(s"delete($id)")
     bookings.filter(_.id === id).delete
   }
+}
+
+object BookingsRepository {
+  def apply() = new BookingsRepository
 }

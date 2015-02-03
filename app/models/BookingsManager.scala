@@ -8,10 +8,11 @@ import java.util.concurrent.TimeUnit
 import org.joda.time.LocalDate
 
 import play.api.Logger
+import play.api.Play
 
 import scala.concurrent.duration._
 
-class BookingsManager(val tennisSite: TennisSite, val bookingsScheduler: BookingsScheduler) {
+class BookingsManager(val tennisSite: TennisSite, val bookingsRepository: BookingsRepository, val bookingsScheduler: BookingsScheduler) {
   
   val logger = Logger(getClass)
   
@@ -24,21 +25,40 @@ class BookingsManager(val tennisSite: TennisSite, val bookingsScheduler: Booking
     }
   }
   
-  def canBookToday(booking: Booking) = LocalDate.now.plusDays(3).isAfter(booking.date)
+  def cancelBooking(id: Long) = {
+    logger.trace(s"cancelBooking($id)")
+  }
   
-  def tryToBook(booking: Booking) = {
+  def list: Seq[Booking] = {
+    logger.trace(s"list()")
+    bookingsRepository.list
+  }
+  
+  def find(id: Long) = {
+    logger.trace(s"find($id)")
+    bookingsRepository.find(id)   
+  }
+  
+  protected def canBookToday(booking: Booking) = LocalDate.now.plusDays(3).isAfter(booking.date)
+  
+  protected def tryToBook(booking: Booking) = {
     logger.debug(s"Trying to book today ($booking)")
     tennisSite.book(booking)
   }
   
-  def scheduleBooking(booking: Booking) = {
+  protected def scheduleBooking(booking: Booking) = {
     logger.debug(s"Will attempt to schedule later ($booking)")
     bookingsScheduler.scheduleBooking(this, booking)
   }
 }
 
 object BookingsManager {
-  def apply(tennisSite: TennisSite, bookingsScheduler: BookingsScheduler) = new BookingsManager(tennisSite, bookingsScheduler)
+  def apply() = {
+    val tennisSite = TennisSite(Play.current.configuration)
+    val bookingsRepository = BookingsRepository()
+    val bookingsScheduler = BookingsScheduler()
+    new BookingsManager(tennisSite, bookingsRepository, bookingsScheduler)
+  }
 }
 
 class BookingsScheduler {
@@ -59,4 +79,8 @@ class BookingsScheduler {
         interval = Duration(5, MINUTES),
         runnable = task)
   }
+}
+
+object BookingsScheduler {
+  def apply() = new BookingsScheduler
 }

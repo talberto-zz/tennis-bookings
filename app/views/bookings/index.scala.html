@@ -11,10 +11,6 @@
     <a href="#" onclick="$('#delete_@id').submit();">Delete</a>
 }
 
-@edit(id: Long) = {
-    <a href="@routes.BookingsController.edit(id)">Edit</a>
-}
-
 @main("Bookings") {
 <div class="panel panel-primary">
     <div class="panel-heading">
@@ -34,7 +30,7 @@
                 <tr>
                     <td>@booking.status</td>
                     <td>@booking.dateTime</td>
-                    <td>@delete(booking.id) @edit(booking.id)</td>
+                    <td>@delete(booking.id)</td>
                 </tr>
                 }
             </tbody>
