@@ -64,35 +64,19 @@ class BookingsRepository {
     bookings.list
   }
   
-  /**
-   * Finds a Booking given it's id
-   */
-  def findById2(id: Long): Option[Booking] = {
-    logger.trace(s"findById2($id)")
+  def find(id: Long): Option[Booking] = {
+    logger.trace(s"findById($id)")
     bookings filter(_.id === id) firstOption
   }
   
-  def find(id: Long): Option[Booking] = {
-    logger.trace(s"findById($id)")
-    val booking = findById2(id)
-    logger.debug(s"findById($id) = $booking")
-    booking
-  }
-  
-  def create(dateTime: DateTime, court: Int): Booking = {
-    logger.trace(s"create($dateTime)")
-    val booking = Booking(dateTime = dateTime, court = court)
+  def save(booking: Booking): Booking = {
+    logger.trace(s"save($booking)")
     (bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=id)))) += booking
   }
   
-  def update(id: Long, booking: Booking) = {
-    logger.trace(s"update($id, $booking)")
+  def update(booking: Booking) = {
+    logger.trace(s"update($booking)")
     bookings.filter(_.id === booking.id).map(b => (b.dateTime, b.status)).update(booking.dateTime, booking.status)
-  }
-  
-  def updateDateTime(id: Long, dateTime: DateTime) = {
-    logger.trace(s"update($id, $dateTime)")
-    bookings.filter(_.id === id).map(b => (b.dateTime)).update(dateTime)
   }
   
   def delete(id: Long) = {

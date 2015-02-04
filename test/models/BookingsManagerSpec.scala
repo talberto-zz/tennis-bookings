@@ -23,8 +23,9 @@ class BookingsManagerSpec extends Specification { def is = s2"""
 
   case class c() extends Mockito {
     val tennisSite = mock[TennisSite]
+    val bookingsRepository = mock[BookingsRepository]
     val bookingsScheduler = mock[BookingsScheduler]
-    val bookingsManager = BookingsManager()
+    val bookingsManager = BookingsManager(bookingsRepository, bookingsScheduler, tennisSite)
     
     def e1 = {
       val booking = Booking(dateTime = DateTime.now(), court = 15)
