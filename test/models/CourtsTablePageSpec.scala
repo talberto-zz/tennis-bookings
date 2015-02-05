@@ -23,6 +23,16 @@ class CourtsTablePageSpec extends Specification {
       
       courtsTablePage.driver.getCurrentUrl must equalTo(destUrl)
     }
+    
+    "'canBook' returns false when the book isn't possible" in new CourtsTablePageSpecBeforeAfter {
+      val booking = Booking(dateTime = DateTime.now().withHourOfDay(18), court = 12)
+      courtsTablePage.canBook(booking) must equalTo(false)
+    }
+    
+    "'canBook' returns true when the book is possible" in new CourtsTablePageSpecBeforeAfter {
+      val booking = Booking(dateTime = DateTime.now().withHourOfDay(17), court = 15)
+      courtsTablePage.canBook(booking) must equalTo(true)
+    }
   }
 }
 
