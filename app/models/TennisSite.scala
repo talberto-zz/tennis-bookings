@@ -1,6 +1,8 @@
 package models
 
 import org.joda.time.LocalDate
+import org.joda.time.LocalTime
+import org.joda.time.Days
 
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
@@ -27,6 +29,11 @@ class TennisSite {
 }
 
 object TennisSite {
+  /** We can start booking from 9:00 AM */
+  val BookingStartingHour = new LocalTime(9, 0, 0, 0)
+  /** Number of days, starting from today, that we can book */
+  val DaysOfDifference = Days.TWO
+  
   def apply(configuration: Configuration): TennisSite = new TennisSite with WithConfiguration { lazy val conf = configuration }
 }
 

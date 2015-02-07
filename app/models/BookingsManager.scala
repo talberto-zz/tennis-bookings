@@ -17,11 +17,7 @@ import scala.concurrent.duration._
 
 class BookingsManager(val bookingsRepository: BookingsRepository, val bookingsScheduler: BookingsScheduler, val tennisSite: TennisSite) {
   
-  // Constants
-  /** We can start booking from 9:00 AM */
-  val BookingStartingHour = new LocalTime(9, 0, 0, 0)
-  val DaysOfDifference = 3
-  
+  // Constants  
   val logger = Logger(getClass)
   val actorSystem = ActorSystem()
   val scheduler: Scheduler = actorSystem.scheduler
@@ -76,7 +72,7 @@ class BookingsManager(val bookingsRepository: BookingsRepository, val bookingsSc
     } else {
       logger.debug(s"Will attempt to schedule later [$booking]")
       val today = LocalDate.now()
-      val whenToTryToBook = today.plusDays(DaysOfDifference).toDateTime(BookingStartingHour.minusMinutes(5))
+      val whenToTryToBook = today.plusDays(TennisSite.DaysOfDifference.getDays()).toDateTime(TennisSite.BookingStartingHour.minusMinutes(5))
       val duration = new org.joda.time.Duration(DateTime.now, whenToTryToBook)
       val task = scheduler.schedule(
         initialDelay = duration,

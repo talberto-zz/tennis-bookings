@@ -1,5 +1,9 @@
 package models
 
+import org.joda.time.LocalDate
+import org.joda.time.LocalTime
+import org.joda.time.Days
+
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.By
@@ -16,11 +20,46 @@ class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageCo
   
   def book(booking: Booking) = {
     logger.trace(s"book($booking)")
-    logger.debug(s"Trying to book court [${booking.court}] at hour [${booking.time}]")
+    logger.debug(s"Trying to book court [${booking.court}] at date [${booking.date}] and hour [${booking.time}]")
+    val daysFromTodayToBooking = Days.daysBetween(LocalDate.now, booking.date)
+    logger.debug(s"Days of difference between today and the booking date [${daysFromTodayToBooking.getDays}]")
+    require(daysFromTodayToBooking.isLessThan(TennisSite.DaysOfDifference.plus(Days.ONE)), s"The booking date is past today plus ${TennisSite.DaysOfDifference.getDays()} days")
+    require(daysFromTodayToBooking.isGreaterThan(Days.ZERO.minus(Days.ONE)), "The booking date has already passed");
+    // Move to the corresponding day
+    moveDays(daysFromTodayToBooking.getDays())
     val courtElem = findCourt(booking)
     // Make double click
     logger.debug(s"Double clicking on element [identified by css selector [$courtElem]")
     actions.doubleClick(courtElem).perform()
+    // Check if we reached the limit of bookings
+    if(driver.findElements(By.cssSelector(".erreur")).nonEmpty) {
+      throw new BookingsLimitReachedException("Apparently reached the bookings limit");
+    }
+  }
+  
+  def moveDays(days: Int) {
+    logger.trace(s",moveDays($days)")
+    if(days == 1) {
+      goTomorrow
+    } else if(days == -1) {
+      goYesterday
+    } else if(days > 0) {
+      goTomorrow
+      moveDays(days - 1)
+    } else {
+      goYesterday
+      moveDays(days + 1)
+    }
+  }
+  
+  protected def goTomorrow = {
+    logger.trace(s"goTomorrow()")
+    driver.findElement(By.id("btn_plus")).click
+  }
+  
+  protected def goYesterday = {
+    logger.trace(s"goYesterday()")
+    driver.findElement(By.id("btn_moins")).click
   }
   
   /**
