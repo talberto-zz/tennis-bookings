@@ -5,7 +5,9 @@ import org.openqa.selenium._
 import play.api.Logger
 import play.api.Configuration
 
-class LoginPage private(val driver: WebDriver, val conf: LoginPageConf) {
+import scala.collection.JavaConversions._
+
+class LoginPage private(val driver: WebDriver, val conf: LoginPageConf) extends Page {
   
   val logger = Logger(getClass)
   
@@ -24,10 +26,16 @@ class LoginPage private(val driver: WebDriver, val conf: LoginPageConf) {
     userkey.sendKeys(conf.password)
     driver.findElement(By.id("btn_identification")).click()
   }
+  
+  def isCurrentPage = LoginPage.isCurrentPage(driver)
 }
 
-object LoginPage {
+object LoginPage extends PageObject {
   def apply(driver: WebDriver, conf: LoginPageConf) = new LoginPage(driver, conf)
+  
+  def isCurrentPage(driver: WebDriver): Boolean = {
+    driver.findElements(By.id("btn_identification")).nonEmpty
+  }
 }
 
 case class LoginPageConf(val url: String, val username: String, val password: String)

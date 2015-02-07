@@ -9,7 +9,7 @@ import play.api.Configuration
 
 import scala.collection.JavaConversions._
 
-class ChoosePartnerPage private(val driver: WebDriver, val conf: ChoosePartnerPageConf) {
+class ChoosePartnerPage private(val driver: WebDriver, val conf: ChoosePartnerPageConf) extends Page {
 
   val logger = Logger(getClass)
   /**
@@ -25,10 +25,16 @@ class ChoosePartnerPage private(val driver: WebDriver, val conf: ChoosePartnerPa
     val partners: List[WebElement] = driver.findElements(By.cssSelector("#CHAMP_TYPE_1-menu li")).toList
     partners(4).click
   }
+  
+  def isCurrentPage = ChoosePartnerPage.isCurrentPage(driver)
 }
 
-object ChoosePartnerPage {
+object ChoosePartnerPage extends PageObject {
   def apply(driver: WebDriver, conf: ChoosePartnerPageConf) = new ChoosePartnerPage(driver, conf)
+  
+  def isCurrentPage(driver: WebDriver): Boolean = {
+    driver.findElements(By.id("CHAMP_TYPE_1-button")).nonEmpty
+  }
 }
 
 case class ChoosePartnerPageConf(val url: String)

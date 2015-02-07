@@ -20,6 +20,12 @@ class ChoosePartnerPageSpec extends Specification {
       
       choosePartnerPage.driver.getCurrentUrl must equalTo(destUrl)
     }
+    
+    "recognize it's page" in new ChoosePartnerPageSpecBeforeAfter {
+      ChoosePartnerPage.isCurrentPage(driver) must equalTo(true)
+      driver.get("http://www.google.com")
+      ChoosePartnerPage.isCurrentPage(driver) must equalTo(false)
+    }
   }
 }
 

@@ -33,6 +33,12 @@ class CourtsTablePageSpec extends Specification {
       val booking = Booking(dateTime = DateTime.now().withHourOfDay(17), court = 15)
       courtsTablePage.canBook(booking) must equalTo(true)
     }
+    
+    "recognize it's page" in new CourtsTablePageSpecBeforeAfter {
+      CourtsTablePage.isCurrentPage(driver) must equalTo(true)
+      driver.get("http://www.google.com")
+      CourtsTablePage.isCurrentPage(driver) must equalTo(false)
+    }
   }
 }
 

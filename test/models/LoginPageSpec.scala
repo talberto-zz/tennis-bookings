@@ -16,19 +16,21 @@ class LoginPageSpec extends Specification {
 
   "The 'LoginPage' page" should {
     "get the LoginPage when get is called" in new LoginPageSpecBeforeAfter {
-      loginPage.get
-      
       loginPage.driver.getCurrentUrl must equalTo(url)
     }
     
     "get the CourtsTable when doLogin is called" in new LoginPageSpecBeforeAfter {  
       val destUrl = conf.getString("courtsTablePage.url").get
       
-      // Get the page
-      loginPage.get
       loginPage.doLogin
       
       loginPage.driver.getCurrentUrl must equalTo(destUrl)
+    }
+    
+    "recognize it's page" in new LoginPageSpecBeforeAfter {
+      LoginPage.isCurrentPage(driver) must equalTo(true)
+      driver.get("http://www.google.com")
+      LoginPage.isCurrentPage(driver) must equalTo(false)
     }
   }
 }
@@ -43,6 +45,8 @@ trait LoginPageSpecBeforeAfter extends BeforeAfter {
   val driver: WebDriver = new ChromeDriver
   val loginPage = LoginPage(driver, LoginPageConf(conf))
   
+  // Get the page
+  driver.get(url)
   def before = {
     
   }

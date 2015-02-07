@@ -1,14 +1,16 @@
 package models
 
-import play.api.Logger
-import play.api.Configuration
-
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 
-class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageConf) {
+import play.api.Logger
+import play.api.Configuration
+
+import scala.collection.JavaConversions._
+
+class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageConf) extends Page {
   val logger: Logger = Logger(this.getClass)
   val actions: Actions = new Actions(driver)
   
@@ -42,10 +44,16 @@ class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageCo
     logger.debug(s"Searching element with selector [$selector]")
     driver.findElement(By.id(selector))
   }
+  
+  def isCurrentPage: Boolean = CourtsTablePage.isCurrentPage(driver)
 }
 
-object CourtsTablePage {
+object CourtsTablePage extends PageObject {
   def apply(driver: WebDriver, conf: CourtsTablePageConf) = new CourtsTablePage(driver, conf)
+  
+  def isCurrentPage(driver: WebDriver): Boolean = {
+    driver.findElements(By.id("workpage")).nonEmpty
+  }
 }
 
 case class CourtsTablePageConf(val url: String)
