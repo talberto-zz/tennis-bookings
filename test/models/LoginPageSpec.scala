@@ -8,9 +8,6 @@ import org.specs2.runner._
 
 import org.junit.runner.RunWith
 
-import play.api.Configuration
-import play.api.test.FakeApplication
-
 @RunWith(classOf[JUnitRunner])
 class LoginPageSpec extends Specification {
 
@@ -20,11 +17,9 @@ class LoginPageSpec extends Specification {
     }
     
     "get the CourtsTable when doLogin is called" in new LoginPageSpecBeforeAfter {  
-      val destUrl = conf.getString("courtsTablePage.url").get
-      
       loginPage.doLogin
       
-      loginPage.driver.getCurrentUrl must equalTo(destUrl)
+      CourtsTablePage.isCurrentPage(driver) must equalTo(true)
     }
     
     "recognize it's page" in new LoginPageSpecBeforeAfter {
@@ -37,13 +32,12 @@ class LoginPageSpec extends Specification {
 
 trait LoginPageSpecBeforeAfter extends BeforeAfter {
   // Setup the LoginPage 
-  val app = FakeApplication()
-  val conf: Configuration = app.configuration
-  val url = conf.getString("loginPage.url").get
-  val username = conf.getString("loginPage.username").get
-  val password = conf.getString("loginPage.password").get
+  val url = "http://localhost:8080/login/"
+  val username = "TORODR"
+  val password = "289G"
   val driver: WebDriver = new ChromeDriver
-  val loginPage = LoginPage(driver, LoginPageConf(conf))
+  val conf = LoginPageConf(url, username, password)
+  val loginPage = LoginPage(driver, conf)
   
   // Get the page
   driver.get(url)

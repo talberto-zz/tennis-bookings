@@ -16,12 +16,16 @@ class TennisSite {
   self: WithConfiguration =>
   
   val logger = Logger(getClass)
-  lazy val driver: WebDriver = new ChromeDriver
-  driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+  lazy val driver: WebDriver = {
+    val tmpDriver = new ChromeDriver
+    tmpDriver.manage().timeouts().pageLoadTimeout(pageLoadTimeout, TimeUnit.SECONDS);
+    tmpDriver.manage().timeouts().implicitlyWait(implicitTimeout, TimeUnit.SECONDS);
+    tmpDriver
+  }
   lazy val loginPage = LoginPage(driver, loginPageConf)
   lazy val bookingsReminderPage = BookingsReminderPage(driver, bookingsReminderPageConf)
   lazy val courtsTablePage = CourtsTablePage(driver, courtsTablePageConf)
-  lazy val choosePartnerPage = ChoosePartnerPage(driver, choosePartnerPageConf)
+  lazy val bookingDetailsPage = BookingDetailsPage(driver, choosePartnerPageConf)
   
   def book(booking: Booking) = {
     logger.trace(s"book($booking)")
@@ -32,7 +36,7 @@ class TennisSite {
       bookingsReminderPage.goToCourtsTable
     }
     courtsTablePage.book(booking)
-    choosePartnerPage.choose
+    bookingDetailsPage.choosePartner
   }
 }
 
@@ -49,8 +53,10 @@ object TennisSite {
 
 trait WithConfiguration {
   def conf: Configuration
+  val implicitTimeout = conf.getInt("tennisSite.implicitTimeout").get
+  val pageLoadTimeout = conf.getInt("tennisSite.pageLoadTimeout").get
   val loginPageConf: LoginPageConf = LoginPageConf(conf)
   val bookingsReminderPageConf: BookingsReminderPageConf = BookingsReminderPageConf(conf)
   val courtsTablePageConf: CourtsTablePageConf = CourtsTablePageConf(conf)
-  val choosePartnerPageConf: ChoosePartnerPageConf = ChoosePartnerPageConf(conf)
+  val choosePartnerPageConf: BookingDetailsPageConf = BookingDetailsPageConf(conf)
 }

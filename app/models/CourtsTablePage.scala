@@ -69,6 +69,7 @@ class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageCo
    * Determines if we can book or not
    */
   def canBook(booking: Booking) = {
+    logger.trace(s"canBook($booking)")
     val courtElem = findCourt(booking)
     val backGroundColor = courtElem.getCssValue("background-color")
     logger.debug(s"background-color = [$backGroundColor]")
@@ -98,8 +99,8 @@ object CourtsTablePage extends PageObject {
   }
 }
 
-case class CourtsTablePageConf(val url: String)
+case class CourtsTablePageConf()
 
 object CourtsTablePageConf {
-  def apply(conf: Configuration): CourtsTablePageConf = CourtsTablePageConf(conf.getString("courtsTablePage.url").get)
+  def apply(conf: Configuration): CourtsTablePageConf = CourtsTablePageConf()
 }

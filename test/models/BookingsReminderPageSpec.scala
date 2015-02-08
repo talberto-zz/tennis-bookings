@@ -10,9 +10,6 @@ import org.specs2.runner._
 
 import org.junit.runner.RunWith
 
-import play.api.Configuration
-import play.api.test.FakeApplication
-
 @RunWith(classOf[JUnitRunner])
 class BookingsReminderPageSpec extends Specification {
 
@@ -31,15 +28,13 @@ class BookingsReminderPageSpec extends Specification {
 }
 
 trait BookingsReminderPageSpecBeforeAfter extends After {
-  // Setup the LoginPage 
-  val app = FakeApplication()
-  val appConf: Configuration = app.configuration
-  val conf = BookingsReminderPageConf(appConf)
+  val url = "http://localhost:8080/bookings_reminder/"
+  val conf = BookingsReminderPageConf()
   val driver: WebDriver = new ChromeDriver
   
   // Navigate to the page
   val bookingsReminderPage = BookingsReminderPage(driver, conf)
-  driver.get(conf.url)
+  driver.get(url)
   def after = {
     driver.close
   }

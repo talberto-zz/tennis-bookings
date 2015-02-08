@@ -10,18 +10,15 @@ import org.specs2.runner._
 
 import org.junit.runner.RunWith
 
-import play.api.Configuration
-import play.api.test.FakeApplication
-
 @RunWith(classOf[JUnitRunner])
 class CourtsTablePageSpec extends Specification {
   
   "The 'CourtsTablePage'" should {
-    "open the 'ChoosePartnerPage' when clicked twice over a court" in new CourtsTablePageSpecBeforeAfter {
+    "open the 'BookingDetailsPage' when clicked twice over a court" in new CourtsTablePageSpecBeforeAfter {
       val booking = Booking(dateTime = DateTime.now().withHourOfDay(17), court = 15)
       courtsTablePage.book(booking)
       
-      courtsTablePage.driver.getCurrentUrl must equalTo(destUrl)
+      BookingDetailsPage.isCurrentPage(driver) must equalTo(true)
     }
     
     "'canBook' returns false when the court is already booked" in new CourtsTablePageSpecBeforeAfter {
@@ -49,16 +46,13 @@ class CourtsTablePageSpec extends Specification {
 }
 
 trait CourtsTablePageSpecBeforeAfter extends After {
-  // Setup the LoginPage 
-  val app = FakeApplication()
-  val conf: Configuration = app.configuration
-  val url = conf.getString("courtsTablePage.url").get
-  val destUrl = conf.getString("choosePartnerPage.url").get
+  val url = "http://localhost:8080/courts_table/"
+  val conf = CourtsTablePageConf()
   val driver: WebDriver = new ChromeDriver
   
   // Navigate to the page
   driver.get(url)
-  val courtsTablePage = CourtsTablePage(driver, CourtsTablePageConf(conf))
+  val courtsTablePage = CourtsTablePage(driver, conf)
   
   def after = {
     courtsTablePage.driver.close

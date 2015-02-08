@@ -31,8 +31,8 @@ object BookingsReminderPage extends PageObject {
   }
 }
 
-case class BookingsReminderPageConf(val url: String)
+case class BookingsReminderPageConf()
 
 object BookingsReminderPageConf {
-  def apply(conf: Configuration): BookingsReminderPageConf = BookingsReminderPageConf(conf.getString("bookingsReminderPage.url").get)
+  def apply(conf: Configuration): BookingsReminderPageConf = BookingsReminderPageConf()
 }

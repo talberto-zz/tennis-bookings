@@ -9,14 +9,14 @@ import play.api.Configuration
 
 import scala.collection.JavaConversions._
 
-class ChoosePartnerPage private(val driver: WebDriver, val conf: ChoosePartnerPageConf) extends Page {
+class BookingDetailsPage private(val driver: WebDriver, val conf: BookingDetailsPageConf) extends Page {
 
   val logger = Logger(getClass)
   /**
    * Choose the default partner (Benedicte)
    */
-  def choose = {
-    logger.trace(s"choose()")
+  def choosePartner = {
+    logger.trace(s"choosePartner()")
     // Open the select first
     val select = driver.findElement(By.id("CHAMP_TYPE_1-button"))
     select.click
@@ -26,19 +26,25 @@ class ChoosePartnerPage private(val driver: WebDriver, val conf: ChoosePartnerPa
     partners(4).click
   }
   
-  def isCurrentPage = ChoosePartnerPage.isCurrentPage(driver)
+  def confirmBooking = {
+    logger.trace(s"confirmBooking()")
+    val buttons = driver.findElements(By.cssSelector("#workpage button"))
+    buttons(1).click
+  }
+  
+  def isCurrentPage = BookingDetailsPage.isCurrentPage(driver)
 }
 
-object ChoosePartnerPage extends PageObject {
-  def apply(driver: WebDriver, conf: ChoosePartnerPageConf) = new ChoosePartnerPage(driver, conf)
+object BookingDetailsPage extends PageObject {
+  def apply(driver: WebDriver, conf: BookingDetailsPageConf) = new BookingDetailsPage(driver, conf)
   
   def isCurrentPage(driver: WebDriver): Boolean = {
     driver.findElements(By.id("CHAMP_TYPE_1-button")).nonEmpty
   }
 }
 
-case class ChoosePartnerPageConf(val url: String)
+case class BookingDetailsPageConf()
 
-object ChoosePartnerPageConf {
-  def apply(conf: Configuration): ChoosePartnerPageConf = ChoosePartnerPageConf(conf.getString("choosePartnerPage.url").get)
+object BookingDetailsPageConf {
+  def apply(conf: Configuration): BookingDetailsPageConf = BookingDetailsPageConf()
 }
