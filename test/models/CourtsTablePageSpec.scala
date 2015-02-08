@@ -42,7 +42,7 @@ class CourtsTablePageSpec extends Specification {
     
     "throws exception when bookings limit is reached" in new CourtsTablePageSpecBeforeAfter {
       driver.get("http://localhost:8080/bookings_limit_reached")
-      val booking = Booking(dateTime = DateTime.now().withHourOfDay(17), court = 15)
+      val booking = Booking(dateTime = DateTime.now().withHourOfDay(20), court = 15)
       courtsTablePage.book(booking) must throwA[BookingsLimitReachedException]
     }
   }

@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
 import org.joda.time.DateTime
+import org.joda.time.Days
 
 import play.api.Logger
 import play.api.Play
@@ -50,7 +51,7 @@ class BookingsManager(val bookingsRepository: BookingsRepository, val bookingsSc
     bookingsRepository.find(id)   
   }
   
-  protected def canBookToday(booking: Booking) = LocalDate.now.plusDays(3).isAfter(booking.date)
+  protected def canBookToday(booking: Booking) = TennisSite.canBookToday(booking)
   
   protected def tryToBook(booking: Booking) = {
     logger.trace(s"tryToBook($booking)")

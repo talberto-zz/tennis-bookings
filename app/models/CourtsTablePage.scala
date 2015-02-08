@@ -27,6 +27,9 @@ class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageCo
     require(daysFromTodayToBooking.isGreaterThan(Days.ZERO.minus(Days.ONE)), "The booking date has already passed");
     // Move to the corresponding day
     moveDays(daysFromTodayToBooking.getDays())
+    if(!canBook(booking)) {
+      throw new AlreadyBookedException(booking)
+    }
     val courtElem = findCourt(booking)
     // Make double click
     logger.debug(s"Double clicking on element [identified by css selector [$courtElem]")
@@ -38,7 +41,7 @@ class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageCo
   }
   
   def moveDays(days: Int) {
-    logger.trace(s",moveDays($days)")
+    logger.trace(s"moveDays($days)")
     if(days == 1) {
       goTomorrow
     } else if(days == -1) {
@@ -46,10 +49,10 @@ class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageCo
     } else if(days > 0) {
       goTomorrow
       moveDays(days - 1)
-    } else {
+    } else if(days < 0) {
       goYesterday
       moveDays(days + 1)
-    }
+    } 
   }
   
   protected def goTomorrow = {

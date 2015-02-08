@@ -16,6 +16,7 @@ class TennisSite {
   val logger = Logger(getClass)
   lazy val driver: WebDriver = new ChromeDriver
   lazy val loginPage = LoginPage(driver, loginPageConf)
+  lazy val bookingsReminderPage = BookingsReminderPage(driver, bookingsReminderPageConf)
   lazy val courtsTablePage = CourtsTablePage(driver, courtsTablePageConf)
   lazy val choosePartnerPage = ChoosePartnerPage(driver, choosePartnerPageConf)
   
@@ -23,6 +24,9 @@ class TennisSite {
     logger.trace(s"book($booking)")
     loginPage.get
     loginPage.doLogin
+    if(bookingsReminderPage.isCurrentPage) {
+      bookingsReminderPage.goToCourtsTable
+    }
     courtsTablePage.book(booking)
     choosePartnerPage.choose
   }
@@ -35,11 +39,14 @@ object TennisSite {
   val DaysOfDifference = Days.TWO
   
   def apply(configuration: Configuration): TennisSite = new TennisSite with WithConfiguration { lazy val conf = configuration }
+  
+  def canBookToday(booking: Booking) = Days.daysBetween(LocalDate.now, booking.date).isLessThan(TennisSite.DaysOfDifference.plus(Days.ONE))
 }
 
 trait WithConfiguration {
   def conf: Configuration
   val loginPageConf: LoginPageConf = LoginPageConf(conf)
+  val bookingsReminderPageConf: BookingsReminderPageConf = BookingsReminderPageConf(conf)
   val courtsTablePageConf: CourtsTablePageConf = CourtsTablePageConf(conf)
   val choosePartnerPageConf: ChoosePartnerPageConf = ChoosePartnerPageConf(conf)
 }
