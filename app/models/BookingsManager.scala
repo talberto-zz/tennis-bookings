@@ -16,14 +16,13 @@ import play.api.Play
 
 import scala.concurrent.duration._
 
-class BookingsManager(val bookingsRepository: BookingsRepository, val bookingsScheduler: BookingsScheduler, val tennisSite: TennisSite) {
+class BookingsManager(val bookingsRepository: BookingsRepository, val tennisSite: TennisSite) {
   
   // Constants  
   val logger = Logger(getClass)
   val actorSystem = ActorSystem()
   val scheduler: Scheduler = actorSystem.scheduler
   implicit val executor = actorSystem.dispatcher
-  val scheduledTasks: scala.collection.mutable.Map[Long, Cancellable] = scala.collection.concurrent.TrieMap()
   
   /**
    * Transforms a org.joda.time.Duration into a scala.concurrent.duration.FiniteDuration
@@ -32,8 +31,8 @@ class BookingsManager(val bookingsRepository: BookingsRepository, val bookingsSc
   
   def book(booking: Booking): Unit = {
     logger.trace(s"book($booking)")
-    bookingsRepository.save(booking)
-    scheduleBooking(booking)
+    val newBooking = bookingsRepository.save(booking)
+    scheduleBooking(newBooking)
   }
   
   def cancelBooking(id: Long) = {
@@ -53,37 +52,50 @@ class BookingsManager(val bookingsRepository: BookingsRepository, val bookingsSc
   
   protected def canBookToday(booking: Booking) = TennisSite.canBookToday(booking)
   
+  protected def canBookNow(booking: Booking) = canBookToday(booking) && LocalTime.now.isAfter(TennisSite.BookingStartingHour)
+  
   protected def tryToBook(booking: Booking) = {
     logger.trace(s"tryToBook($booking)")
-    logger.debug(s"Trying to book today [$booking]")
-    tennisSite.book(booking)
+    try {
+      tennisSite.book(booking)
+      bookingsRepository.update(booking.copy(status = Booking.Status.SUCCESSFULLY_BOOKED))
+    } catch {
+      case e: AlreadyBookedException => {
+        logger.error(s"Error trying to book [$booking]", e)
+        bookingsRepository.update(booking.copy(status = Booking.Status.ALREADY_BOOKED))
+      }
+      
+      case e: BookingsLimitReachedException => {
+        logger.error(s"Error trying to book [$booking]", e)
+        bookingsRepository.update(booking.copy(status = Booking.Status.BOOKINGS_LIMIT_REACHED))
+      }
+      
+      case e: Throwable => {
+        logger.error(s"Unexpected error trying to book [$booking]", e) 
+        bookingsRepository.update(booking.copy(status = Booking.Status.FAILED))
+      }
+    }
   }
   
   protected def scheduleBooking(booking: Booking) = {
     logger.trace(s"scheduleBooking($booking)")
-    if(canBookToday(booking)) {
-      val task = scheduler.scheduleOnce(
-        delay = Duration(5, SECONDS),
-        runnable = new Runnable {
-          def run = {
-            tryToBook(booking)
-          }
-        })
-      scheduledTasks += booking.id -> task
+    val duration = new org.joda.time.Duration(DateTime.now, whenToTryToBook(booking))
+    val task = scheduler.scheduleOnce(
+      delay = duration,
+      runnable = new Runnable {
+        def run = {
+          tryToBook(booking)
+        }
+      })
+    bookingsRepository.update(booking.copy(status = Booking.Status.SCHEDULED))
+  }
+  
+  protected def whenToTryToBook(booking: Booking) = {
+    logger.trace(s"whenToTryToBook($booking)")
+    if(canBookNow(booking)) {
+      DateTime.now.plusSeconds(10)
     } else {
-      logger.debug(s"Will attempt to schedule later [$booking]")
-      val today = LocalDate.now()
-      val whenToTryToBook = today.plusDays(TennisSite.DaysOfDifference.getDays()).toDateTime(TennisSite.BookingStartingHour.minusMinutes(5))
-      val duration = new org.joda.time.Duration(DateTime.now, whenToTryToBook)
-      val task = scheduler.schedule(
-        initialDelay = duration,
-        interval = Duration(30, SECONDS),
-        runnable = new Runnable {
-          def run = {
-            tryToBook(booking)
-          }
-        })
-      scheduledTasks += booking.id -> task
+      LocalDate.now().plusDays(TennisSite.DaysOfDifference.getDays()).toDateTime(TennisSite.BookingStartingHour) 
     }
   }
 }
@@ -92,35 +104,11 @@ object BookingsManager {
   def apply() = {
     val tennisSite = TennisSite(Play.current.configuration)
     val bookingsRepository = BookingsRepository()
-    val bookingsScheduler = BookingsScheduler()
-    new BookingsManager(bookingsRepository, bookingsScheduler, tennisSite)
+    new BookingsManager(bookingsRepository, tennisSite)
   }
   
-  def apply(bookingsRepository: BookingsRepository, bookingsScheduler: BookingsScheduler, tennisSite: TennisSite) = {
-    new BookingsManager(bookingsRepository, bookingsScheduler, tennisSite)
+  def apply(bookingsRepository: BookingsRepository, tennisSite: TennisSite) = {
+    new BookingsManager(bookingsRepository, tennisSite)
   }
 }
 
-class BookingsScheduler {
-  val logger = Logger(getClass)
-  val actorSystem = ActorSystem()
-  val scheduler: Scheduler = actorSystem.scheduler
-  implicit val executor = actorSystem.dispatcher
-  
-  def scheduleBooking(bookingsManager: BookingsManager, booking: Booking) = {
-    logger.debug(s"Will attempt to schedule later ($booking)")
-    def task = new Runnable {
-      def run = {
-        bookingsManager.book(booking)
-      }
-    }
-    scheduler.schedule(
-        initialDelay = Duration(5, MINUTES),
-        interval = Duration(5, MINUTES),
-        runnable = task)
-  }
-}
-
-object BookingsScheduler {
-  def apply() = new BookingsScheduler
-}

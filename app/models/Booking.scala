@@ -8,7 +8,7 @@ import org.joda.time.DateTime
 
 import scala.language.implicitConversions // remove implicit conversion warnings
 
-case class Booking(id: Long = null.asInstanceOf[Long], dateTime: DateTime, court: Int, status: Booking.Status.Status = Booking.Status.PENDING) {
+case class Booking(id: Long = null.asInstanceOf[Long], dateTime: DateTime, court: Int, status: Booking.Status.Status = Booking.Status.NEW) {
   val date = dateTime.toLocalDate()
   val time = dateTime.toLocalTime()
 }
@@ -22,7 +22,13 @@ object Booking {
    */
   object Status extends Enumeration {
     type Status = Value
-    val PENDING, RESERVED = Value
+    val 
+      NEW, 
+      SCHEDULED, 
+      FAILED, 
+      ALREADY_BOOKED, 
+      BOOKINGS_LIMIT_REACHED,
+      SUCCESSFULLY_BOOKED = Value
     
     def unapply(v: Int) = Status(v)
   }

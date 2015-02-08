@@ -28,7 +28,7 @@ object BookingsController extends Controller {
       "id" -> ignored(null.asInstanceOf[Long]), // Set the id always null Long
       "dateTime" -> jodaDate("yyyy-MM-dd HH:mm"),
       "court" -> number,
-      "status" -> ignored(Booking.Status.PENDING) // Set the status always to PENDING
+      "status" -> ignored(Booking.Status.NEW) // Set the status always to PENDING
     )(Booking.apply)(Booking.unapply)
   )
   

@@ -8,6 +8,7 @@
 	
 	@form(action = routes.BookingsController.create(), 'id -> "newBooking") {
 		@inputDateTime(booking("dateTime"), 'required -> true)
+		@inputText(booking("court"), 'required -> true)
 		<button>Submit</button>
 	}
 	<a href="@routes.BookingsController.index()">Back</a>

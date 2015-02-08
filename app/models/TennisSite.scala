@@ -1,5 +1,7 @@
 package models
 
+import java.util.concurrent.TimeUnit
+
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
 import org.joda.time.Days
@@ -15,6 +17,7 @@ class TennisSite {
   
   val logger = Logger(getClass)
   lazy val driver: WebDriver = new ChromeDriver
+  driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
   lazy val loginPage = LoginPage(driver, loginPageConf)
   lazy val bookingsReminderPage = BookingsReminderPage(driver, bookingsReminderPageConf)
   lazy val courtsTablePage = CourtsTablePage(driver, courtsTablePageConf)
@@ -24,6 +27,7 @@ class TennisSite {
     logger.trace(s"book($booking)")
     loginPage.get
     loginPage.doLogin
+    
     if(bookingsReminderPage.isCurrentPage) {
       bookingsReminderPage.goToCourtsTable
     }

@@ -17,7 +17,10 @@ class BookingsReminderPage private(val driver: WebDriver, val conf: BookingsRemi
     buttons(1).click
   }
   
-  def isCurrentPage = BookingsReminderPage.isCurrentPage(driver)
+  def isCurrentPage = {
+    logger.trace(s"isCurrentPage()")
+    BookingsReminderPage.isCurrentPage(driver)
+  }
 }
 
 object BookingsReminderPage extends PageObject {
