@@ -48,8 +48,7 @@ object TennisSite {
 
 trait WithConfiguration {
   def conf: Configuration
-  val implicitTimeout = conf.getInt("tennisSite.implicitTimeout").get
-  val pageLoadTimeout = conf.getInt("tennisSite.pageLoadTimeout").get
+
   val loginPageConf: LoginPageConf = LoginPageConf(conf)
   val bookingsReminderPageConf: BookingsReminderPageConf = BookingsReminderPageConf(conf)
   val courtsTablePageConf: CourtsTablePageConf = CourtsTablePageConf(conf)
