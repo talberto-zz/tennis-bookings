@@ -16,12 +16,7 @@ class TennisSite {
   self: WithConfiguration =>
   
   val logger = Logger(getClass)
-  lazy val driver: WebDriver = {
-    val tmpDriver = new ChromeDriver
-    tmpDriver.manage().timeouts().pageLoadTimeout(pageLoadTimeout, TimeUnit.SECONDS);
-    tmpDriver.manage().timeouts().implicitlyWait(implicitTimeout, TimeUnit.SECONDS);
-    tmpDriver
-  }
+  lazy val driver: WebDriver = WebDriverFactory.createDriver(conf)
   lazy val loginPage = LoginPage(driver, loginPageConf)
   lazy val bookingsReminderPage = BookingsReminderPage(driver, bookingsReminderPageConf)
   lazy val courtsTablePage = CourtsTablePage(driver, courtsTablePageConf)
