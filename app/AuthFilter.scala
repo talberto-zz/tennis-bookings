@@ -29,7 +29,7 @@ class AuthFilter extends Filter {
       val (user, pass) = decodeBasicAuth(basicAuth)
       
       (user, pass) match {
-        case ("tennis", "tennis") => nextFilter(requestHeader)
+        case (username, password) => nextFilter(requestHeader)
         case _ => unauthResult
       }
     }.getOrElse(unauthResult)
