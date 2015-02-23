@@ -79,7 +79,7 @@ class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageCo
   protected def findCourt(booking: Booking): WebElement = {
     logger.trace(s"findCourt($booking)")
     logger.debug(s"Trying find the court [${booking.court}] at hour [${booking.time}]")
-    val courtNo = booking.court + 1
+    val courtNo = booking.court
     val hourNo = booking.time.getHourOfDay()
     
     // Find the box representing the court
