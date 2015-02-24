@@ -11,6 +11,23 @@
     <a href="#" onclick="$('#delete_@id').submit();">Delete</a>
 }
 
+@contextualStatus(status: models.Booking.Status.Status) = @{
+    status match {
+       case models.Booking.Status.SUCCESSFULLY_BOOKED => "success"
+       case models.Booking.Status.NEW | models.Booking.Status.SCHEDULED => ""
+       case _ => "warning"
+    }
+}
+
+@displayBooking(booking: models.Booking) = {
+    <tr class="@contextualStatus(booking.status)">
+        <td>@booking.status</td>
+        <td>@booking.dateTime</td>
+        <td>@booking.court</td>
+        <td>@delete(booking.id)</td>
+    </tr>
+}
+
 @main("Bookings") {
 <div class="panel panel-primary">
     <div class="panel-heading">
@@ -22,16 +39,13 @@
                 <tr>
                     <th>Status</th>
                     <th>Date</th>
+                    <th>Court</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @for(booking <- bookings) {
-                <tr>
-                    <td>@booking.status</td>
-                    <td>@booking.dateTime</td>
-                    <td>@delete(booking.id)</td>
-                </tr>
+                    @displayBooking(booking)
                 }
             </tbody>
         </table>

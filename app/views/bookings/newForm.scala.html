@@ -7,7 +7,8 @@
 @main("New Booking") {
 	
 	@form(action = routes.BookingsController.create(), 'id -> "newBooking") {
-		@inputDateTime(booking("dateTime"), 'required -> true)
+		@inputDate(booking("date"), 'required -> true)
+		@inputTime(booking("time"), 'required -> true)
 		@inputText(booking("court"), 'required -> true)
 		<button>Submit</button>
 	}
