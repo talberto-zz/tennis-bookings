@@ -1,5 +1,7 @@
 package controllers
 
+import controllers.Forms._
+
 import models.Booking
 import models.BookingsManager
 
@@ -26,10 +28,11 @@ object BookingsController extends Controller {
   val bookingForm: Form[Booking] = Form(
     mapping(
       "id" -> ignored(null.asInstanceOf[Long]), // Set the id always null Long
-      "dateTime" -> jodaDate("yyyy-MM-dd HH:mm"),
+      "date" -> jodaLocalDate,
+      "time" -> jodaLocalTime("HH:mm"),
       "court" -> number,
-      "status" -> ignored(Booking.Status.NEW) // Set the status always to PENDING
-    )(Booking.apply)(Booking.unapply)
+      "status" -> ignored(Booking.Status.NEW) // Set the status always to NEW
+    )(Booking.fromDateAndTime)(Booking.unapplyDateAndTime)
   )
   
   val idForm = Form(

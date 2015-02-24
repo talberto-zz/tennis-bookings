@@ -22,7 +22,8 @@
 @displayBooking(booking: models.Booking) = {
     <tr class="@contextualStatus(booking.status)">
         <td>@booking.status</td>
-        <td>@booking.dateTime</td>
+        <td>@booking.date</td>
+        <td>@booking.time</td>
         <td>@booking.court</td>
         <td>@delete(booking.id)</td>
     </tr>
@@ -39,6 +40,7 @@
                 <tr>
                     <th>Status</th>
                     <th>Date</th>
+                    <th>Time</th>
                     <th>Court</th>
                     <th>Actions</th>
                 </tr>

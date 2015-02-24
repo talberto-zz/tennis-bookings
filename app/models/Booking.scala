@@ -17,6 +17,10 @@ object Booking {
   
   def fromDateAndTime(id: Long, date: LocalDate, time: LocalTime, court: Int, status: Booking.Status.Status): Booking = Booking(id, date.toDateTime(time), court, status)
   
+  def unapplyDateAndTime(booking: Booking): Option[(Long, LocalDate, LocalTime, Int, models.Booking.Status.Value)] = {
+    Some(booking.id, booking.date, booking.time, booking.court, booking.status)
+  }
+  
   /**
    * Status for a Booking
    */
