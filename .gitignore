@@ -14,5 +14,6 @@ dist
 /RUNNING_PID
 /.settings
 /.cache
-
 /bin/
+/public/
+/test/
