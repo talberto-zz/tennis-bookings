@@ -4,8 +4,10 @@ import controllers.Forms._
 
 import models.Booking
 import models.BookingsManager
+import models.AppConfiguration._
 
 import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 
 import play.api._
 import play.api.data._
@@ -23,11 +25,14 @@ import views.html._
 object BookingsController extends Controller {
 
   val logger: Logger = Logger(this.getClass)
+  
   val bookingsManager = BookingsManager()
   
   val bookingForm: Form[Booking] = Form(
     mapping(
       "id" -> ignored(null.asInstanceOf[Long]), // Set the id always null Long
+      "creationDate" -> ignored(DateTime.now(ParisTimeZone)),
+      "lastModified" -> ignored(DateTime.now(ParisTimeZone)),
       "date" -> jodaLocalDate,
       "time" -> jodaLocalTime("HH:mm"),
       "court" -> number,

@@ -23,7 +23,7 @@
     <tr class="@contextualStatus(booking.status)">
         <td>@booking.status</td>
         <td>@booking.date</td>
-        <td>@booking.time</td>
+        <td>@booking.time.toString("HH:mm")</td>
         <td>@booking.court</td>
         <td>@delete(booking.id)</td>
     </tr>
@@ -35,23 +35,24 @@
         <h2 class="panel-title">Bookings List</h2>
     </div>
     <div class="panel-body">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Court</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for(booking <- bookings) {
-                    @displayBooking(booking)
-                }
-            </tbody>
-        </table>
-
+    	<div class="table-responsive">
+	    	<table class="table table-striped">
+	            <thead>
+	                <tr>
+	                    <th>Status</th>
+	                    <th>Date</th>
+	                    <th>Time</th>
+	                    <th>Court</th>
+	                    <th>Actions</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                @for(booking <- bookings) {
+	                    @displayBooking(booking)
+	                }
+	            </tbody>
+	        </table>
+    	</div>
         <a href="@routes.BookingsController.newForm()">New</a>
     </div>
 </div>

@@ -1,12 +1,17 @@
 package models
 
-import scala.language.implicitConversions // remove implicit conversion warnings
+import SlickConverters._
+
+import org.joda.time.DateTime
+
 import play.api.db._
 import play.api.Play.current
 import play.api.Logger
-import scala.slick.driver.PostgresDriver.simple._
-import org.joda.time.DateTime
+
 import java.sql.Timestamp
+
+import scala.language.implicitConversions // remove implicit conversion warnings
+import scala.slick.driver.PostgresDriver.simple._
 
 /**
  * @author tomas
@@ -16,11 +21,6 @@ class Bookings(tag: Tag) extends Table[Booking](tag, "bookings") {
    * Column converters for use with the type Booking
    */
   object Converters {
-    implicit val DateTimeColumnType = MappedColumnType.base[DateTime, Timestamp](
-        { dateTime => new Timestamp(dateTime.getMillis) },
-        { timestamp => new DateTime(timestamp) }
-      )
-    
     implicit val requestStatusColumnType = MappedColumnType.base[Booking.Status.Status, Int](
         { status => status.id },
         { integer => Booking.Status(integer) }
@@ -30,10 +30,12 @@ class Bookings(tag: Tag) extends Table[Booking](tag, "bookings") {
   import Converters._
   
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def creationDate = column[DateTime]("creationDate")
+  def lastModified = column[DateTime]("lastModified")
   def dateTime = column[DateTime]("dateTime")
   def court = column[Int]("court")
   def status = column[Booking.Status.Status]("status")
-  def * = (id, dateTime, court, status) <> ((Booking.apply _).tupled, Booking.unapply)
+  def * = (id, creationDate, lastModified, dateTime, court, status) <> ((Booking.apply _).tupled, Booking.unapply)
 }
 
 /**
