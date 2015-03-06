@@ -1,6 +1,7 @@
 package models
 
 import SlickConverters._
+import Sandbox.session
 
 import org.joda.time.DateTime
 
@@ -41,28 +42,16 @@ class Bookings(tag: Tag) extends Table[Booking](tag, "bookings") {
 /**
  * Repository for Booking
  */
-class BookingsRepository {
-  /**
-   * Holds the session for use in the repository
-   */
-  object Sandbox {
-    val ds = DB.getDataSource()
-    implicit def session = Database.forDataSource(ds).createSession
-  }
-  
-  import Sandbox.session
-  
+class BookingsRepository extends Repository[Booking] {  
   val logger: Logger = Logger(this.getClass)
   
-  private val bookings = TableQuery[Bookings]
-  
-  private val requestById = Compiled((id: ConstColumn[Long]) => bookings filter(_.id === id))
+  private val bookings = Queries.bookings
 
   /**
    * Retrieve all the Booking's
    */
   def list: Seq[Booking] = {
-    logger.trace("findAll()")
+    logger.trace("list()")
     bookings.list
   }
   

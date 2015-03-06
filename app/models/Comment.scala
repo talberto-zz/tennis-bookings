@@ -2,4 +2,4 @@ package models
 
 import org.joda.time.DateTime
 
-case class Comment(id: Long, creationDate: DateTime, comment: String)
+case class Comment(id: Long, creationDate: DateTime, text: String, bookingId: Long)
