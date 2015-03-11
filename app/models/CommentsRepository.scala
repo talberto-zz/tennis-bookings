@@ -46,6 +46,11 @@ class CommentsRepository extends Repository[Comment] {
     comments.filter(_.id === id).firstOption
   }
   
+  def findByBookingId(bookingId: Long): Seq[Comment] = {
+    logger.trace(s"findByBookingId(${bookingId}")
+    comments.filter(_.bookingId === bookingId).list
+  }
+  
   def save(comment: Comment): Comment = {
     logger.trace(s"save(${comment}")
     (comments returning comments.map(_.id) into ((c, id) => (c.copy(id=id)))) += comment
