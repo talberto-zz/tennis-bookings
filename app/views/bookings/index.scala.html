@@ -20,7 +20,7 @@
         <td>@booking.date</td>
         <td>@booking.time.toString("HH:mm")</td>
         <td>@booking.court</td>
-        <td><a href="">Details</a></td>
+        <td><a href="@routes.BookingsController.show(booking.id)">Details</a></td>
     </tr>
 }
 
