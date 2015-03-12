@@ -52,7 +52,7 @@ class BookingsRepository extends Repository[Booking] {
    */
   def list: Seq[Booking] = {
     logger.trace("list()")
-    bookings.list
+    bookings.sortBy(_.creationDate.asc).list
   }
   
   def find(id: Long): Option[Booking] = {

@@ -40,7 +40,7 @@ class CommentsRepository extends Repository[Comment] {
    */
   def list: Seq[Comment] = {
     logger.trace("list()")
-    comments.list
+    comments.sortBy(_.creationDate.asc).list
   }
   
   def find(id: Long): Option[Comment] = {
@@ -50,7 +50,7 @@ class CommentsRepository extends Repository[Comment] {
   
   def findByBookingId(bookingId: Long): Seq[Comment] = {
     logger.trace(s"findByBookingId(${bookingId}")
-    comments.filter(_.bookingId === bookingId).list
+    comments.filter(_.bookingId === bookingId).sortBy(_.creationDate.asc).list
   }
   
   def save(comment: Comment): Comment = {
