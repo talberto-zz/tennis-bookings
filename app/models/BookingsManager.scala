@@ -4,6 +4,8 @@ import akka.actor.ActorSystem
 import akka.actor.Scheduler
 import akka.actor.Cancellable
 
+import models.AppConfiguration._
+
 import java.util.concurrent.TimeUnit
 
 import org.joda.time.LocalDate
@@ -95,7 +97,7 @@ class BookingsManager(val bookingsRepository: BookingsRepository, val commentsRe
         }
       })
     bookingsRepository.update(booking.copy(status = Booking.Status.SCHEDULED))
-    commentsRepository.addCommentToBooking(booking.id, s"The booking has been scheduled for execution on ${when}")
+    commentsRepository.addCommentToBooking(booking.id, s"The booking has been scheduled for execution on ${DateTimeFormatter.print(when)}")
   }
   
   protected def whenToTryToBook(booking: Booking) = {
@@ -103,7 +105,7 @@ class BookingsManager(val bookingsRepository: BookingsRepository, val commentsRe
     if(canBookNow(booking)) {
       DateTime.now.plusSeconds(10)
     } else {
-      LocalDate.now().plusDays(TennisSite.DaysOfDifference.getDays()).toDateTime(TennisSite.BookingStartingHour) 
+      LocalDate.now().plusDays(TennisSite.DaysOfDifference.getDays()).toDateTime(TennisSite.BookingStartingHour, ParisTimeZone) 
     }
   }
 }
