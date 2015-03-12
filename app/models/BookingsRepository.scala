@@ -1,7 +1,7 @@
 package models
 
 import models.SlickConverters._
-import models.Sandbox.session
+import models.Sandbox.db
 
 import org.joda.time.DateTime
 
@@ -52,27 +52,37 @@ class BookingsRepository extends Repository[Booking] {
    */
   def list: Seq[Booking] = {
     logger.trace("list()")
-    bookings.sortBy(_.creationDate.asc).list
+    db.withSession { implicit session => 
+      bookings.sortBy(_.creationDate.asc).list
+    }
   }
   
   def find(id: Long): Option[Booking] = {
     logger.trace(s"findById($id)")
-    bookings filter(_.id === id) firstOption
+    db.withSession { implicit session => 
+      bookings filter(_.id === id) firstOption
+    }
   }
   
   def save(booking: Booking): Booking = {
     logger.trace(s"save($booking)")
-    (bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=id)))) += booking
+    db.withSession { implicit session => 
+      (bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=id)))) += booking
+    }
   }
   
   def update(booking: Booking) = {
     logger.trace(s"update($booking)")
-    bookings.filter(_.id === booking.id).map(b => (b.dateTime, b.status)).update(booking.dateTime, booking.status)
+    db.withSession { implicit session => 
+      bookings.filter(_.id === booking.id).map(b => (b.dateTime, b.status)).update(booking.dateTime, booking.status)
+    }
   }
   
   def delete(id: Long) = {
     logger.trace(s"delete($id)")
-    bookings.filter(_.id === id).delete
+    db.withSession { implicit session => 
+      bookings.filter(_.id === id).delete
+    }
   }
 }
 

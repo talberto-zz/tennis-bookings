@@ -10,5 +10,5 @@ import scala.slick.driver.PostgresDriver.simple._
    */
 object Sandbox {
   val ds = DB.getDataSource()
-  implicit def session = Database.forDataSource(ds).createSession
+  val db = Database.forDataSource(ds)
 }

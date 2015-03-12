@@ -1,7 +1,7 @@
 package models
 
 import models.SlickConverters._
-import models.Sandbox.session
+import models.Sandbox.db
 
 import models.AppConfiguration._
 
@@ -40,32 +40,44 @@ class CommentsRepository extends Repository[Comment] {
    */
   def list: Seq[Comment] = {
     logger.trace("list()")
-    comments.sortBy(_.creationDate.asc).list
+    db.withSession { implicit session => 
+      comments.sortBy(_.creationDate.asc).list
+    }
   }
   
   def find(id: Long): Option[Comment] = {
     logger.trace(s"find(${id}")
-    comments.filter(_.id === id).firstOption
+    db.withSession { implicit session => 
+      comments.filter(_.id === id).firstOption
+    }
   }
   
   def findByBookingId(bookingId: Long): Seq[Comment] = {
     logger.trace(s"findByBookingId(${bookingId}")
-    comments.filter(_.bookingId === bookingId).sortBy(_.creationDate.asc).list
+    db.withSession { implicit session => 
+      comments.filter(_.bookingId === bookingId).sortBy(_.creationDate.asc).list
+    }
   }
   
   def save(comment: Comment): Comment = {
     logger.trace(s"save(${comment}")
-    (comments returning comments.map(_.id) into ((c, id) => (c.copy(id=id)))) += comment
+    db.withSession { implicit session => 
+      (comments returning comments.map(_.id) into ((c, id) => (c.copy(id=id)))) += comment
+    }
   }
   
   def update(comment: Comment) = {
     logger.trace(s"update(${comment}")
-    comments.filter(_.id === comment.id).update(comment)
+    db.withSession { implicit session => 
+      comments.filter(_.id === comment.id).update(comment)
+    }
   }
   
   def delete(id: Long) = {
     logger.trace(s"delete(${id}")
-    comments.filter(_.id === id).delete
+    db.withSession { implicit session => 
+      comments.filter(_.id === id).delete
+    }
   }
   
   def addCommentToBooking(bookingId: Long, text: String) = {
