@@ -1,0 +1,46 @@
+@* show Template File *@
+@import models.Booking
+@import models.Comment
+@import helper._
+
+@(booking: Booking, comments: Seq[Comment])
+
+@displayComment(comment: Comment) = {
+    <tr>
+        <td>@comment.creationDate</td>
+        <td>@comment.text</td>
+    </tr>
+}
+
+@main("Bookings") {
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h2 class="panel-title">Booking Details</h2>
+    </div>
+    <div class="panel-body">
+        <div>
+            <p>Status: @booking.status</p>
+            <p>Creation date: @booking.creationDate</p>
+            <p>Last modified: @booking.lastModified</p>
+            <p>Date: @booking.date</p>
+            <p>Time: @booking.time.toString("HH:mm")</p>
+            <p>Court: @booking.court</p>
+        </div>
+    	<div class="table-responsive">
+	    	<table class="table table-striped">
+	            <thead>
+	                <tr>
+	                    <th>Creation Date</th>
+	                    <th>Text</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                @for(comment <- comments) {
+	                    @displayComment(comment)
+	                }
+	            </tbody>
+	        </table>
+    	</div>
+    </div>
+</div>
+}

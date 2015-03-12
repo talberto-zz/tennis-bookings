@@ -2,6 +2,8 @@ package controllers
 
 import controllers.Forms._
 
+import models.Comment
+import models.CommentsRepository
 import models.Booking
 import models.BookingsManager
 import models.AppConfiguration._
@@ -27,6 +29,7 @@ object BookingsController extends Controller {
   val logger: Logger = Logger(this.getClass)
   
   val bookingsManager = BookingsManager()
+  val commentsRepository = CommentsRepository()
   
   val bookingForm: Form[Booking] = Form(
     mapping(
@@ -36,7 +39,7 @@ object BookingsController extends Controller {
       "date" -> jodaLocalDate,
       "time" -> jodaLocalTime("HH:mm"),
       "court" -> number,
-      "status" -> ignored(Booking.Status.NEW) // Set the status always to NEW
+      "status" -> ignored(Booking.Status.SUBMITTED) // Set the status always to NEW
     )(Booking.fromDateAndTime)(Booking.unapplyDateAndTime)
   )
   
@@ -75,5 +78,12 @@ object BookingsController extends Controller {
     logger.debug(s"Received booking deletion request for id [$id]")
     bookingsManager.cancelBooking(id)
     Redirect(routes.BookingsController.index())
+  }
+  
+  def show(id: Long) = Action {
+    val booking = bookingsManager.find(id).get
+    val comments = commentsRepository.findByBookingId(booking.id)
+    
+    Ok(views.html.bookings.show(booking, comments))
   }
 }

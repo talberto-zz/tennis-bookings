@@ -3,6 +3,8 @@ package models
 import SlickConverters._
 import Sandbox.session
 
+import models.AppConfiguration._
+
 import org.joda.time.DateTime
 
 import play.api.db._
@@ -65,8 +67,14 @@ class CommentsRepository extends Repository[Comment] {
     logger.trace(s"delete(${id}")
     comments.filter(_.id === id).delete
   }
+  
+  def addCommentToBooking(bookingId: Long, text: String) = {
+    logger.trace(s"addCommentToBooking(${bookingId}, ${text})")
+    val comment = Comment(null.asInstanceOf[Long], DateTime.now(ParisTimeZone), text, bookingId)
+    save(comment)
+  }
 }
 
 object CommentsRepository {
-  def apply = new CommentsRepository
+  def apply() = new CommentsRepository
 }

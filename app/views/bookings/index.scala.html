@@ -4,17 +4,10 @@
 
 @(bookings: Seq[Booking])
 
-@delete(id: Long) = {
-    @form(action = routes.BookingsController.delete(id), 'id -> s"delete_$id") {
-        <input type="hidden" name="id" value="@id" />
-    }
-    <a href="#" onclick="$('#delete_@id').submit();">Delete</a>
-}
-
 @contextualStatus(status: models.Booking.Status.Status) = @{
     status match {
        case models.Booking.Status.SUCCESSFULLY_BOOKED => "success"
-       case models.Booking.Status.NEW | models.Booking.Status.SCHEDULED => ""
+       case models.Booking.Status.SUBMITTED | models.Booking.Status.SCHEDULED => ""
        case _ => "warning"
     }
 }
@@ -22,10 +15,12 @@
 @displayBooking(booking: models.Booking) = {
     <tr class="@contextualStatus(booking.status)">
         <td>@booking.status</td>
+        <td>@booking.creationDate</td>
+        <td>@booking.lastModified</td>
         <td>@booking.date</td>
         <td>@booking.time.toString("HH:mm")</td>
         <td>@booking.court</td>
-        <td>@delete(booking.id)</td>
+        <td><a href="">Details</a></td>
     </tr>
 }
 
@@ -40,6 +35,8 @@
 	            <thead>
 	                <tr>
 	                    <th>Status</th>
+                        <th>Creation date</th>
+                        <th>Last modified</th>
 	                    <th>Date</th>
 	                    <th>Time</th>
 	                    <th>Court</th>
