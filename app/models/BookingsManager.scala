@@ -105,7 +105,7 @@ class BookingsManager(val bookingsRepository: BookingsRepository, val commentsRe
     if(canBookNow(booking)) {
       DateTime.now.plusSeconds(10)
     } else {
-      LocalDate.now().plusDays(TennisSite.DaysOfDifference.getDays()).toDateTime(TennisSite.BookingStartingHour, ParisTimeZone) 
+      booking.date.minusDays(TennisSite.DaysOfDifference.getDays()).toDateTime(TennisSite.BookingStartingHour, ParisTimeZone) 
     }
   }
 }

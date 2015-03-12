@@ -46,35 +46,35 @@ class CommentsRepository extends Repository[Comment] {
   }
   
   def find(id: Long): Option[Comment] = {
-    logger.trace(s"find(${id}")
+    logger.trace(s"find(${id})")
     db.withSession { implicit session => 
       comments.filter(_.id === id).firstOption
     }
   }
   
   def findByBookingId(bookingId: Long): Seq[Comment] = {
-    logger.trace(s"findByBookingId(${bookingId}")
+    logger.trace(s"findByBookingId(${bookingId})")
     db.withSession { implicit session => 
       comments.filter(_.bookingId === bookingId).sortBy(_.creationDate.asc).list
     }
   }
   
   def save(comment: Comment): Comment = {
-    logger.trace(s"save(${comment}")
+    logger.trace(s"save(${comment})")
     db.withSession { implicit session => 
       (comments returning comments.map(_.id) into ((c, id) => (c.copy(id=id)))) += comment
     }
   }
   
   def update(comment: Comment) = {
-    logger.trace(s"update(${comment}")
+    logger.trace(s"update(${comment})")
     db.withSession { implicit session => 
       comments.filter(_.id === comment.id).update(comment)
     }
   }
   
   def delete(id: Long) = {
-    logger.trace(s"delete(${id}")
+    logger.trace(s"delete(${id})")
     db.withSession { implicit session => 
       comments.filter(_.id === id).delete
     }
