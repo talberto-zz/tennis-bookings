@@ -1,4 +1,5 @@
 @* show Template File *@
+@import models.AppConfiguration._
 @import models.Booking
 @import models.Comment
 @import helper._
@@ -7,7 +8,7 @@
 
 @displayComment(comment: Comment) = {
     <tr>
-        <td>@comment.creationDate</td>
+        <td>@DateTimeFormatter.print(comment.creationDate)</td>
         <td>@comment.text</td>
     </tr>
 }
@@ -19,13 +20,26 @@
     </div>
     <div class="panel-body">
         <div>
-            <p>Status: @booking.status</p>
-            <p>Creation date: @booking.creationDate</p>
-            <p>Last modified: @booking.lastModified</p>
-            <p>Date: @booking.date</p>
-            <p>Time: @booking.time.toString("HH:mm")</p>
-            <p>Court: @booking.court</p>
+            <dl class="dl-horizontal">
+                <dt>Status:</dt>
+                <dd>@booking.status</dd>
+                <dt>Creation date:</dt>
+                <dd>@DateTimeFormatter.print(booking.creationDate)</dd>
+                <dt>Last modified:</dt>
+                <dd>@DateTimeFormatter.print(booking.lastModified)</dd>
+                <dt>Date:</dt>
+                <dd>@DateFormatter.print(booking.date)</dd>
+                <dt>Time:</dt>
+                <dd>@HourFormatter.print(booking.time)</dd>
+                <dt>Court:</dt>
+                <dd>@booking.court</dd>
+            </dl>
         </div>
+    </div>
+    <div class="panel-heading">
+        <h2 class="panel-title">Booking Comments</h2>
+    </div>
+    <div class="panel-body">
     	<div class="table-responsive">
 	    	<table class="table table-striped">
 	            <thead>

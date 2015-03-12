@@ -1,4 +1,5 @@
 @* index Template File *@
+@import models.AppConfiguration._
 @import models.Booking
 @import helper._
 
@@ -15,10 +16,10 @@
 @displayBooking(booking: models.Booking) = {
     <tr class="@contextualStatus(booking.status)">
         <td>@booking.status</td>
-        <td>@booking.creationDate</td>
-        <td>@booking.lastModified</td>
-        <td>@booking.date</td>
-        <td>@booking.time.toString("HH:mm")</td>
+        <td>@DateTimeFormatter.print(booking.creationDate)</td>
+        <td>@DateTimeFormatter.print(booking.lastModified)</td>
+        <td>@DateFormatter.print(booking.date)</td>
+        <td>@HourFormatter.print(booking.time)</td>
         <td>@booking.court</td>
         <td><a href="@routes.BookingsController.show(booking.id)">Details</a></td>
     </tr>

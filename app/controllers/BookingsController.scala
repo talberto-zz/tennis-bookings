@@ -37,7 +37,7 @@ object BookingsController extends Controller {
       "creationDate" -> ignored(DateTime.now(ParisTimeZone)),
       "lastModified" -> ignored(DateTime.now(ParisTimeZone)),
       "date" -> jodaLocalDate,
-      "time" -> jodaLocalTime("HH:mm", ParisTimeZone),
+      "time" -> jodaLocalTime(HourPattern, ParisTimeZone),
       "court" -> number,
       "status" -> ignored(Booking.Status.SUBMITTED) // Set the status always to NEW
     )(Booking.fromDateAndTime)(Booking.unapplyDateAndTime)
