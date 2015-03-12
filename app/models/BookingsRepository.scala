@@ -1,7 +1,7 @@
 package models
 
-import SlickConverters._
-import Sandbox.session
+import models.SlickConverters._
+import models.Sandbox.session
 
 import org.joda.time.DateTime
 
