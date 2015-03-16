@@ -3,8 +3,11 @@ package controllers
 import controllers.Forms._
 
 import models.Comment
+import models.WithCommentsRepository
 import models.CommentsRepository
 import models.Booking
+import models.WithBookingsManager
+import models.AppRegistry
 import models.BookingsManager
 import models.AppConfiguration._
 
@@ -24,12 +27,10 @@ import views.html._
 /**
  * Controller for Booking's
  */
-object BookingsController extends Controller {
-
-  val logger: Logger = Logger(this.getClass)
+class BookingsController extends Controller {
+  self: WithBookingsManager with WithCommentsRepository =>
   
-  val bookingsManager = BookingsManager()
-  val commentsRepository = CommentsRepository()
+  val logger: Logger = Logger(this.getClass)
   
   val bookingForm: Form[Booking] = Form(
     mapping(
@@ -86,4 +87,8 @@ object BookingsController extends Controller {
     
     Ok(views.html.bookings.show(booking, comments))
   }
+}
+
+object BookingsController extends BookingsController with AppRegistry {
+  
 }

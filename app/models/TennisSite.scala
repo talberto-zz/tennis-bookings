@@ -13,7 +13,7 @@ import play.api.Logger
 import play.api.Configuration
 
 class TennisSite {
-  self: WithConfiguration =>
+  self: WithPlayConfiguration =>
   
   val logger = Logger(getClass)
   lazy val driver: WebDriver = WebDriverFactory.createDriver(conf)
@@ -41,12 +41,10 @@ object TennisSite {
   /** Number of days, starting from today, that we can book */
   val DaysOfDifference = Days.TWO
   
-  def apply(configuration: Configuration): TennisSite = new TennisSite with WithConfiguration { lazy val conf = configuration }
-  
   def canBookToday(booking: Booking) = Days.daysBetween(LocalDate.now, booking.date).isLessThan(TennisSite.DaysOfDifference.plus(Days.ONE))
 }
 
-trait WithConfiguration {
+trait WithPlayConfiguration {
   def conf: Configuration
 
   val loginPageConf: LoginPageConf = LoginPageConf(conf)

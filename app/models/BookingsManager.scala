@@ -18,7 +18,8 @@ import play.api.Play
 
 import scala.concurrent.duration._
 
-class BookingsManager(val bookingsRepository: BookingsRepository, val commentsRepository: CommentsRepository, val tennisSite: TennisSite) {
+class BookingsManager {
+  self: WithBookingsRepository with WithCommentsRepository with WithTennisSite =>
   
   // Constants  
   val logger = Logger(getClass)
@@ -110,16 +111,18 @@ class BookingsManager(val bookingsRepository: BookingsRepository, val commentsRe
   }
 }
 
-object BookingsManager {
-  def apply() = {
-    val tennisSite = TennisSite(Play.current.configuration)
-    val bookingsRepository = BookingsRepository()
-    val commentsRepository = CommentsRepository()
-    new BookingsManager(bookingsRepository, commentsRepository, tennisSite)
-  }
-  
-  def apply(bookingsRepository: BookingsRepository, commentsRepository: CommentsRepository, tennisSite: TennisSite) = {
-    new BookingsManager(bookingsRepository, commentsRepository, tennisSite)
-  }
+trait WithBookingsRepository {
+  def bookingsRepository: BookingsRepository
 }
 
+trait WithBookingsManager {
+  def bookingsManager: BookingsManager
+}
+
+trait WithCommentsRepository {
+  def commentsRepository: CommentsRepository
+}
+
+trait WithTennisSite {
+  def tennisSite: TennisSite
+}
