@@ -8,6 +8,9 @@ import models.AppConfiguration._
 
 import java.util.concurrent.TimeUnit
 
+import javax.inject.Inject
+import javax.inject.Singleton
+
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
 import org.joda.time.DateTime
@@ -18,7 +21,8 @@ import play.api.Play
 
 import scala.concurrent.duration._
 
-class BookingsManager(val bookingsRepository: BookingsRepository, val commentsRepository: CommentsRepository, val tennisSite: TennisSite) {
+@Singleton
+class BookingsManager @Inject() (val bookingsRepository: BookingsRepository, val commentsRepository: CommentsRepository, val tennisSite: TennisSite) {
   
   // Constants  
   val logger = Logger(getClass)
@@ -107,19 +111,6 @@ class BookingsManager(val bookingsRepository: BookingsRepository, val commentsRe
     } else {
       booking.date.minusDays(TennisSite.DaysOfDifference.getDays()).toDateTime(TennisSite.BookingStartingHour, ParisTimeZone) 
     }
-  }
-}
-
-object BookingsManager {
-  def apply() = {
-    val tennisSite = TennisSite(Play.current.configuration)
-    val bookingsRepository = BookingsRepository()
-    val commentsRepository = CommentsRepository()
-    new BookingsManager(bookingsRepository, commentsRepository, tennisSite)
-  }
-  
-  def apply(bookingsRepository: BookingsRepository, commentsRepository: CommentsRepository, tennisSite: TennisSite) = {
-    new BookingsManager(bookingsRepository, commentsRepository, tennisSite)
   }
 }
 

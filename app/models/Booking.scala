@@ -10,7 +10,7 @@ import org.joda.time.DateTime
 
 import scala.language.implicitConversions // remove implicit conversion warnings
 
-case class Booking(id: Long = null.asInstanceOf[Long], creationDate: DateTime, lastModified: DateTime, dateTime: DateTime, court: Int, status: Booking.Status.Status = Booking.Status.SUBMITTED) {
+case class Booking(id: Long = null.asInstanceOf[Long], creationDate: DateTime = DateTime.now(), lastModified: DateTime = DateTime.now(), dateTime: DateTime, court: Int, status: Booking.Status.Status = Booking.Status.SUBMITTED) {
   val date = dateTime.toLocalDate()
   val time = dateTime.toLocalTime()
 }

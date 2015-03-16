@@ -11,6 +11,8 @@ import play.api.Logger
 
 import java.sql.Timestamp
 
+import javax.inject.Singleton
+
 import scala.language.implicitConversions // remove implicit conversion warnings
 import scala.slick.driver.PostgresDriver.simple._
 
@@ -42,6 +44,7 @@ class Bookings(tag: Tag) extends Table[Booking](tag, "bookings") {
 /**
  * Repository for Booking
  */
+@Singleton
 class BookingsRepository extends Repository[Booking] {  
   val logger: Logger = Logger(this.getClass)
   
@@ -84,8 +87,4 @@ class BookingsRepository extends Repository[Booking] {
       bookings.filter(_.id === id).delete
     }
   }
-}
-
-object BookingsRepository {
-  def apply() = new BookingsRepository
 }

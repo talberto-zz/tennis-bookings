@@ -2,6 +2,9 @@ package models
 
 import java.util.concurrent.TimeUnit
 
+import javax.inject.Inject
+import javax.inject.Singleton
+
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
 import org.joda.time.Days
@@ -12,15 +15,15 @@ import org.openqa.selenium.chrome.ChromeDriver
 import play.api.Logger
 import play.api.Configuration
 
-class TennisSite {
-  self: WithConfiguration =>
+@Singleton
+class TennisSite @Inject() (val configuration: Configuration)  {
   
   val logger = Logger(getClass)
-  lazy val driver: WebDriver = WebDriverFactory.createDriver(conf)
-  lazy val loginPage = LoginPage(driver, loginPageConf)
-  lazy val bookingsReminderPage = BookingsReminderPage(driver, bookingsReminderPageConf)
-  lazy val courtsTablePage = CourtsTablePage(driver, courtsTablePageConf)
-  lazy val bookingDetailsPage = BookingDetailsPage(driver, choosePartnerPageConf)
+  lazy val driver: WebDriver = WebDriverFactory.createDriver(configuration)
+  lazy val loginPage = LoginPage(driver, LoginPageConf(configuration))
+  lazy val bookingsReminderPage = BookingsReminderPage(driver, BookingsReminderPageConf(configuration))
+  lazy val courtsTablePage = CourtsTablePage(driver, CourtsTablePageConf(configuration))
+  lazy val bookingDetailsPage = BookingDetailsPage(driver, BookingDetailsPageConf(configuration))
   
   def book(booking: Booking) = {
     logger.trace(s"book($booking)")
@@ -41,7 +44,7 @@ object TennisSite {
   /** Number of days, starting from today, that we can book */
   val DaysOfDifference = Days.TWO
   
-  def apply(configuration: Configuration): TennisSite = new TennisSite with WithConfiguration { lazy val conf = configuration }
+  def apply(configuration: Configuration): TennisSite = new TennisSite(configuration)
   
   def canBookToday(booking: Booking) = Days.daysBetween(LocalDate.now, booking.date).isLessThan(TennisSite.DaysOfDifference.plus(Days.ONE))
 }

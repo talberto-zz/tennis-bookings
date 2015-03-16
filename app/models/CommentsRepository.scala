@@ -13,6 +13,8 @@ import play.api.Logger
 
 import java.sql.Timestamp
 
+import javax.inject.Singleton
+
 import scala.language.implicitConversions // remove implicit conversion warnings
 import scala.slick.driver.PostgresDriver.simple._
 
@@ -30,6 +32,7 @@ class Comments(tag: Tag) extends Table[Comment](tag, "comments") {
   def booking = foreignKey("booking", bookingId, Queries.bookings)(_.id)
 }
 
+@Singleton
 class CommentsRepository extends Repository[Comment] {
   val logger: Logger = Logger(this.getClass)
   
@@ -85,8 +88,4 @@ class CommentsRepository extends Repository[Comment] {
     val comment = Comment(null.asInstanceOf[Long], DateTime.now(ParisTimeZone), text, bookingId)
     save(comment)
   }
-}
-
-object CommentsRepository {
-  def apply() = new CommentsRepository
 }

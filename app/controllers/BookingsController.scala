@@ -21,15 +21,16 @@ import scala.util.control.Exception.catching
 
 import views.html._
 
+import javax.inject.Inject
+import javax.inject.Singleton
+
 /**
  * Controller for Booking's
  */
-object BookingsController extends Controller {
+@Singleton
+class BookingsController @Inject() (val bookingsManager: BookingsManager, val commentsRepository: CommentsRepository) extends Controller {
 
   val logger: Logger = Logger(this.getClass)
-  
-  val bookingsManager = BookingsManager()
-  val commentsRepository = CommentsRepository()
   
   val bookingForm: Form[Booking] = Form(
     mapping(

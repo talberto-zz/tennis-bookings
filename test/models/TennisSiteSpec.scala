@@ -28,7 +28,7 @@ trait TennisSiteSpecBeforeAfter extends BeforeAfter {
   val app = FakeApplication()
   val appConf: Configuration = app.configuration
   val loginUrl = "http://localhost:8080/login/"
-  val tennisSite: TennisSite = new TennisSite with WithTestConfiguration { lazy val conf: Configuration = appConf}
+  val tennisSite: TennisSite = new TennisSite(appConf)
   
   def before = {
     
