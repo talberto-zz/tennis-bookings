@@ -57,7 +57,7 @@ class BookingsManager @Inject() (val bookingsRepository: BookingsRepository, val
     bookingsRepository.find(id)   
   }
   
-  protected def canBookToday(booking: Booking) = TennisSite.canBookToday(booking)
+  protected def canBookToday(booking: Booking) = tennisSite.canBookToday(booking)
   
   protected def canBookNow(booking: Booking) = canBookToday(booking) && LocalTime.now.isAfter(TennisSite.BookingStartingHour)
   

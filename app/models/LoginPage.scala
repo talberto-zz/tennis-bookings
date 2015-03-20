@@ -2,12 +2,16 @@ package models
 
 import org.openqa.selenium._
 
+import javax.inject.Inject
+import javax.inject.Singleton
+
 import play.api.Logger
 import play.api.Configuration
 
 import scala.collection.JavaConversions._
 
-class LoginPage private(val driver: WebDriver, val conf: LoginPageConf) extends Page {
+@Singleton
+class LoginPage @Inject() (val driver: WebDriver, val conf: LoginPageConf) extends Page {
   
   val logger = Logger(getClass)
   
@@ -27,22 +31,12 @@ class LoginPage private(val driver: WebDriver, val conf: LoginPageConf) extends 
     driver.findElement(By.id("btn_identification")).click()
   }
   
-  def isCurrentPage = LoginPage.isCurrentPage(driver)
+  def isCurrentPage = driver.findElements(By.id("btn_identification")).nonEmpty
 }
 
-object LoginPage extends PageObject {
-  def apply(driver: WebDriver, conf: LoginPageConf) = new LoginPage(driver, conf)
-  
-  def isCurrentPage(driver: WebDriver): Boolean = {
-    driver.findElements(By.id("btn_identification")).nonEmpty
-  }
-}
-
-case class LoginPageConf(val url: String, val username: String, val password: String)
-
-object LoginPageConf {
-  def apply(conf: Configuration): LoginPageConf = LoginPageConf(
-        conf.getString("loginPage.url").get,
-        conf.getString("loginPage.username").get,
-        conf.getString("loginPage.password").get)
+@Singleton
+class LoginPageConf @Inject() (conf: Configuration) {
+  val url: String = conf.getString("loginPage.url").get
+  val username: String = conf.getString("loginPage.username").get
+  val password: String = conf.getString("loginPage.password").get
 }

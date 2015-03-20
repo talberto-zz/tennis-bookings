@@ -1,5 +1,8 @@
 package models
 
+import javax.inject.Inject
+import javax.inject.Singleton
+
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
 import org.joda.time.Days
@@ -14,7 +17,8 @@ import play.api.Configuration
 
 import scala.collection.JavaConversions._
 
-class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageConf) extends Page {
+@Singleton
+class CourtsTablePage @Inject() (val driver: WebDriver, val conf: CourtsTablePageConf) extends Page {
   val logger: Logger = Logger(this.getClass)
   val actions: Actions = new Actions(driver)
   
@@ -88,19 +92,10 @@ class CourtsTablePage private(val driver: WebDriver, val conf: CourtsTablePageCo
     driver.findElement(By.id(selector))
   }
   
-  def isCurrentPage: Boolean = CourtsTablePage.isCurrentPage(driver)
+  def isCurrentPage: Boolean = driver.findElements(By.id("workpage")).nonEmpty
 }
 
-object CourtsTablePage extends PageObject {
-  def apply(driver: WebDriver, conf: CourtsTablePageConf) = new CourtsTablePage(driver, conf)
+@Singleton
+class CourtsTablePageConf @Inject() (conf: Configuration) {
   
-  def isCurrentPage(driver: WebDriver): Boolean = {
-    driver.findElements(By.id("workpage")).nonEmpty
-  }
-}
-
-case class CourtsTablePageConf()
-
-object CourtsTablePageConf {
-  def apply(conf: Configuration): CourtsTablePageConf = CourtsTablePageConf()
 }

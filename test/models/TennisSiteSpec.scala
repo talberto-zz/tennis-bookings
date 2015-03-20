@@ -27,8 +27,9 @@ class TennisSiteSpec extends Specification {
 trait TennisSiteSpecBeforeAfter extends BeforeAfter {
   val app = FakeApplication()
   val appConf: Configuration = app.configuration
+  val webDriverFactory = new DefaultWebDriverFactory(appConf)
   val loginUrl = "http://localhost:8080/login/"
-  val tennisSite: TennisSite = new TennisSite(appConf)
+  val tennisSite: TennisSite = new TennisSite(webDriverFactory, appConf)
   
   def before = {
     
@@ -37,8 +38,4 @@ trait TennisSiteSpecBeforeAfter extends BeforeAfter {
   def after = {
     tennisSite.driver.close
   }
-}
-
-trait WithTestConfiguration extends WithConfiguration {
-  override val loginPageConf: LoginPageConf = LoginPageConf("http://localhost:8080/login/", "TORODR", "289G")
 }

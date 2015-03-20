@@ -1,5 +1,8 @@
 package models
 
+import javax.inject.Inject
+import javax.inject.Singleton
+
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
@@ -9,7 +12,8 @@ import play.api.Configuration
 
 import scala.collection.JavaConversions._
 
-class BookingDetailsPage private(val driver: WebDriver, val conf: BookingDetailsPageConf) extends Page {
+@Singleton
+class BookingDetailsPage @Inject() (val driver: WebDriver, val conf: BookingDetailsPageConf) extends Page {
 
   val logger = Logger(getClass)
   /**
@@ -32,19 +36,10 @@ class BookingDetailsPage private(val driver: WebDriver, val conf: BookingDetails
     buttons(1).click
   }
   
-  def isCurrentPage = BookingDetailsPage.isCurrentPage(driver)
+  def isCurrentPage = driver.findElements(By.id("CHAMP_TYPE_1-button")).nonEmpty
 }
 
-object BookingDetailsPage extends PageObject {
-  def apply(driver: WebDriver, conf: BookingDetailsPageConf) = new BookingDetailsPage(driver, conf)
+@Singleton
+class BookingDetailsPageConf @Inject() (conf: Configuration) {
   
-  def isCurrentPage(driver: WebDriver): Boolean = {
-    driver.findElements(By.id("CHAMP_TYPE_1-button")).nonEmpty
-  }
-}
-
-case class BookingDetailsPageConf()
-
-object BookingDetailsPageConf {
-  def apply(conf: Configuration): BookingDetailsPageConf = BookingDetailsPageConf()
 }

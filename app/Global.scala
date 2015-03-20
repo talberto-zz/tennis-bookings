@@ -1,9 +1,11 @@
+import models.BookingsApp
+
 import play.api._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc._
 import play.api.mvc.Results._
+
 import scala.concurrent.Future
-import models.BookingsApp
 
 object Global extends WithFilters(new AuthFilter()) {
   

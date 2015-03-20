@@ -1,5 +1,8 @@
 package models
 
+import javax.inject.Inject
+import javax.inject.Singleton
+
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.By
 
@@ -8,7 +11,8 @@ import play.api.Logger
 
 import scala.collection.JavaConversions._
 
-class BookingsReminderPage private(val driver: WebDriver, val conf: BookingsReminderPageConf) extends Page {
+@Singleton
+class BookingsReminderPage @Inject() (val driver: WebDriver, val conf: BookingsReminderPageConf) extends Page {
   val logger: Logger = Logger(this.getClass)
   
   def goToCourtsTable = {
@@ -19,20 +23,11 @@ class BookingsReminderPage private(val driver: WebDriver, val conf: BookingsRemi
   
   def isCurrentPage = {
     logger.trace(s"isCurrentPage()")
-    BookingsReminderPage.isCurrentPage(driver)
-  }
-}
-
-object BookingsReminderPage extends PageObject {
-  def apply(driver: WebDriver, conf: BookingsReminderPageConf) = new BookingsReminderPage(driver, conf)
-  
-  def isCurrentPage(driver: WebDriver): Boolean = {
     driver.findElements(By.id("liste_reservation")).nonEmpty
   }
 }
 
-case class BookingsReminderPageConf()
-
-object BookingsReminderPageConf {
-  def apply(conf: Configuration): BookingsReminderPageConf = BookingsReminderPageConf()
+@Singleton
+class BookingsReminderPageConf @Inject() (conf: Configuration) {
+  
 }
