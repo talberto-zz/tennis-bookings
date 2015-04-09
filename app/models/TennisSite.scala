@@ -20,15 +20,18 @@ class TennisSite @Inject() (val loginPage: LoginPage, val bookingsReminderPage: 
   val logger = Logger(getClass)
   
   def book(booking: Booking) = {
-    logger.trace(s"book($booking)")
-    loginPage.get
-    loginPage.doLogin
-    
-    if(bookingsReminderPage.isCurrentPage) {
-      bookingsReminderPage.goToCourtsTable
+    this.synchronized {
+      logger.trace(s"book($booking)")
+      loginPage.get
+      loginPage.doLogin
+
+      if (bookingsReminderPage.isCurrentPage) {
+        bookingsReminderPage.goToCourtsTable
+      }
+
+      courtsTablePage.book(booking)
+      bookingDetailsPage.choosePartner
     }
-    courtsTablePage.book(booking)
-    bookingDetailsPage.choosePartner
   }
   
   def canBookToday(booking: Booking) = Days.daysBetween(LocalDate.now, booking.date).isLessThan(TennisSite.DaysOfDifference.plus(Days.ONE))
