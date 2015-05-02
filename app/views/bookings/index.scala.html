@@ -1,19 +1,19 @@
 @* index Template File *@
 @import models.AppConfiguration._
-@import models.Booking
+@import models.db.Booking
 @import helper._
 
 @(bookings: Seq[Booking])
 
-@contextualStatus(status: models.Booking.Status.Status) = @{
+@contextualStatus(status: Booking.Status.Status) = @{
     status match {
-       case models.Booking.Status.SUCCESSFULLY_BOOKED => "success"
-       case models.Booking.Status.SUBMITTED | models.Booking.Status.SCHEDULED => ""
+       case db.Booking.Status.SUCCESSFULLY_BOOKED => "success"
+       case db.Booking.Status.SUBMITTED | db.Booking.Status.SCHEDULED => ""
        case _ => "warning"
     }
 }
 
-@displayBooking(booking: models.Booking) = {
+@displayBooking(booking: Booking) = {
     <tr class="@contextualStatus(booking.status)">
         <td>@booking.status</td>
         <td>@DateTimeFormatter.print(booking.creationDate)</td>

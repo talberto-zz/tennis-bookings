@@ -1,15 +1,11 @@
-package models
+package models.site
 
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.chrome.ChromeDriver
-
+import models.db.Booking
+import models.site.DefaultWebDriverFactory
+import org.joda.time.DateTime
+import org.junit.runner.RunWith
 import org.specs2.mutable._
 import org.specs2.runner._
-
-import org.joda.time.DateTime
-
-import org.junit.runner.RunWith
-
 import play.api.Configuration
 import play.api.test.FakeApplication
 

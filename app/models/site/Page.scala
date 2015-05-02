@@ -1,4 +1,4 @@
-package models
+package models.site
 
 import org.openqa.selenium.WebDriver
 

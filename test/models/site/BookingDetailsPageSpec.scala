@@ -1,12 +1,10 @@
-package models
-
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.chrome.ChromeDriver
-
-import org.specs2.mutable._
-import org.specs2.runner._
+package models.site
 
 import org.junit.runner.RunWith
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.chrome.ChromeDriver
+import org.specs2.mutable._
+import org.specs2.runner._
 
 @RunWith(classOf[JUnitRunner])
 class BookingDetailsPageSpec extends Specification {

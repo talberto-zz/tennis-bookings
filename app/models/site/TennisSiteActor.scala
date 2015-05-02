@@ -1,11 +1,9 @@
-package models
+package models.site
 
 import akka.actor.Actor
-
-import net.codingwell.scalaguice.InjectorExtensions._
-
 import models.BookingsApp.injector
-
+import models.db.Booking
+import net.codingwell.scalaguice.InjectorExtensions._
 import play.api.Logger
 
 object TennisSiteActor {

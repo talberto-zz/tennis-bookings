@@ -1,4 +1,6 @@
-package models
+package models.site
+
+import models.db.Booking
 
 class AlreadyBookedException(msg: String = "", throwable: Throwable = null) extends RuntimeException(msg, throwable) {
 

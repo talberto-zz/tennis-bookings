@@ -1,28 +1,15 @@
 package controllers
 
+import javax.inject.{Inject, Singleton}
+
 import controllers.Forms._
-
-import models.Comment
-import models.CommentsRepository
-import models.Booking
-import models.BookingsManager
 import models.AppConfiguration._
-
+import models.db.{Booking, BookingsManager, CommentsRepository}
 import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
-
 import play.api._
-import play.api.data._
-import play.api.data.format.Formatter
 import play.api.data.Forms._
+import play.api.data._
 import play.api.mvc._
-
-import scala.util.control.Exception.catching
-
-import views.html._
-
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Controller for Booking's

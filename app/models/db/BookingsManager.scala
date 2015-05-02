@@ -1,23 +1,12 @@
-package models
+package models.db
 
-import akka.actor.ActorSystem
-import akka.actor.Scheduler
-import akka.actor.Cancellable
+import javax.inject.{Inject, Singleton}
 
+import akka.actor.{ActorSystem, Scheduler}
 import models.AppConfiguration._
-
-import java.util.concurrent.TimeUnit
-
-import javax.inject.Inject
-import javax.inject.Singleton
-
-import org.joda.time.LocalDate
-import org.joda.time.LocalTime
-import org.joda.time.DateTime
-import org.joda.time.Days
-
+import models.site.{BookingsLimitReachedException, AlreadyBookedException, TennisSite}
+import org.joda.time.{DateTime, LocalTime}
 import play.api.Logger
-import play.api.Play
 
 import scala.concurrent.duration._
 

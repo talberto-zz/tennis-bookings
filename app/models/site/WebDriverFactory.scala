@@ -1,18 +1,12 @@
-package models
+package models.site
 
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.Platform
-import org.openqa.selenium.remote.RemoteWebDriver
-import org.openqa.selenium.remote.DesiredCapabilities
+import java.net.URL
+import java.util.concurrent.TimeUnit
+import javax.inject.{Inject, Singleton}
 
 import org.openqa.selenium.chrome.ChromeDriver
-
-import java.util.concurrent.TimeUnit
-import java.net.URL
-
-import javax.inject.Inject
-import javax.inject.Singleton
-
+import org.openqa.selenium.remote.{DesiredCapabilities, RemoteWebDriver}
+import org.openqa.selenium.{Platform, WebDriver}
 import play.api.Configuration
 
 /**

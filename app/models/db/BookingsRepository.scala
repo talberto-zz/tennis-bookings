@@ -1,19 +1,13 @@
-package models
-
-import models.SlickConverters._
-import models.Sandbox.db
-
-import org.joda.time.DateTime
-
-import play.api.db._
-import play.api.Play.current
-import play.api.Logger
-
-import java.sql.Timestamp
+package models.db
 
 import javax.inject.Singleton
 
-import scala.language.implicitConversions // remove implicit conversion warnings
+import Sandbox.db
+import SlickConverters._
+import org.joda.time.DateTime
+import play.api.Logger
+
+import scala.language.implicitConversions
 import scala.slick.driver.PostgresDriver.simple._
 
 /**

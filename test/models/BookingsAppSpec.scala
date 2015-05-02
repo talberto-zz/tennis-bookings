@@ -1,6 +1,7 @@
 package models
 
 import com.google.inject.Guice
+import models.db.BookingsManager
 
 import org.specs2.mutable._
 import org.specs2.runner._

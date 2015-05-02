@@ -1,27 +1,15 @@
-package models
-
-import models.SlickConverters._
-import models.Sandbox.db
-
-import models.AppConfiguration._
-
-import org.joda.time.DateTime
-
-import play.api.db._
-import play.api.Play.current
-import play.api.Logger
-
-import java.sql.Timestamp
+package models.db
 
 import javax.inject.Singleton
 
-import scala.language.implicitConversions // remove implicit conversion warnings
-import scala.slick.driver.PostgresDriver.simple._
+import models.AppConfiguration._
+import models.db.Sandbox.db
+import models.db.SlickConverters._
+import org.joda.time.DateTime
+import play.api.Logger
 
-object Queries {
-  val bookings = TableQuery[Bookings]
-  val comments = TableQuery[Comments]
-}
+import scala.language.implicitConversions
+import scala.slick.driver.PostgresDriver.simple._
 
 class Comments(tag: Tag) extends Table[Comment](tag, "comments") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)

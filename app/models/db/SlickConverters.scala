@@ -1,14 +1,9 @@
-package models
-
-import models.AppConfiguration._
-
-import org.joda.time.DateTime
-
-import play.api.db._
-import play.api.Play.current
-import play.api.Logger
+package models.db
 
 import java.sql.Timestamp
+
+import models.AppConfiguration._
+import org.joda.time.DateTime
 
 import scala.slick.driver.PostgresDriver.simple._
 

@@ -1,24 +1,17 @@
-package models
+package models.site
 
-import javax.inject.Inject
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
-import org.joda.time.LocalDate
-import org.joda.time.LocalTime
-import org.joda.time.Days
-
+import models.db.Booking
+import org.joda.time.{Days, LocalDate}
 import org.openqa.selenium.interactions.Actions
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.By
-import org.openqa.selenium.WebElement
-
+import org.openqa.selenium.{By, WebDriver, WebElement}
 import play.api.Logger
-import play.api.Configuration
 
 import scala.collection.JavaConversions._
 
 @Singleton
-class CourtsTablePage @Inject() (val driver: WebDriver, val conf: CourtsTablePageConf) extends Page {
+class CourtsTablePage @Inject() (val driver: WebDriver, val screenshotsHelper: ScreenshotsHelper) extends Page {
   val logger: Logger = Logger(this.getClass)
   val actions: Actions = new Actions(driver)
   
@@ -38,6 +31,8 @@ class CourtsTablePage @Inject() (val driver: WebDriver, val conf: CourtsTablePag
     // Make double click
     logger.debug(s"Double clicking on element [identified by css selector [$courtElem]")
     actions.doubleClick(courtElem).perform()
+    screenshotsHelper.takeScreenshot()
+
     // Check if we reached the limit of bookings
     if(driver.findElements(By.cssSelector(".erreur")).nonEmpty) {
       throw new BookingsLimitReachedException("Apparently reached the bookings limit");
@@ -46,6 +41,7 @@ class CourtsTablePage @Inject() (val driver: WebDriver, val conf: CourtsTablePag
   
   def moveDays(days: Int) {
     logger.trace(s"moveDays($days)")
+    screenshotsHelper.takeScreenshot()
     if(days == 1) {
       goTomorrow
     } else if(days == -1) {
@@ -93,9 +89,4 @@ class CourtsTablePage @Inject() (val driver: WebDriver, val conf: CourtsTablePag
   }
   
   def isCurrentPage: Boolean = driver.findElements(By.id("workpage")).nonEmpty
-}
-
-@Singleton
-class CourtsTablePageConf @Inject() (conf: Configuration) {
-  
 }

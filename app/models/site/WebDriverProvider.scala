@@ -1,9 +1,7 @@
-package models
+package models.site
 
+import com.google.inject.{Inject, Provider}
 import org.openqa.selenium.WebDriver
-
-import com.google.inject.Inject
-import com.google.inject.Provider
 
 class WebDriverProvider @Inject() (val webDriverFactory: WebDriverFactory) extends Provider[WebDriver] {
 

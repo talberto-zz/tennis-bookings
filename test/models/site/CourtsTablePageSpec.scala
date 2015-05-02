@@ -1,14 +1,12 @@
-package models
+package models.site
 
+import models.db.Booking
 import org.joda.time.DateTime
-
+import org.junit.runner.RunWith
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
-
 import org.specs2.mutable._
 import org.specs2.runner._
-
-import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
 class CourtsTablePageSpec extends Specification {

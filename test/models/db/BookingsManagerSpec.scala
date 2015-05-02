@@ -1,18 +1,10 @@
-package models
+package models.db
 
-import org.joda.time.DateTime
-
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.chrome.ChromeDriver
-
+import models.site.TennisSite
+import org.junit.runner.RunWith
 import org.specs2._
 import org.specs2.mock._
 import org.specs2.runner._
-
-import org.junit.runner.RunWith
-
-import play.api.Configuration
-import play.api.test.FakeApplication
 
 @RunWith(classOf[JUnitRunner])
 class BookingsManagerSpec extends Specification { def is = s2"""

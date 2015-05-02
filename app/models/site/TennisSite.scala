@@ -1,18 +1,9 @@
-package models
+package models.site
 
-import java.util.concurrent.TimeUnit
-
-import javax.inject.Inject
-import javax.inject.Singleton
-
-import org.joda.time.LocalDate
-import org.joda.time.LocalTime
-import org.joda.time.Days
-
-import org.openqa.selenium.WebDriver
-
+import javax.inject.{Inject, Singleton}
+import models.db.Booking
+import org.joda.time.{Days, LocalDate, LocalTime}
 import play.api.Logger
-import play.api.Configuration
 
 @Singleton
 class TennisSite @Inject() (val loginPage: LoginPage, val bookingsReminderPage: BookingsReminderPage, val courtsTablePage: CourtsTablePage, val bookingDetailsPage: BookingDetailsPage)  {

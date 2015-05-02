@@ -1,4 +1,4 @@
-package models
+package models.db
 
 trait Repository[T] {
 
