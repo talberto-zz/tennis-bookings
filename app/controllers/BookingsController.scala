@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import controllers.Forms._
 import models.AppConfiguration._
-import models.db.{Booking, BookingsManager, CommentsRepository}
+import models.db.{Booking, BookingsServices, CommentsServices}
 import org.joda.time.DateTime
 import play.api._
 import play.api.data.Forms._
@@ -15,7 +15,7 @@ import play.api.mvc._
  * Controller for Booking's
  */
 @Singleton
-class BookingsController @Inject() (val bookingsManager: BookingsManager, val commentsRepository: CommentsRepository) extends Controller {
+class BookingsController @Inject() (val bookingsManager: BookingsServices, val commentsServices: CommentsServices) extends Controller {
 
   val logger: Logger = Logger(this.getClass)
   
@@ -70,7 +70,7 @@ class BookingsController @Inject() (val bookingsManager: BookingsManager, val co
   
   def show(id: Long) = Action {
     val booking = bookingsManager.find(id).get
-    val comments = commentsRepository.findByBookingId(booking.id)
+    val comments = commentsServices.findByBookingId(booking.id)
     
     Ok(views.html.bookings.show(booking, comments))
   }

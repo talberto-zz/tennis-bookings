@@ -17,7 +17,7 @@ class BookingsManagerSpec extends Specification { def is = s2"""
     val tennisSite = mock[TennisSite]
     val bookingsRepository = mock[BookingsRepository]
     val commentsRepository = mock[CommentsRepository]
-    val bookingsManager = new BookingsManager(bookingsRepository, commentsRepository, tennisSite)
+    val bookingsManager = new BookingsServices(bookingsRepository, commentsRepository, tennisSite)
     
     def e1 = {
       pending

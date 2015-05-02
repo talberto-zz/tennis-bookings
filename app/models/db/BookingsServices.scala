@@ -11,7 +11,7 @@ import play.api.Logger
 import scala.concurrent.duration._
 
 @Singleton
-class BookingsManager @Inject() (val bookingsRepository: BookingsRepository, val commentsRepository: CommentsRepository, val tennisSite: TennisSite) {
+class BookingsServices @Inject() (val bookingsRepository: BookingsRepository, val commentsServices: CommentsServices, val tennisSite: TennisSite) {
   
   // Constants  
   val logger = Logger(getClass)
@@ -27,7 +27,7 @@ class BookingsManager @Inject() (val bookingsRepository: BookingsRepository, val
   def book(booking: Booking): Unit = {
     logger.trace(s"book($booking)")
     val newBooking = bookingsRepository.save(booking)
-    commentsRepository.addCommentToBooking(newBooking.id, s"Created")
+    commentsServices.addCommentToBooking(newBooking.id, s"Created")
     scheduleBooking(newBooking)
   }
   
@@ -53,27 +53,27 @@ class BookingsManager @Inject() (val bookingsRepository: BookingsRepository, val
   protected def tryToBook(booking: Booking) = {
     logger.trace(s"tryToBook($booking)")
     try {
-      commentsRepository.addCommentToBooking(booking.id, "Trying to book")
+      commentsServices.addCommentToBooking(booking.id, "Trying to book")
       tennisSite.book(booking)
       bookingsRepository.update(booking.copy(status = Booking.Status.SUCCESSFULLY_BOOKED))
-      commentsRepository.addCommentToBooking(booking.id, "Succesfully booked")
+      commentsServices.addCommentToBooking(booking.id, "Succesfully booked")
     } catch {
       case e: AlreadyBookedException => {
         logger.error(s"Error trying to book [$booking]", e)
         bookingsRepository.update(booking.copy(status = Booking.Status.ALREADY_BOOKED))
-        commentsRepository.addCommentToBooking(booking.id, "Couldn't book, the booking seems to be already booked")
+        commentsServices.addCommentToBooking(booking.id, "Couldn't book, the booking seems to be already booked")
       }
       
       case e: BookingsLimitReachedException => {
         logger.error(s"Error trying to book [$booking]", e)
         bookingsRepository.update(booking.copy(status = Booking.Status.BOOKINGS_LIMIT_REACHED))
-        commentsRepository.addCommentToBooking(booking.id, "Couldn't book, looks like you've reached your limit of bookings")
+        commentsServices.addCommentToBooking(booking.id, "Couldn't book, looks like you've reached your limit of bookings")
       }
       
       case e: Throwable => {
         logger.error(s"Unexpected error trying to book [$booking]", e) 
         bookingsRepository.update(booking.copy(status = Booking.Status.FAILED))
-        commentsRepository.addCommentToBooking(booking.id, "An unexpected error happened trying to book")
+        commentsServices.addCommentToBooking(booking.id, "An unexpected error happened trying to book")
       }
     }
   }
@@ -90,7 +90,7 @@ class BookingsManager @Inject() (val bookingsRepository: BookingsRepository, val
         }
       })
     bookingsRepository.update(booking.copy(status = Booking.Status.SCHEDULED))
-    commentsRepository.addCommentToBooking(booking.id, s"The booking has been scheduled for execution on ${DateTimeFormatter.print(when)}")
+    commentsServices.addCommentToBooking(booking.id, s"The booking has been scheduled for execution on ${DateTimeFormatter.print(when)}")
   }
   
   protected def whenToTryToBook(booking: Booking) = {

@@ -13,6 +13,7 @@ create table "comments" (
 	"id" bigserial not null,
 	"creationDate" timestamp with time zone not null,
 	"text" text not null,
+	"screenshot" varchar(40),
 	"bookingId" bigint not null);
 	
 alter table "comments" add constraint "pk_comments" primary key ("id");

@@ -11,3 +11,7 @@ POST	/bookings					@controllers.BookingsController.create
 GET		/bookings/newForm			@controllers.BookingsController.newForm
 POST	/bookings/:id/delete		@controllers.BookingsController.delete(id: Long)
 GET		/bookings/:id				@controllers.BookingsController.show(id: Long)
+
+
+# Screenshots
+GET     /screenshots/:file          @controllers.ScreenshotsController.image(file: String)

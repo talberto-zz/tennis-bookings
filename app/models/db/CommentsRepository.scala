@@ -15,8 +15,9 @@ class Comments(tag: Tag) extends Table[Comment](tag, "comments") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def creationDate = column[DateTime]("creationDate")
   def text = column[String]("text")
+  def screenshot = column[Option[String]]("screenshot")
   def bookingId = column[Long]("bookingId")
-  def * = (id, creationDate, text, bookingId) <> ((Comment.apply _).tupled, Comment.unapply)
+  def * = (id, creationDate, text, screenshot, bookingId) <> ((Comment.apply _).tupled, Comment.unapply)
   def booking = foreignKey("booking", bookingId, Queries.bookings)(_.id)
 }
 
@@ -71,9 +72,9 @@ class CommentsRepository extends Repository[Comment] {
     }
   }
   
-  def addCommentToBooking(bookingId: Long, text: String) = {
-    logger.trace(s"addCommentToBooking(${bookingId}, ${text})")
-    val comment = Comment(null.asInstanceOf[Long], DateTime.now(ParisTimeZone), text, bookingId)
+  def addCommentToBooking(bookingId: Long, text: String, screenshot: Option[String] = None) = {
+    logger.trace(s"addCommentToBooking(${bookingId}, ${text}, ${screenshot})")
+    val comment = Comment(null.asInstanceOf[Long], DateTime.now(ParisTimeZone), text, screenshot, bookingId)
     save(comment)
   }
 }

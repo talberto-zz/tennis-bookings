@@ -10,6 +10,14 @@
     <tr>
         <td>@DateTimeFormatter.print(comment.creationDate)</td>
         <td>@comment.text</td>
+        @comment.screenshot match {
+            case Some(screenshotName) => {
+                <td><a href="@routes.ScreenshotsController.image(screenshotName)">@screenshotName</a></td>
+            }
+            case None => {
+                <td>No screenshot associated</td>
+            }
+        }
     </tr>
 }
 
@@ -46,6 +54,7 @@
 	                <tr>
 	                    <th>Creation Date</th>
 	                    <th>Text</th>
+                        <th>Screenshot</th>
 	                </tr>
 	            </thead>
 	            <tbody>

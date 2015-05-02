@@ -1,7 +1,7 @@
 package models
 
 import com.google.inject.Guice
-import models.db.BookingsManager
+import models.db.BookingsServices
 
 import org.specs2.mutable._
 import org.specs2.runner._
@@ -15,7 +15,7 @@ class BookingsAppSpec extends Specification {
   
   "BookingsApp" should {
     "return an instance of BookingsManager" in {
-      val bookingsManager = injector.getInstance(classOf[BookingsManager])
+      val bookingsManager = injector.getInstance(classOf[BookingsServices])
       bookingsManager must not beNull
     }
   }
