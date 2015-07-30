@@ -2,13 +2,15 @@ package models.db
 
 import javax.inject.Singleton
 
-import Sandbox.db
-import SlickConverters._
+import models.db.Sandbox.db
+import models.db.SlickConverters._
 import org.joda.time.DateTime
 import play.api.Logger
+import slick.driver.PostgresDriver.api._
 
+import scala.concurrent._
+import scala.concurrent.duration._
 import scala.language.implicitConversions
-import scala.slick.driver.PostgresDriver.simple._
 
 /**
  * @author tomas
@@ -49,36 +51,40 @@ class BookingsRepository extends Repository[Booking] {
    */
   def list: Seq[Booking] = {
     logger.trace("list()")
-    db.withSession { implicit session => 
-      bookings.sortBy(_.creationDate.asc).list
-    }
+    val query = bookings.sortBy(_.creationDate.asc)
+    val action = query.result
+    val result = db.run(action)
+    Await.result(result, Duration.Inf)
   }
   
   def find(id: Long): Option[Booking] = {
     logger.trace(s"findById($id)")
-    db.withSession { implicit session => 
-      bookings filter(_.id === id) firstOption
-    }
+    val query = bookings filter(_.id === id)
+    val action = query.result
+    val result = db.run(action)
+    Await.result(result, Duration.Inf).headOption
   }
   
   def save(booking: Booking): Booking = {
     logger.trace(s"save($booking)")
-    db.withSession { implicit session => 
-      (bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=id)))) += booking
-    }
+    val action = ((bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=id)))) += booking)
+    val result = db.run(action)
+    Await.result(result, Duration.Inf)
   }
   
   def update(booking: Booking) = {
     logger.trace(s"update($booking)")
-    db.withSession { implicit session => 
-      bookings.filter(_.id === booking.id).map(b => (b.dateTime, b.status)).update(booking.dateTime, booking.status)
-    }
+    val query = bookings.filter(_.id === booking.id)
+    val action = query.update(booking)
+    val result = db.run(action)
+    Await.result(result, Duration.Inf)
   }
   
   def delete(id: Long) = {
     logger.trace(s"delete($id)")
-    db.withSession { implicit session => 
-      bookings.filter(_.id === id).delete
-    }
+    val query = bookings.filter(_.id === id)
+    val action = query.delete
+    val result = db.run(action)
+    Await.result(result, Duration.Inf)
   }
 }

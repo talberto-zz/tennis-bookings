@@ -9,13 +9,14 @@ import org.joda.time.DateTime
 import play.api._
 import play.api.data.Forms._
 import play.api.data._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 
 /**
  * Controller for Booking's
  */
 @Singleton
-class BookingsController @Inject() (val bookingsManager: BookingsServices, val commentsServices: CommentsServices) extends Controller {
+class BookingsController @Inject() (val bookingsManager: BookingsServices, val commentsServices: CommentsServices, val messagesApi: MessagesApi) extends Controller with I18nSupport {
 
   val logger: Logger = Logger(this.getClass)
   

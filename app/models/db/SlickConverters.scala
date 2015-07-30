@@ -4,8 +4,7 @@ import java.sql.Timestamp
 
 import models.AppConfiguration._
 import org.joda.time.DateTime
-
-import scala.slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 
 object SlickConverters {
   implicit val DateTimeColumnType = MappedColumnType.base[DateTime, Timestamp](

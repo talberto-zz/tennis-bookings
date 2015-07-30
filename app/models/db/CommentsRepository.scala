@@ -7,9 +7,10 @@ import models.db.Sandbox.db
 import models.db.SlickConverters._
 import org.joda.time.DateTime
 import play.api.Logger
+import slick.driver.PostgresDriver.api._
 
-import scala.language.implicitConversions
-import scala.slick.driver.PostgresDriver.simple._
+import scala.concurrent._
+import scala.concurrent.duration._
 
 class Comments(tag: Tag) extends Table[Comment](tag, "comments") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -32,44 +33,49 @@ class CommentsRepository extends Repository[Comment] {
    */
   def list: Seq[Comment] = {
     logger.trace("list()")
-    db.withSession { implicit session => 
-      comments.sortBy(_.creationDate.asc).list
-    }
+    val query = comments.sortBy(_.creationDate.asc)
+    val action = query.result
+    val result = db.run(action)
+    Await.result(result, Duration.Inf)
   }
   
   def find(id: Long): Option[Comment] = {
     logger.trace(s"find(${id})")
-    db.withSession { implicit session => 
-      comments.filter(_.id === id).firstOption
-    }
+    val query = comments.filter(_.id === id)
+    val action = query.result
+    val result = db.run(action)
+    Await.result(result, Duration.Inf).headOption
   }
   
   def findByBookingId(bookingId: Long): Seq[Comment] = {
     logger.trace(s"findByBookingId(${bookingId})")
-    db.withSession { implicit session => 
-      comments.filter(_.bookingId === bookingId).sortBy(_.creationDate.asc).list
-    }
+    val query = comments.filter(_.bookingId === bookingId).sortBy(_.creationDate.asc)
+    val action = query.result
+    val result = db.run(action)
+    Await.result(result, Duration.Inf)
   }
   
   def save(comment: Comment): Comment = {
     logger.trace(s"save(${comment})")
-    db.withSession { implicit session => 
-      (comments returning comments.map(_.id) into ((c, id) => (c.copy(id=id)))) += comment
-    }
+    val action = (comments returning comments.map(_.id) into ((c, id) => (c.copy(id=id)))) += comment
+    val result = db.run(action)
+    Await.result(result, Duration.Inf)
   }
   
   def update(comment: Comment) = {
     logger.trace(s"update(${comment})")
-    db.withSession { implicit session => 
-      comments.filter(_.id === comment.id).update(comment)
-    }
+    val query = comments.filter(_.id === comment.id)
+    val action = query.update(comment)
+    val result = db.run(action)
+    Await.result(result, Duration.Inf)
   }
   
   def delete(id: Long) = {
     logger.trace(s"delete(${id})")
-    db.withSession { implicit session => 
-      comments.filter(_.id === id).delete
-    }
+    val query = comments.filter(_.id === id)
+    val action = query.delete
+    val result = db.run(action)
+    Await.result(result, Duration.Inf)
   }
   
   def addCommentToBooking(bookingId: Long, text: String, screenshot: Option[String] = None) = {

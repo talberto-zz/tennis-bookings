@@ -2,7 +2,7 @@
 @import models.db.Booking
 @import helper._
 
-@(booking: Form[Booking])
+@(booking: Form[Booking])(implicit messages: Messages)
 
 @main("New Booking") {
 	

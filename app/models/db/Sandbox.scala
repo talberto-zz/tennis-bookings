@@ -1,14 +1,11 @@
 package models.db
 
-import play.api.Play.current
-import play.api.db._
 
-import scala.slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 
 /**
    * Holds the session for use in the repository
    */
 object Sandbox {
-  val ds = DB.getDataSource()
-  val db = Database.forDataSource(ds)
+  val db = Database.forConfig("slick.dbs.default")
 }

@@ -1,6 +1,6 @@
 package models.db
 
-import scala.slick.lifted.TableQuery
+import slick.lifted.TableQuery
 
 /**
  * Created by trodriguez on 01/05/15.
