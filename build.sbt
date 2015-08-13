@@ -9,13 +9,14 @@ scalaVersion := "2.11.6"
 libraryDependencies ++= Seq(
   cache,
   ws,
+  "com.zaxxer" % "HikariCP" % "2.3.5",
   "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
   "com.typesafe.slick" % "slick_2.11" % "3.0.0",
   "org.seleniumhq.selenium" % "selenium-java" % "2.39.0",
   "net.codingwell" % "scala-guice_2.11" % "4.0.0",
-  "org.webjars" % "jquery" % "2.1.1",
-  "org.webjars" % "bootstrap" % "3.3.0",
-  "org.webjars" % "angularjs" % "1.3.2",
+  "org.webjars" % "bootstrap" % "3.3.4",
+  "org.webjars" % "angularjs" % "1.3.15",
+  "org.webjars" % "angular-ui-bootstrap" % "0.13.0",
   specs2 % Test
 )
 

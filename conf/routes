@@ -5,12 +5,14 @@
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
+# Single endpoint for serving AngularJS
+GET     /                           @controllers.Application.index
+
 # Resource booking
-GET		/bookings					@controllers.BookingsController.index
+GET		/bookings					@controllers.BookingsController.list
 POST	/bookings					@controllers.BookingsController.create
-GET		/bookings/newForm			@controllers.BookingsController.newForm
-POST	/bookings/:id/delete		@controllers.BookingsController.delete(id: Long)
-GET		/bookings/:id				@controllers.BookingsController.show(id: Long)
+DELETE	/bookings/:id		        @controllers.BookingsController.delete(id: Long)
+PUT		/bookings/:id				@controllers.BookingsController.update(id: Long)
 
 
 # Screenshots

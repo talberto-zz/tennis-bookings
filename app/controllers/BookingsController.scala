@@ -10,6 +10,7 @@ import play.api._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.{JsValue, Writes, Json}
 import play.api.mvc._
 
 /**
@@ -37,28 +38,36 @@ class BookingsController @Inject() (val bookingsManager: BookingsServices, val c
       "id" -> longNumber    
     )    
   )
-  /* ACTIONS */
-  def index = Action { implicit req =>
-    val bookings = bookingsManager.list
-    
-    Ok(views.html.bookings.index(bookings))
+
+  implicit val implicitBarWrites = new Writes[Booking] {
+    def writes(booking: Booking): JsValue = {
+      Json.obj(
+        "id" -> booking.id,
+        "creationDate" -> booking.creationDate,
+        "lastModified" -> booking.lastModified,
+        "dateTime" -> booking.dateTime,
+        "status" -> booking.status,
+        "court" -> booking.court
+      )
+    }
   }
-  
-  def newForm = Action { implicit req =>
-    Ok(views.html.bookings.newForm(bookingForm))
+
+  def list = Action {
+    Ok(Json.toJson(bookingsManager.list))
   }
-  
+
   def create = Action { implicit req =>
     logger.debug("Received booking creation request")
     bookingForm.bindFromRequest.fold(
       formWithErrors => {
         logger.debug("Form contains errors, sending bad request")
-        BadRequest(views.html.bookings.newForm(formWithErrors))
+        BadRequest("Bad Request")
       },
       booking => {
         logger.debug("Form doesn't contains errors, creating new booking")
         bookingsManager.book(booking)
-        Redirect(routes.BookingsController.index())
+        // FIXME should immediately return the new booking
+        Ok(Json.toJson(Json.obj()))
       }
     )
   }
@@ -66,13 +75,9 @@ class BookingsController @Inject() (val bookingsManager: BookingsServices, val c
   def delete(id: Long) = Action { implicit request =>
     logger.debug(s"Received booking deletion request for id [$id]")
     bookingsManager.cancelBooking(id)
-    Redirect(routes.BookingsController.index())
+    Ok(Json.toJson(Json.obj()))
   }
-  
-  def show(id: Long) = Action {
-    val booking = bookingsManager.find(id).get
-    val comments = commentsServices.findByBookingId(booking.id)
-    
-    Ok(views.html.bookings.show(booking, comments))
-  }
+
+  // FIXME implement update booking action
+  def update(id: Long) = TODO
 }
