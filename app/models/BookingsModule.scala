@@ -19,8 +19,8 @@ class BookingsModule @Inject() (val environment: Environment, configuration: Con
 
     // Use always the remote web driver
     bind[WebDriverFactory].to[RemoteWebDriverFactory]
+    bind[WebDriver].toProvider[WebDriverProvider].in[Singleton]
     bindConstant().annotatedWith(Names.named("webdriver.screenshots.folder")).to(screenshotsFolder)
     bind[File].annotatedWith(classOf[ScreenshotsFolder]).toProvider(classOf[ScreenshotsFolderProvider])
-    bind[WebDriver].toProvider[WebDriverProvider].in[Singleton]
   }
 }

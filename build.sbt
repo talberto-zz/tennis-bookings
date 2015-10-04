@@ -9,9 +9,11 @@ scalaVersion := "2.11.6"
 libraryDependencies ++= Seq(
   cache,
   ws,
+  jdbc,
+  evolutions,
+  "com.typesafe.slick" %% "slick" % "3.0.3",
   "com.zaxxer" % "HikariCP" % "2.3.5",
   "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
-  "com.typesafe.slick" % "slick_2.11" % "3.0.0",
   "org.seleniumhq.selenium" % "selenium-java" % "2.39.0",
   "net.codingwell" % "scala-guice_2.11" % "4.0.0",
   "org.webjars" % "bootstrap" % "3.3.4",

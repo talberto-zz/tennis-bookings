@@ -1,9 +1,8 @@
 package models.db
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 import models.AppConfiguration._
-import models.db.Sandbox.db
 import models.db.SlickConverters._
 import org.joda.time.DateTime
 import play.api.Logger
@@ -23,9 +22,10 @@ class Comments(tag: Tag) extends Table[Comment](tag, "comments") {
 }
 
 @Singleton
-class CommentsRepository extends Repository[Comment] {
+class CommentsRepository @Inject() (sandbox: Sandbox) extends Repository[Comment] {
   val logger: Logger = Logger(this.getClass)
-  
+  val db = sandbox.db
+
   private val comments = Queries.comments
   
   /**

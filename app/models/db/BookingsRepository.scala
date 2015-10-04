@@ -1,8 +1,7 @@
 package models.db
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
-import models.db.Sandbox.db
 import models.db.SlickConverters._
 import org.joda.time.DateTime
 import play.api.Logger
@@ -41,9 +40,10 @@ class Bookings(tag: Tag) extends Table[Booking](tag, "bookings") {
  * Repository for Booking
  */
 @Singleton
-class BookingsRepository extends Repository[Booking] {  
+class BookingsRepository @Inject() (sandbox: Sandbox) extends Repository[Booking] {
   val logger: Logger = Logger(this.getClass)
-  
+  val db = sandbox.db
+
   private val bookings = Queries.bookings
 
   /**
