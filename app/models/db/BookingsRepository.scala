@@ -49,42 +49,37 @@ class BookingsRepository @Inject() (sandbox: Sandbox) extends Repository[Booking
   /**
    * Retrieve all the Booking's
    */
-  def list: Seq[Booking] = {
+  def list: Future[Seq[Booking]] = {
     logger.trace("list()")
     val query = bookings.sortBy(_.creationDate.asc)
     val action = query.result
-    val result = db.run(action)
-    Await.result(result, Duration.Inf)
+    db.run(action)
   }
   
-  def find(id: Long): Option[Booking] = {
+  def find(id: Long): Future[Option[Booking]] = {
     logger.trace(s"findById($id)")
     val query = bookings filter(_.id === id)
-    val action = query.result
-    val result = db.run(action)
-    Await.result(result, Duration.Inf).headOption
+    val action = query.result.headOption
+    db.run(action)
   }
   
-  def save(booking: Booking): Booking = {
+  def save(booking: Booking): Future[Booking] = {
     logger.trace(s"save($booking)")
     val action = ((bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=id)))) += booking)
-    val result = db.run(action)
-    Await.result(result, Duration.Inf)
+    db.run(action)
   }
   
-  def update(booking: Booking) = {
+  def update(booking: Booking): Future[Int] = {
     logger.trace(s"update($booking)")
     val query = bookings.filter(_.id === booking.id)
     val action = query.update(booking)
-    val result = db.run(action)
-    Await.result(result, Duration.Inf)
+    db.run(action)
   }
   
-  def delete(id: Long) = {
+  def delete(id: Long): Future[Int] = {
     logger.trace(s"delete($id)")
     val query = bookings.filter(_.id === id)
     val action = query.delete
-    val result = db.run(action)
-    Await.result(result, Duration.Inf)
+    db.run(action)
   }
 }

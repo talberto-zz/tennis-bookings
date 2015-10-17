@@ -9,7 +9,6 @@ import play.api.Logger
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent._
-import scala.concurrent.duration._
 
 class Comments(tag: Tag) extends Table[Comment](tag, "comments") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -31,51 +30,45 @@ class CommentsRepository @Inject() (sandbox: Sandbox) extends Repository[Comment
   /**
    * Retrieve all the T's
    */
-  def list: Seq[Comment] = {
+  def list: Future[Seq[Comment]] = {
     logger.trace("list()")
     val query = comments.sortBy(_.creationDate.asc)
     val action = query.result
-    val result = db.run(action)
-    Await.result(result, Duration.Inf)
+    db.run(action)
   }
   
-  def find(id: Long): Option[Comment] = {
+  def find(id: Long): Future[Option[Comment]] = {
     logger.trace(s"find(${id})")
     val query = comments.filter(_.id === id)
-    val action = query.result
-    val result = db.run(action)
-    Await.result(result, Duration.Inf).headOption
+    val action = query.result.headOption
+    db.run(action)
   }
-  
-  def findByBookingId(bookingId: Long): Seq[Comment] = {
+
+  def findByBookingId(bookingId: Long): Future[Seq[Comment]] = {
     logger.trace(s"findByBookingId(${bookingId})")
     val query = comments.filter(_.bookingId === bookingId).sortBy(_.creationDate.asc)
     val action = query.result
-    val result = db.run(action)
-    Await.result(result, Duration.Inf)
+    db.run(action)
   }
   
-  def save(comment: Comment): Comment = {
+  def save(comment: Comment): Future[Comment] = {
     logger.trace(s"save(${comment})")
     val action = (comments returning comments.map(_.id) into ((c, id) => (c.copy(id=id)))) += comment
-    val result = db.run(action)
-    Await.result(result, Duration.Inf)
+    db.run(action)
   }
   
-  def update(comment: Comment) = {
+  def update(comment: Comment): Future[Int] = {
     logger.trace(s"update(${comment})")
     val query = comments.filter(_.id === comment.id)
     val action = query.update(comment)
-    val result = db.run(action)
-    Await.result(result, Duration.Inf)
+    db.run(action)
   }
   
   def delete(id: Long) = {
     logger.trace(s"delete(${id})")
     val query = comments.filter(_.id === id)
     val action = query.delete
-    val result = db.run(action)
-    Await.result(result, Duration.Inf)
+    db.run(action)
   }
   
   def addCommentToBooking(bookingId: Long, text: String, screenshot: Option[String] = None) = {

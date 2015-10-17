@@ -10,17 +10,20 @@ import play.api._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsValue, Writes, Json}
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc._
+
+import scala.concurrent.Future
 
 /**
  * Controller for Booking's
  */
 @Singleton
-class BookingsController @Inject() (val bookingsManager: BookingsServices, val commentsServices: CommentsServices, val messagesApi: MessagesApi) extends Controller with I18nSupport {
+class BookingsController @Inject() (val bookingsService: BookingsServices, val commentsServices: CommentsServices, val messagesApi: MessagesApi, val configuration: Configuration) extends Controller with I18nSupport {
 
   val logger: Logger = Logger(this.getClass)
-  
+
   val bookingForm: Form[Booking] = Form(
     mapping(
       "id" -> ignored(null.asInstanceOf[Long]), // Set the id always null Long
@@ -52,30 +55,30 @@ class BookingsController @Inject() (val bookingsManager: BookingsServices, val c
     }
   }
 
-  def list = Action {
-    Ok(Json.toJson(bookingsManager.list))
+  def list = Action.async {
+    bookingsService.list.map(bookings => Ok(Json.toJson(bookings)))
   }
 
-  def create = Action { implicit req =>
+  def create = Action.async { implicit req =>
     logger.debug("Received booking creation request")
     bookingForm.bindFromRequest.fold(
       formWithErrors => {
         logger.debug("Form contains errors, sending bad request")
-        BadRequest("Bad Request")
+        Future(BadRequest("Bad Request"))
       },
       booking => {
         logger.debug("Form doesn't contains errors, creating new booking")
-        bookingsManager.book(booking)
+        bookingsService.book(booking)
         // FIXME should immediately return the new booking
-        Ok(Json.toJson(Json.obj()))
+        Future(Ok(Json.toJson(Json.obj())))
       }
     )
   }
   
-  def delete(id: Long) = Action { implicit request =>
+  def delete(id: Long) = Action.async { implicit request =>
     logger.debug(s"Received booking deletion request for id [$id]")
-    bookingsManager.cancelBooking(id)
-    Ok(Json.toJson(Json.obj()))
+    val eventualCancel = bookingsService.cancelBooking(id)
+    eventualCancel.map(_ => Ok(Json.toJson(Json.obj())))
   }
 
   // FIXME implement update booking action

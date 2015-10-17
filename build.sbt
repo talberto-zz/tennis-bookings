@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "bootstrap" % "3.3.4",
   "org.webjars" % "angularjs" % "1.3.15",
   "org.webjars" % "angular-ui-bootstrap" % "0.13.0",
-  specs2 % Test
+  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
+  "org.scalatestplus" %% "play" % "1.4.0-M3" % "test"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
