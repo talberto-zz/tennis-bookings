@@ -1,14 +1,12 @@
 package models.db
 
-import javax.inject.{Inject, Singleton}
-
-import models.AppConfiguration._
+import models.AppConfiguration
 import models.db.SlickConverters._
-import org.joda.time.DateTime
+import org.joda.time.{DateTimeZone, DateTime}
 import play.api.Logger
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent._
+import scala.concurrent.Future
 
 class Comments(tag: Tag) extends Table[Comment](tag, "comments") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -17,13 +15,12 @@ class Comments(tag: Tag) extends Table[Comment](tag, "comments") {
   def screenshot = column[Option[String]]("screenshot")
   def bookingId = column[Long]("bookingId")
   def * = (id, creationDate, text, screenshot, bookingId) <> ((Comment.apply _).tupled, Comment.unapply)
-  def booking = foreignKey("booking", bookingId, Queries.bookings)(_.id)
+  def booking = foreignKey("booking", bookingId, Queries.reservations)(_.id)
 }
 
-@Singleton
-class CommentsRepository @Inject() (sandbox: Sandbox) extends Repository[Comment] {
+object CommentsRepository {
   val logger: Logger = Logger(this.getClass)
-  val db = sandbox.db
+  val db = Sandbox.db
 
   private val comments = Queries.comments
   
@@ -73,7 +70,7 @@ class CommentsRepository @Inject() (sandbox: Sandbox) extends Repository[Comment
   
   def addCommentToBooking(bookingId: Long, text: String, screenshot: Option[String] = None) = {
     logger.trace(s"addCommentToBooking(${bookingId}, ${text}, ${screenshot})")
-    val comment = Comment(null.asInstanceOf[Long], DateTime.now(ParisTimeZone), text, screenshot, bookingId)
+    val comment = Comment(null.asInstanceOf[Long], DateTime.now(DateTimeZone.forID(AppConfiguration.ParisTimeZone.getId)), text, screenshot, bookingId)
     save(comment)
   }
 }

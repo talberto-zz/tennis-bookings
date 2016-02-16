@@ -2,11 +2,11 @@ package controllers
 
 import java.time.ZonedDateTime
 
-import models.db.ReservationRequest
+import models.db.{Reservation, ReservationRequest}
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.WsScalaTestClient
-import play.api.http.{HeaderNames, Status}
+import play.api.http.{ContentTypes, HeaderNames, Status}
 import play.api.libs.json.Json
 
 /**
@@ -26,13 +26,24 @@ class ReservationCreationSpec extends WordSpec
       val reservationRequest = ReservationRequest(ZonedDateTime.now(), 12)
 
       When("We get the response")
-      val eventualResponse = wsCall(routes.ReservationsController.create())
+      val eventualCreationResponse = wsCall(routes.ReservationsController.create())
         .post(Json.toJson(reservationRequest))
 
       Then("The response status is OK and it points to the newly created request")
-      val response = eventualResponse.futureValue
-      response.status should be (Status.CREATED)
-      response.header(HeaderNames.LOCATION) should not be empty
+      val creationResponse = eventualCreationResponse.futureValue
+      creationResponse.status should be (Status.CREATED)
+      creationResponse.header(HeaderNames.LOCATION) should not be empty
+
+      When("We get the newly created reservation")
+      val resourceUrl = creationResponse.header(HeaderNames.LOCATION).get
+      val findResponse = wsUrl(resourceUrl).get().futureValue
+
+      Then("The reservation contains the same date and court that we requested")
+      findResponse.status should be (Status.OK)
+      findResponse.header(HeaderNames.CONTENT_TYPE).value should be (ContentTypes.JSON)
+      val reservation = findResponse.json.as[Reservation]
+      reservation.dateTime should be (reservationRequest.dateTime)
+      reservation.court should be (reservationRequest.court)
     }
   }
 }
