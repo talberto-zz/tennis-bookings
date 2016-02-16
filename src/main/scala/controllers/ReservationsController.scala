@@ -3,10 +3,11 @@ package controllers
 import akka.pattern.ask
 import akka.util.Timeout
 import models.actor.ReservationsEngineActor
-import models.actor.ReservationsEngineActor.MakeReservationReq
+import models.actor.ReservationsEngineActor.MakeReservationRequest
 import models.db.{Reservation, ReservationRequest}
 import play.api.Play.current
 import play.api._
+import play.api.http.HeaderNames
 import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
@@ -25,11 +26,13 @@ object ReservationsController extends Controller {
   def create = Action.async(parse.json[ReservationRequest]) { implicit request =>
     logger.debug("Received reservation creation request")
 
-    val eventualResponse = reservationsEngine ? MakeReservationReq(request.body)
+    val eventualResponse = reservationsEngine ? MakeReservationRequest(request.body)
     val eventualReservation = eventualResponse.mapTo[Reservation]
 
     render.async {
-      case Accepts.Json() => eventualReservation.map(reservation => Ok(Json.toJson(reservation)))
+      case Accepts.Json() => eventualReservation.map { reservation =>
+        Created.withHeaders(HeaderNames.LOCATION -> routes.ReservationsController.find(reservation.id).url)
+      }
     }
   }
 

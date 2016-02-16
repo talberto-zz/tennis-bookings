@@ -1,8 +1,10 @@
 package models.actor
 
+import java.util.UUID
+
 import akka.actor._
 import akka.pattern.pipe
-import models.db.{ReservationRequest, ReservationsRepository}
+import models.db.{Reservation, ReservationRequest, ReservationsRepository}
 import play.api.Logger
 
 import scala.language.implicitConversions
@@ -10,7 +12,9 @@ import scala.language.implicitConversions
 object ReservationsRepositoryActor {
   val props = Props[ReservationsRepositoryActor]
 
-  case class CreateReservation(req: ReservationRequest)
+  case class CreateReservationRequest(id: UUID = UUID.randomUUID(), req: ReservationRequest)
+
+  case class CreateReservationResponse(id: UUID, reservation: Reservation) {}
 
 }
 
@@ -25,8 +29,9 @@ class ReservationsRepositoryActor extends Actor {
   val logger: Logger = Logger(this.getClass)
 
   override def receive: Receive = {
-    case CreateReservation(req) =>
+    case CreateReservationRequest(id, req) =>
       logger.debug(s"Will create a new reservation from request $req")
-      pipe(ReservationsRepository.create(req)) to sender
+      val resp = ReservationsRepository.create(req).map(reservation => CreateReservationResponse(id, reservation))
+      pipe(resp) to sender
   }
 }
