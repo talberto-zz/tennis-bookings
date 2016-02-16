@@ -6,7 +6,7 @@ import models.db.{Reservation, ReservationRequest}
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.WsScalaTestClient
-import play.api.http.{ContentTypes, HeaderNames, Status}
+import play.api.http.{ContentTypes, HeaderNames, MimeTypes, Status}
 import play.api.libs.json.Json
 
 /**
@@ -18,7 +18,8 @@ class ReservationCreationSpec extends WordSpec
   with ScalaFutures
   with WsScalaTestClient
   with GivenWhenThen
-  with WithConfiguredServerPerTest {
+  with WithConfiguredServerPerTest
+  with ConfigurableScaleFactor {
 
   "TennisReservations app" must {
     "create a new reservation" in {
@@ -27,6 +28,7 @@ class ReservationCreationSpec extends WordSpec
 
       When("We get the response")
       val eventualCreationResponse = wsCall(routes.ReservationsController.create())
+          .withHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
         .post(Json.toJson(reservationRequest))
 
       Then("The response status is OK and it points to the newly created request")

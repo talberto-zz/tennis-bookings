@@ -1,10 +1,11 @@
 package models.db
 
 import models.AppConfiguration
-import models.db.SlickConverters._
-import org.joda.time.{DateTimeZone, DateTime}
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Logger
 import slick.driver.PostgresDriver.api._
+
+import models.db.SlickConverters._
 
 import scala.concurrent.Future
 

@@ -2,13 +2,12 @@ package models.db
 
 import java.time.ZonedDateTime
 
+import models.db.SlickConverters._
 import play.api.Logger
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent._
 import scala.language.implicitConversions
-
-import models.db.SlickConverters._
 
 /**
   * @author tomas

@@ -5,19 +5,23 @@ import akka.util.Timeout
 import models.actor.ReservationsEngineActor
 import models.actor.ReservationsEngineActor.MakeReservationRequest
 import models.db.{Reservation, ReservationRequest}
-import play.api.Play.current
+import play.api.Play.{configuration, current}
 import play.api._
 import play.api.http.HeaderNames
 import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.json.Json
 import play.api.mvc._
 
 import scala.concurrent.duration._
 
+object ReservationsControllerConfiguration {
+  implicit val askTimeout = Timeout(configuration.underlying.getDuration("akka.askTimeout").toNanos nanoseconds)
+}
+
 object ReservationsController extends Controller {
 
-  implicit val askTimeout = Timeout(5 seconds)
+  import ReservationsControllerConfiguration._
+  
   val actorSystem = Akka.system
   val logger: Logger = Logger(this.getClass)
 

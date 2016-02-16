@@ -24,7 +24,8 @@ libraryDependencies ++= Seq(
   "org.seleniumhq.selenium" % "selenium-java" % "2.39.0",
   "net.codingwell" % "scala-guice_2.11" % "4.0.0",
   "org.scalatest" %% "scalatest" % "2.2.1" % "test,it",
-  "org.scalatestplus" %% "play" % "1.4.0-M3" % "test,it"
+  "org.scalatestplus" %% "play" % "1.4.0-M3" % "test,it",
+  "com.typesafe.akka" %% "akka-testkit" % "2.3.11" % "it"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
