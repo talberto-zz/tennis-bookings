@@ -16,6 +16,10 @@ object ReservationsRepositoryActor {
 
   case class CreateReservationResponse(id: UUID, reservation: Reservation) {}
 
+  case class FindReservationRequest(id: UUID = UUID.randomUUID(), reservationId: Long)
+
+  case class FindReservationResponse(id: UUID = UUID.randomUUID(), reservation: Option[Reservation])
+
 }
 
 /**
@@ -32,6 +36,11 @@ class ReservationsRepositoryActor extends Actor {
     case CreateReservationRequest(id, req) =>
       logger.debug(s"Will create a new reservation from request $req")
       val resp = ReservationsRepository.create(req).map(reservation => CreateReservationResponse(id, reservation))
+      pipe(resp) to sender
+
+    case FindReservationRequest(id, reservationId) =>
+      logger.debug(s"Will try to find the reservation $reservationId")
+      val resp = ReservationsRepository.find(reservationId).map(maybeReservation => FindReservationResponse(id, maybeReservation))
       pipe(resp) to sender
   }
 }

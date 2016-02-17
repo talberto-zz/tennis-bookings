@@ -11,8 +11,9 @@ import scala.collection.mutable
 object ReservationsEngineActor {
   def props = Props[ReservationsEngineActor]
 
-  case class MakeReservationRequest(req: ReservationRequest)
+  case class MakeReservation(req: ReservationRequest)
 
+  case class GetReservation(reservationId: Long)
 }
 
 /**
@@ -27,7 +28,7 @@ class ReservationsEngineActor extends Actor {
   val activeRequests = mutable.Map[UUID, ActorRef]()
 
   override def receive: Receive = {
-    case MakeReservationRequest(req) =>
+    case MakeReservation(req) =>
       logger.info(s"Will try to make the reservation $req")
       val creationReq = CreateReservationRequest(req = req)
       logger.debug(s"Issuing reservation creation request [$creationReq]")
@@ -38,6 +39,18 @@ class ReservationsEngineActor extends Actor {
       logger.debug(s"Received notification of reservation created [$notification]")
       val originalSender = activeRequests(id)
       originalSender ! reservation
+      activeRequests -= id
+
+    case msg @ GetReservation(id) =>
+      logger.debug(s"Received get reservation message $msg")
+      val findReq = FindReservationRequest(reservationId = id)
+      reservationsRepositoryActor ! findReq
+      activeRequests += findReq.id -> sender
+
+    case notification @ FindReservationResponse(id, maybeReservation) =>
+      logger.debug(s"Received notification of find reservation [$notification]")
+      val originalSender = activeRequests(id)
+      originalSender ! maybeReservation
       activeRequests -= id
   }
 }

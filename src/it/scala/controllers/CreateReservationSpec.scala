@@ -12,7 +12,7 @@ import play.api.libs.json.Json
 /**
   * Created by trodriguez on 11/02/16.
   */
-class ReservationCreationSpec extends WordSpec
+class CreateReservationSpec extends WordSpec
   with Matchers
   with OptionValues
   with ScalaFutures

@@ -68,40 +68,47 @@ object ReservationsRepository {
     db.run(action)
   }
 
-//  /**
-//    * Retrieve all the Booking's
-//    */
-//  def list: Future[Seq[Booking]] = {
-//    logger.trace("list()")
-//    val query = bookings.sortBy(_.creationDate.asc)
-//    val action = query.result
-//    db.run(action)
-//  }
-//
-//  def find(id: Long): Future[Option[Booking]] = {
-//    logger.trace(s"findById($id)")
-//    val query = bookings filter(_.id === id)
-//    val action = query.result.headOption
-//    db.run(action)
-//  }
-//
-//  def save(booking: Booking): Future[Booking] = {
-//    logger.trace(s"save($booking)")
-//    val action = ((bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=id)))) += booking)
-//    db.run(action)
-//  }
-//
-//  def update(booking: Booking): Future[Int] = {
-//    logger.trace(s"update($booking)")
-//    val query = bookings.filter(_.id === booking.id)
-//    val action = query.update(booking)
-//    db.run(action)
-//  }
-//
-//  def delete(id: Long): Future[Int] = {
-//    logger.trace(s"delete($id)")
-//    val query = bookings.filter(_.id === id)
-//    val action = query.delete
-//    db.run(action)
-//  }
+  def find(id: Long): Future[Option[Reservation]] = {
+    logger.trace(s"findById($id)")
+    val query = reservations filter (_.id === id)
+    val action = query.result.headOption
+    db.run(action)
+  }
+
+  //  /**
+  //    * Retrieve all the Booking's
+  //    */
+  //  def list: Future[Seq[Booking]] = {
+  //    logger.trace("list()")
+  //    val query = bookings.sortBy(_.creationDate.asc)
+  //    val action = query.result
+  //    db.run(action)
+  //  }
+  //
+  //  def find(id: Long): Future[Option[Booking]] = {
+  //    logger.trace(s"findById($id)")
+  //    val query = bookings filter(_.id === id)
+  //    val action = query.result.headOption
+  //    db.run(action)
+  //  }
+  //
+  //  def save(booking: Booking): Future[Booking] = {
+  //    logger.trace(s"save($booking)")
+  //    val action = ((bookings returning bookings.map(_.id) into ((b, id) => (b.copy(id=id)))) += booking)
+  //    db.run(action)
+  //  }
+  //
+  //  def update(booking: Booking): Future[Int] = {
+  //    logger.trace(s"update($booking)")
+  //    val query = bookings.filter(_.id === booking.id)
+  //    val action = query.update(booking)
+  //    db.run(action)
+  //  }
+  //
+  //  def delete(id: Long): Future[Int] = {
+  //    logger.trace(s"delete($id)")
+  //    val query = bookings.filter(_.id === id)
+  //    val action = query.delete
+  //    db.run(action)
+  //  }
 }

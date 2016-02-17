@@ -3,13 +3,14 @@ package controllers
 import akka.pattern.ask
 import akka.util.Timeout
 import models.actor.ReservationsEngineActor
-import models.actor.ReservationsEngineActor.MakeReservationRequest
+import models.actor.ReservationsEngineActor.{GetReservation, MakeReservation}
 import models.db.{Reservation, ReservationRequest}
 import play.api.Play.{configuration, current}
 import play.api._
 import play.api.http.HeaderNames
 import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.json.Json
 import play.api.mvc._
 
 import scala.concurrent.duration._
@@ -30,7 +31,7 @@ object ReservationsController extends Controller {
   def create = Action.async(parse.json[ReservationRequest]) { implicit request =>
     logger.debug("Received reservation creation request")
 
-    val eventualResponse = reservationsEngine ? MakeReservationRequest(request.body)
+    val eventualResponse = reservationsEngine ? MakeReservation(request.body)
     val eventualReservation = eventualResponse.mapTo[Reservation]
 
     render.async {
@@ -40,8 +41,17 @@ object ReservationsController extends Controller {
     }
   }
 
-  def find(id: Long) = Action {
+  def find(id: Long) = Action.async { implicit request =>
     logger.debug(s"Try to find reservation $id")
-    NotFound
+
+    val eventualResponse = reservationsEngine ? GetReservation(id)
+    val eventualMaybeReservation = eventualResponse.mapTo[Option[Reservation]]
+
+    render.async {
+      case Accepts.Json() => eventualMaybeReservation.map {
+        case Some(reservation) => Ok(Json.toJson(reservation))
+        case None => NotFound
+      }
+    }
   }
 }
