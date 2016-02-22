@@ -1,12 +1,33 @@
 package models.actor
 
-import java.util.UUID
-
 import akka.actor._
+import models.actor.ReservationsRepositoryActor.{CreateReservationResponse, FindReservationResponse}
 import models.db.ReservationRequest
 import play.api.Logger
 
-import scala.collection.mutable
+object ReservationsRepositoryMediatorActor {
+  def props(reservationsEngineActor: ActorRef, reservationsRepositoryActor: ActorRef, request: AnyRef, originalSender: ActorRef) =
+    Props(classOf[ReservationsRepositoryMediatorActor], reservationsEngineActor, reservationsRepositoryActor, request, originalSender)
+}
+
+class ReservationsRepositoryMediatorActor(reservationsEngineActor: ActorRef, reservationsRepositoryActor: ActorRef, request: AnyRef, originalSender: ActorRef) extends Actor {
+  val logger: Logger = Logger(this.getClass)
+
+  reservationsRepositoryActor ! request
+
+  override def receive: Receive = {
+    case notification @ CreateReservationResponse(reservation) =>
+      logger.debug(s"Received notification of reservation created [$notification]")
+      originalSender tell (reservation, reservationsEngineActor)
+      self ! PoisonPill
+
+    case notification @ FindReservationResponse(maybeReservation) =>
+      logger.debug(s"Received notification of find reservation [$notification]")
+      originalSender tell (maybeReservation, reservationsEngineActor)
+      self ! PoisonPill
+
+  }
+}
 
 object ReservationsEngineActor {
   def props = Props[ReservationsEngineActor]
@@ -24,33 +45,18 @@ class ReservationsEngineActor extends Actor {
   import models.actor.ReservationsRepositoryActor._
 
   val logger: Logger = Logger(this.getClass)
-  val reservationsRepositoryActor = context.actorOf(ReservationsRepositoryActor.props)
-  val activeRequests = mutable.Map[UUID, ActorRef]()
+  val reservationsRepositoryActor = context.actorOf(ReservationsRepositoryActor.props, "reservationsRepository")
 
   override def receive: Receive = {
     case MakeReservation(req) =>
       logger.info(s"Will try to make the reservation $req")
-      val creationReq = CreateReservationRequest(req = req)
+      val creationReq = CreateReservationRequest(req)
       logger.debug(s"Issuing reservation creation request [$creationReq]")
-      reservationsRepositoryActor ! creationReq
-      activeRequests += creationReq.id -> sender
-
-    case notification @ CreateReservationResponse(id, reservation) =>
-      logger.debug(s"Received notification of reservation created [$notification]")
-      val originalSender = activeRequests(id)
-      originalSender ! reservation
-      activeRequests -= id
+      context.actorOf(ReservationsRepositoryMediatorActor.props(self, reservationsRepositoryActor, creationReq, sender))
 
     case msg @ GetReservation(id) =>
       logger.debug(s"Received get reservation message $msg")
-      val findReq = FindReservationRequest(reservationId = id)
-      reservationsRepositoryActor ! findReq
-      activeRequests += findReq.id -> sender
-
-    case notification @ FindReservationResponse(id, maybeReservation) =>
-      logger.debug(s"Received notification of find reservation [$notification]")
-      val originalSender = activeRequests(id)
-      originalSender ! maybeReservation
-      activeRequests -= id
+      val findReq = FindReservationRequest(id)
+      context.actorOf(ReservationsRepositoryMediatorActor.props(self, reservationsRepositoryActor, findReq, sender))
   }
 }

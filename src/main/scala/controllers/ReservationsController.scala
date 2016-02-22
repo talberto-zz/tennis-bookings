@@ -26,7 +26,7 @@ object ReservationsController extends Controller {
   val actorSystem = Akka.system
   val logger: Logger = Logger(this.getClass)
 
-  lazy val reservationsEngine = actorSystem.actorOf(ReservationsEngineActor.props)
+  lazy val reservationsEngine = actorSystem.actorOf(ReservationsEngineActor.props, "reservationsEngine")
 
   def create = Action.async(parse.json[ReservationRequest]) { implicit request =>
     logger.debug("Received reservation creation request")
