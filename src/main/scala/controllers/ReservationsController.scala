@@ -22,7 +22,7 @@ object ReservationsControllerConfiguration {
 object ReservationsController extends Controller {
 
   import ReservationsControllerConfiguration._
-  
+
   val actorSystem = Akka.system
   val logger: Logger = Logger(this.getClass)
 
