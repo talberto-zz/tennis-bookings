@@ -9,20 +9,16 @@ create table "reservations" (
 
 alter table "reservations" add constraint "pk_reservations" primary key ("id");
 
-create table "comments" (
+create table "reservations_events" (
 	"id" bigserial not null,
-	"creationDate" timestamp with time zone not null,
-	"text" text not null,
-	"screenshot" varchar(40),
-	"bookingId" bigint not null);
-	
-alter table "comments" add constraint "pk_comments" primary key ("id");
-alter table "comments" add constraint "fk_comments_reservations_id" foreign key ("bookingId") references "reservations"("id") on delete cascade on update cascade;
+	"reservation_id" varchar not null,
+	"event" text not null);
+
+alter table "reservations_events" add constraint "pk_reservations_events" primary key ("id");
 
 # --- !Downs
 alter table "reservations" drop constraint "pk_reservations";
 drop table "reservations";
 
-alter table "comments" drop constraint "pk_comments";
-alter table "comments" drop constraint "fk_comments_reservations_id";
-drop table "comments";
+alter table "reservations_events" drop constraint "pk_reservations_events";
+drop table "reservations_events";

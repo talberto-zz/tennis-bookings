@@ -1,10 +1,14 @@
 package controllers
 
+import java.time.ZonedDateTime
+import java.util.UUID
+
 import akka.pattern.ask
 import akka.util.Timeout
+import models.Reservation
+import models.actor.ReservationAggregateActor.ReservationId
 import models.actor.ReservationsEngineActor
 import models.actor.ReservationsEngineActor.{GetReservation, MakeReservation}
-import models.db.{Reservation, ReservationRequest}
 import play.api.Play.{configuration, current}
 import play.api._
 import play.api.http.HeaderNames
@@ -14,6 +18,11 @@ import play.api.libs.json.Json
 import play.api.mvc._
 
 import scala.concurrent.duration._
+
+case class ReservationRequest(
+                               dateTime: ZonedDateTime,
+                               court: Int
+                             )
 
 object ReservationsControllerConfiguration {
   implicit val askTimeout = Timeout(configuration.underlying.getDuration("akka.askTimeout").toNanos nanoseconds)
@@ -32,16 +41,16 @@ object ReservationsController extends Controller {
     logger.debug("Received reservation creation request")
 
     val eventualResponse = reservationsEngine ? MakeReservation(request.body)
-    val eventualReservation = eventualResponse.mapTo[Reservation]
+    val eventualReservationId = eventualResponse.mapTo[ReservationId]
 
     render.async {
-      case Accepts.Json() => eventualReservation.map { reservation =>
-        Created.withHeaders(HeaderNames.LOCATION -> routes.ReservationsController.find(reservation.id).url)
+      case Accepts.Json() => eventualReservationId.map { reservation =>
+        Created.withHeaders(HeaderNames.LOCATION -> routes.ReservationsController.find(eventualReservationId).url)
       }
     }
   }
 
-  def find(id: Long) = Action.async { implicit request =>
+  def find(id: UUID) = Action.async { implicit request =>
     logger.debug(s"Try to find reservation $id")
 
     val eventualResponse = reservationsEngine ? GetReservation(id)
