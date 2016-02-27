@@ -3,8 +3,9 @@ package models.actor
 import java.time.ZonedDateTime
 import java.util.UUID
 
-import akka.actor.{ActorRef, LoggingFSM, Props}
+import akka.actor.{LoggingFSM, Props}
 import controllers.ReservationRequest
+import models.Reservation
 import play.api.Logger
 import play.api.libs.json._
 
@@ -47,7 +48,7 @@ object ReservationAggregateActor {
       def writes(event: Event) = event match {
 
         case e: ReservationCreated =>
-          Json.toJson(e)
+          Json.toJson(e)(ReservationCreated.JsonWrites)
 
         case e =>
           throw new RuntimeException(s"Unknown event $e")
@@ -59,7 +60,7 @@ object ReservationAggregateActor {
         val className = (json \ "@class").get.as[String]
 
         if (className == ReservationCreated.getClass.getName)
-          Json.fromJson[ReservationCreated](json)(ReservationCreated.JsonFormat)
+          Json.fromJson[ReservationCreated](json)(ReservationCreated.JsonReads)
         else
           throw new RuntimeException(s"Unknown class $className")
 
@@ -71,7 +72,20 @@ object ReservationAggregateActor {
   sealed trait Event extends IdentifiedReservation
 
   object ReservationCreated {
-    implicit val JsonFormat = Json.format[ReservationCreated]
+
+    implicit val JsonWrites: Writes[ReservationCreated] = new Writes[ReservationCreated] {
+      override def writes(event: ReservationCreated): JsValue = Json.obj(
+        "@class" -> ReservationCreated.getClass.getName,
+        "reservationId" -> event.reservationId,
+        "creationDate" -> event.creationDate,
+        "lastModified" -> event.lastModified,
+        "dateTime" -> event.dateTime,
+        "court" -> event.court
+      )
+    }
+
+    implicit val JsonReads = Json.reads[ReservationCreated]
+
   }
 
   case class ReservationCreated(
@@ -82,13 +96,16 @@ object ReservationAggregateActor {
                                  court: Int
                                ) extends Event
 
-  def props(reservationsEngineActor: ActorRef, reservationsEventLogRepositoryActor: ActorRef, reservationId: ReservationAggregateActor.ReservationId) =
-    Props(classOf[ReservationAggregateActor], reservationsEngineActor, reservationsEventLogRepositoryActor, reservationId)
+  // Other messages
+  case class GetReservationView()
+
+  case class ReservationViewComputed(reservation: Reservation)
+
+  def props(reservationId: ReservationAggregateActor.ReservationId) =
+    Props(classOf[ReservationAggregateActor], reservationId)
 }
 
 class ReservationAggregateActor(
-                                 reservationsEngineActor: ActorRef,
-                                 reservationsEventLogRepositoryActor: ActorRef,
                                  reservationId: ReservationAggregateActor.ReservationId
                                ) extends LoggingFSM[ReservationAggregateActor.State, ReservationAggregateActor.Data] {
 
@@ -108,12 +125,33 @@ class ReservationAggregateActor(
         dateTime = req.dateTime,
         court = req.court
       )
-      reservationsEventLogRepositoryActor ! event
+      sender ! event
       goto(New) using Created(
         creationDate = event.creationDate,
         lastModified = event.lastModified,
         dateTime = event.dateTime,
         court = event.court
       )
+
+    case Event(event: ReservationCreated, Uninitialized) =>
+      logger.debug(s"Replaying event $event")
+      goto(New) using Created(
+        creationDate = event.creationDate,
+        lastModified = event.lastModified,
+        dateTime = event.dateTime,
+        court = event.court
+      )
+  }
+
+  when(New) {
+    case Event(GetReservationView(), created: Created) =>
+      logger.debug(s"Will compute and return the reservation view to $sender")
+      val view = Reservation(
+        id = reservationId,
+        dateTime = created.dateTime,
+        court = created.court
+      )
+      sender ! ReservationViewComputed(view)
+      stay()
   }
 }

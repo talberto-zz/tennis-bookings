@@ -6,7 +6,6 @@ import java.util.UUID
 import akka.pattern.ask
 import akka.util.Timeout
 import models.Reservation
-import models.actor.ReservationAggregateActor.ReservationId
 import models.actor.ReservationsEngineActor
 import models.actor.ReservationsEngineActor.{GetReservation, MakeReservation}
 import play.api.Play.{configuration, current}
@@ -18,6 +17,10 @@ import play.api.libs.json.Json
 import play.api.mvc._
 
 import scala.concurrent.duration._
+
+object ReservationRequest {
+  implicit val JsonFormat = Json.format[ReservationRequest]
+}
 
 case class ReservationRequest(
                                dateTime: ZonedDateTime,
@@ -41,11 +44,11 @@ object ReservationsController extends Controller {
     logger.debug("Received reservation creation request")
 
     val eventualResponse = reservationsEngine ? MakeReservation(request.body)
-    val eventualReservationId = eventualResponse.mapTo[ReservationId]
+    val eventualReservationId = eventualResponse.mapTo[Reservation]
 
     render.async {
       case Accepts.Json() => eventualReservationId.map { reservation =>
-        Created.withHeaders(HeaderNames.LOCATION -> routes.ReservationsController.find(eventualReservationId).url)
+        Created.withHeaders(HeaderNames.LOCATION -> routes.ReservationsController.find(reservation.id).url)
       }
     }
   }

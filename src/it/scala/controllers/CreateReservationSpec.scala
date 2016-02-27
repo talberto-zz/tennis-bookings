@@ -2,7 +2,7 @@ package controllers
 
 import java.time.ZonedDateTime
 
-import models.db.{Reservation, ReservationRequest}
+import models.Reservation
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.WsScalaTestClient

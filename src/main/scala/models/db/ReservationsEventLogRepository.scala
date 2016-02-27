@@ -8,7 +8,7 @@ import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 import slick.lifted.TableQuery
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
 
 case class ReservationEvent(id: Long, reservationId: UUID, event: ReservationAggregateActor.Event)
@@ -17,7 +17,8 @@ class ReservationsEvents(tag: Tag) extends Table[ReservationEvent](tag, "reserva
 
   object Converters {
     implicit val jsonColumnType = MappedColumnType.base[ReservationAggregateActor.Event, String](
-      { event => Json.toJson(event).toString }, { str => Json.parse(str).as[ReservationAggregateActor.Event] }
+      { event => Json.toJson(event).toString },
+      { str => Json.parse(str).as[ReservationAggregateActor.Event] }
     )
   }
 
@@ -45,8 +46,15 @@ object ReservationsEventLogRepository {
 
   private val reservationsEvent = TableQuery[ReservationsEvents]
 
-  def add(event: ReservationAggregateActor.Event): Future[ReservationEvent] = {
+  def add(event: ReservationAggregateActor.Event)(implicit executionContext: ExecutionContext): Future[Unit] = {
     val action = (reservationsEvent returning reservationsEvent.map(_.id) into ((b, id) => b.copy(id = id))) += ReservationEvent(0, event.reservationId, event)
-    db.run(action)
+    db.run(action).map(_ => ())
+  }
+
+  def findAllEvents(reservationId: UUID)(implicit executionContext: ExecutionContext): Future[Seq[ReservationAggregateActor.Event]] = {
+    val action = reservationsEvent.filter(_.reservationId === reservationId).result
+    db.run(action).map { seq =>
+      seq.map(evt => evt.event)
+    }
   }
 }
