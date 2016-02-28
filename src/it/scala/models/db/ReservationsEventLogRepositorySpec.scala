@@ -1,4 +1,4 @@
-package db
+package models.db
 
 import java.time.ZonedDateTime
 import java.util.UUID

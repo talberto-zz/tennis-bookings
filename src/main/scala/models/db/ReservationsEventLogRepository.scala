@@ -47,13 +47,16 @@ object ReservationsEventLogRepository {
   private val reservationsEvent = TableQuery[ReservationsEvents]
 
   def add(event: ReservationAggregateActor.Event)(implicit executionContext: ExecutionContext): Future[Unit] = {
+    logger.debug(s"Will add event $event to event log")
     val action = (reservationsEvent returning reservationsEvent.map(_.id) into ((b, id) => b.copy(id = id))) += ReservationEvent(0, event.reservationId, event)
     db.run(action).map(_ => ())
   }
 
   def findAllEvents(reservationId: UUID)(implicit executionContext: ExecutionContext): Future[Seq[ReservationAggregateActor.Event]] = {
+    logger.debug(s"Will find the events of the reservation $reservationId")
     val action = reservationsEvent.filter(_.reservationId === reservationId).result
     db.run(action).map { seq =>
+      logger.debug(s"Found #${seq.size} events for reservation $reservationId")
       seq.map(evt => evt.event)
     }
   }

@@ -7,7 +7,6 @@ import akka.pattern.pipe
 import models.db.ReservationsEventLogRepository
 import play.api.Logger
 
-import scala.concurrent.Future
 import scala.language.implicitConversions
 
 object ReservationsEventLogRepositoryActor {
@@ -34,12 +33,13 @@ class ReservationsEventLogRepositoryActor extends Actor {
   val logger: Logger = Logger(this.getClass)
 
   override def receive: Receive = {
-    case SaveEvent(evt) =>
-      logger.debug(s"Will add event $evt to event log")
-      val eventualResponse = ReservationsEventLogRepository.add(evt).map(_ => EventSaved(evt))
+    case SaveEvent(event) =>
+      logger.debug(s"Will add event $event to event log")
+      val eventualResponse = ReservationsEventLogRepository.add(event).map(_ => EventSaved(event))
       pipe(eventualResponse) to sender
 
     case FindEvents(reservationId) =>
+      logger.debug(s"Will find the events of the reservation $reservationId")
       val eventualEvents = ReservationsEventLogRepository.findAllEvents(reservationId)
       val eventualMsg = eventualEvents.map(events => EventsFound(events))
       pipe(eventualMsg) to sender
