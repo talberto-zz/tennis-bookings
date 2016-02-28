@@ -1,15 +1,16 @@
-package controllers
+package models.actor
 
 import java.time.ZonedDateTime
 import java.util.UUID
 
 import akka.testkit.{TestKit, TestProbe}
+import docker.WithConfiguredServerPerTest
 import models.actor.ReservationAggregateActor.ReservationCreated
-import models.actor.ReservationsEventLogRepositoryActor
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.WsScalaTestClient
 import play.api.libs.concurrent.Akka
+import util.ConfigurableScaleFactor
 
 import scala.concurrent.duration._
 

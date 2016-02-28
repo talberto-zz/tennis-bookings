@@ -1,4 +1,4 @@
-package controllers
+package docker
 
 import com.typesafe.config.impl.ConfigImpl
 import org.scalatest.{BeforeAndAfterEach, Suite}

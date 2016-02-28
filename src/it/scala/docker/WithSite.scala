@@ -1,7 +1,7 @@
-package controllers
+package docker
 
-import controllers.Docker._
-import controllers.TestConstants.Boot2Docker
+import config.TestConstants.Boot2Docker
+import docker.Docker._
 import org.scalatest.{BeforeAndAfterEach, Suite}
 
 trait WithSite extends BeforeAndAfterEach {

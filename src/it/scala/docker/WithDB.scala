@@ -1,7 +1,7 @@
-package controllers
+package docker
 
-import controllers.Docker._
-import controllers.TestConstants._
+import config.TestConstants._
+import docker.Docker._
 import org.scalatest.{BeforeAndAfterEach, Suite}
 
 trait WithDB extends BeforeAndAfterEach {

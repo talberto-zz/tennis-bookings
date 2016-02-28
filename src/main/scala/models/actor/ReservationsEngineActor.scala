@@ -67,11 +67,12 @@ class GetReservationMediator(reservationsEngineActor: ActorRef, reservationsEven
         logger.debug(s"Will send event $event to reservation $reservationAggregateActor with id $reservationId")
         reservationAggregateActor ! event
       }
+      logger.debug(s"Asking reservation view to reservation $reservationAggregateActor with id $reservationId")
       reservationAggregateActor ! GetReservationView()
 
     case ReservationViewComputed(reservation) =>
       logger.debug(s"Reservation view received $reservation. Will notify the original requester $notifyTo")
-      notifyTo ! reservation
+      notifyTo ! Some(reservation)
       logger.debug(s"Will finish the reservation aggregate $reservationAggregateActor with id $reservationId")
       reservationAggregateActor ! PoisonPill
       self ! PoisonPill
@@ -83,7 +84,7 @@ object ReservationsEngineActor {
 
   case class MakeReservation(req: ReservationRequest)
 
-  case class GetReservation(reservationId: UUID)
+  case class FindReservation(reservationId: UUID)
 
 }
 
@@ -101,7 +102,7 @@ class ReservationsEngineActor extends Actor {
     case MakeReservation(request) =>
       context.actorOf(Props(classOf[MakeReservationMediator], self, reservationsEventLogRepositoryActor, request, sender))
 
-    case GetReservation(reservationId) =>
+    case FindReservation(reservationId) =>
       context.actorOf(Props(classOf[GetReservationMediator], self, reservationsEventLogRepositoryActor, reservationId, sender))
 
   }

@@ -3,15 +3,12 @@ package models.db
 import java.time.ZonedDateTime
 import java.util.UUID
 
-import controllers.{ConfigurableScaleFactor, WithConfiguredServerPerTest}
-import models.Reservation
-import models.actor.ReservationAggregateActor.{ReservationId, ReservationCreated}
-import models.db.ReservationsEventLogRepository
+import docker.WithConfiguredServerPerTest
+import models.actor.ReservationAggregateActor.ReservationCreated
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.WsScalaTestClient
-import play.api.http.{ContentTypes, HeaderNames, MimeTypes, Status}
-import play.api.libs.json.Json
+import util.ConfigurableScaleFactor
 
 /**
   * Created by trodriguez on 11/02/16.
@@ -48,7 +45,7 @@ class ReservationsEventLogRepositorySpec extends WordSpec
       val events = eventualEvents.futureValue
 
       events should have size 1
-      events.head should equal (event)
+      events.head should equal(event)
     }
   }
 }

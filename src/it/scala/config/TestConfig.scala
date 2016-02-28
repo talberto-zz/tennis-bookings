@@ -1,4 +1,4 @@
-package controllers
+package config
 
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration

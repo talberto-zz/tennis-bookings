@@ -1,4 +1,4 @@
-package controllers
+package docker
 
 import org.scalatest.Suite
 import org.scalatestplus.play.OneServerPerTest

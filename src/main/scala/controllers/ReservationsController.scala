@@ -7,7 +7,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import models.Reservation
 import models.actor.ReservationsEngineActor
-import models.actor.ReservationsEngineActor.{GetReservation, MakeReservation}
+import models.actor.ReservationsEngineActor.{FindReservation, MakeReservation}
 import play.api.Play.{configuration, current}
 import play.api._
 import play.api.http.HeaderNames
@@ -56,7 +56,7 @@ object ReservationsController extends Controller {
   def find(id: UUID) = Action.async { implicit request =>
     logger.debug(s"Try to find reservation $id")
 
-    val eventualResponse = reservationsEngine ? GetReservation(id)
+    val eventualResponse = reservationsEngine ? FindReservation(id)
     val eventualMaybeReservation = eventualResponse.mapTo[Option[Reservation]]
 
     render.async {

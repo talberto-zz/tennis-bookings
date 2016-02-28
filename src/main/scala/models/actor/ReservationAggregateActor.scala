@@ -119,7 +119,7 @@ class ReservationAggregateActor(
     case Event(CreateReservation(req), Uninitialized) =>
       logger.debug(s"Received creation request $req")
       val event = ReservationCreated(
-        reservationId = UUID.randomUUID(),
+        reservationId = reservationId,
         creationDate = ZonedDateTime.now(),
         lastModified = ZonedDateTime.now(),
         dateTime = req.dateTime,

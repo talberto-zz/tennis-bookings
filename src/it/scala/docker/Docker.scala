@@ -1,4 +1,4 @@
-package controllers
+package docker
 
 import scala.languageFeature.postfixOps
 import scala.sys.process._
