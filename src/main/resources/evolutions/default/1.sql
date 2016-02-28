@@ -1,6 +1,7 @@
 # --- !Ups
 create table "reservations_events" (
 	"id" bigserial not null,
+	"event_date_time" timestamp not null,
 	"reservation_id" uuid not null,
 	"event" text not null);
 

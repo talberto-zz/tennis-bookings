@@ -1,5 +1,6 @@
 package models.db
 
+import java.time.ZonedDateTime
 import java.util.UUID
 
 import models.actor.ReservationAggregateActor
@@ -11,7 +12,12 @@ import slick.lifted.TableQuery
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
 
-private[db] case class ReservationEvent(id: Long, reservationId: UUID, event: ReservationAggregateActor.Event)
+private[db] case class ReservationEvent(
+                                         id: Long,
+                                         eventDateTime: ZonedDateTime,
+                                         reservationId: UUID,
+                                         event: ReservationAggregateActor.Event
+                                       )
 
 private[db] class ReservationsEvents(tag: Tag) extends Table[ReservationEvent](tag, "reservations_events") {
 
@@ -21,15 +27,18 @@ private[db] class ReservationsEvents(tag: Tag) extends Table[ReservationEvent](t
     )
   }
 
+  import SlickConverters._
   import Converters._
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+
+  def eventDateTime = column[ZonedDateTime]("event_date_time")
 
   def reservationId = column[UUID]("reservation_id")
 
   def event = column[ReservationAggregateActor.Event]("event")
 
-  def * = (id, reservationId, event) <>((ReservationEvent.apply _).tupled, ReservationEvent.unapply)
+  def * = (id, eventDateTime, reservationId, event) <>((ReservationEvent.apply _).tupled, ReservationEvent.unapply)
 }
 
 object ReservationsEventLogRepository {
@@ -41,7 +50,7 @@ object ReservationsEventLogRepository {
 
   def add(event: ReservationAggregateActor.Event)(implicit executionContext: ExecutionContext): Future[Unit] = {
     logger.debug(s"Will add event $event to event log")
-    val action = (reservationsEvent returning reservationsEvent.map(_.id) into ((b, id) => b.copy(id = id))) += ReservationEvent(0, event.reservationId, event)
+    val action = (reservationsEvent returning reservationsEvent.map(_.id) into ((b, id) => b.copy(id = id))) += ReservationEvent(0, event.eventDateTime, event.reservationId, event)
     db.run(action).map(_ => ())
   }
 

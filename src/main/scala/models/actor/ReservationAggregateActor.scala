@@ -69,16 +69,17 @@ object ReservationAggregateActor {
 
   }
 
-  sealed trait Event extends IdentifiedReservation
+  sealed trait Event extends IdentifiedReservation {
+    def eventDateTime: ZonedDateTime
+  }
 
   object ReservationCreated {
 
     implicit val JsonWrites: Writes[ReservationCreated] = new Writes[ReservationCreated] {
       override def writes(event: ReservationCreated): JsValue = Json.obj(
         "@class" -> ReservationCreated.getClass.getName,
+        "eventDateTime" -> event.eventDateTime,
         "reservationId" -> event.reservationId,
-        "creationDate" -> event.creationDate,
-        "lastModified" -> event.lastModified,
         "dateTime" -> event.dateTime,
         "court" -> event.court
       )
@@ -90,8 +91,7 @@ object ReservationAggregateActor {
 
   case class ReservationCreated(
                                  reservationId: ReservationId,
-                                 creationDate: ZonedDateTime,
-                                 lastModified: ZonedDateTime,
+                                 eventDateTime: ZonedDateTime,
                                  dateTime: ZonedDateTime,
                                  court: Int
                                ) extends Event
@@ -119,16 +119,15 @@ class ReservationAggregateActor(
     case Event(CreateReservation(req), Uninitialized) =>
       logger.debug(s"Received creation request $req")
       val event = ReservationCreated(
+        eventDateTime = ZonedDateTime.now(),
         reservationId = reservationId,
-        creationDate = ZonedDateTime.now(),
-        lastModified = ZonedDateTime.now(),
         dateTime = req.dateTime,
         court = req.court
       )
       sender ! event
       goto(New) using Created(
-        creationDate = event.creationDate,
-        lastModified = event.lastModified,
+        creationDate = event.eventDateTime,
+        lastModified = event.eventDateTime,
         dateTime = event.dateTime,
         court = event.court
       )
@@ -136,8 +135,8 @@ class ReservationAggregateActor(
     case Event(event: ReservationCreated, Uninitialized) =>
       logger.debug(s"Replaying event $event")
       goto(New) using Created(
-        creationDate = event.creationDate,
-        lastModified = event.lastModified,
+        creationDate = event.eventDateTime,
+        lastModified = event.eventDateTime,
         dateTime = event.dateTime,
         court = event.court
       )

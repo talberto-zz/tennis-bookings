@@ -42,8 +42,7 @@ class ReservationsEventLogRepositoryActorSpec extends WordSpec
       val reservationId = UUID.randomUUID()
       val event = ReservationCreated(
         reservationId = reservationId,
-        creationDate = ZonedDateTime.now(),
-        lastModified = ZonedDateTime.now(),
+        eventDateTime = ZonedDateTime.now(),
         dateTime = ZonedDateTime.now(),
         court = 1
       )
