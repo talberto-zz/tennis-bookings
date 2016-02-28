@@ -11,14 +11,13 @@ import slick.lifted.TableQuery
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
 
-case class ReservationEvent(id: Long, reservationId: UUID, event: ReservationAggregateActor.Event)
+private[db] case class ReservationEvent(id: Long, reservationId: UUID, event: ReservationAggregateActor.Event)
 
-class ReservationsEvents(tag: Tag) extends Table[ReservationEvent](tag, "reservations_events") {
+private[db] class ReservationsEvents(tag: Tag) extends Table[ReservationEvent](tag, "reservations_events") {
 
   object Converters {
     implicit val jsonColumnType = MappedColumnType.base[ReservationAggregateActor.Event, String](
-      { event => Json.toJson(event).toString },
-      { str => Json.parse(str).as[ReservationAggregateActor.Event] }
+      { event => Json.toJson(event).toString }, { str => Json.parse(str).as[ReservationAggregateActor.Event] }
     )
   }
 
@@ -33,12 +32,6 @@ class ReservationsEvents(tag: Tag) extends Table[ReservationEvent](tag, "reserva
   def * = (id, reservationId, event) <>((ReservationEvent.apply _).tupled, ReservationEvent.unapply)
 }
 
-/**
-  * Created by trodriguez on 16/02/16.
-  */
-/**
-  * Repository for Booking
-  */
 object ReservationsEventLogRepository {
 
   val logger: Logger = Logger(this.getClass)

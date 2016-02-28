@@ -47,7 +47,7 @@ class MakeReservationMediator(reservationsEngineActor: ActorRef, reservationsEve
   }
 }
 
-class GetReservationMediator(reservationsEngineActor: ActorRef, reservationsEventLogRepositoryActor: ActorRef, reservationId: UUID, notifyTo: ActorRef) extends Actor {
+class FindReservationMediator(reservationsEngineActor: ActorRef, reservationsEventLogRepositoryActor: ActorRef, reservationId: UUID, notifyTo: ActorRef) extends Actor {
 
   import ReservationAggregateActor._
   import ReservationsEventLogRepositoryActor._
@@ -62,13 +62,22 @@ class GetReservationMediator(reservationsEngineActor: ActorRef, reservationsEven
 
   override def receive: Receive = {
     case EventsFound(events) =>
-      logger.debug(s"Received #${events.size} events for reservation $reservationAggregateActor with $reservationId. Will replay them and ask a reservation view in order to notify the original requester $notifyTo")
-      events.foreach { event =>
-        logger.debug(s"Will send event $event to reservation $reservationAggregateActor with id $reservationId")
-        reservationAggregateActor ! event
+      events.size match {
+        case 0 =>
+          logger.debug(s"Received 0 events for reservation $reservationAggregateActor with id $reservationId. Will notify original requester that reservation does not exist")
+          notifyTo ! None
+          reservationAggregateActor ! PoisonPill
+          self ! PoisonPill
+          
+        case n =>
+          logger.debug(s"Received #$n events for reservation $reservationAggregateActor with id $reservationId. Will replay them and ask a reservation view in order to notify the original requester $notifyTo")
+          events.foreach { event =>
+            logger.debug(s"Will send event $event to reservation $reservationAggregateActor with id $reservationId")
+            reservationAggregateActor ! event
+          }
+          logger.debug(s"Asking reservation view to reservation $reservationAggregateActor with id $reservationId")
+          reservationAggregateActor ! GetReservationView()
       }
-      logger.debug(s"Asking reservation view to reservation $reservationAggregateActor with id $reservationId")
-      reservationAggregateActor ! GetReservationView()
 
     case ReservationViewComputed(reservation) =>
       logger.debug(s"Reservation view received $reservation. Will notify the original requester $notifyTo")
@@ -103,7 +112,7 @@ class ReservationsEngineActor extends Actor {
       context.actorOf(Props(classOf[MakeReservationMediator], self, reservationsEventLogRepositoryActor, request, sender))
 
     case FindReservation(reservationId) =>
-      context.actorOf(Props(classOf[GetReservationMediator], self, reservationsEventLogRepositoryActor, reservationId, sender))
+      context.actorOf(Props(classOf[FindReservationMediator], self, reservationsEventLogRepositoryActor, reservationId, sender))
 
   }
 }
