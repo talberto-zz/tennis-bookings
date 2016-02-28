@@ -36,12 +36,12 @@ class ReservationsEventLogRepositoryActor extends Actor {
     case SaveEvent(event) =>
       logger.debug(s"Will add event $event to event log")
       val eventualResponse = ReservationsEventLogRepository.add(event).map(_ => EventSaved(event))
-      pipe(eventualResponse) to sender
+      eventualResponse pipeTo sender
 
     case FindEvents(reservationId) =>
       logger.debug(s"Will find the events of the reservation $reservationId")
       val eventualEvents = ReservationsEventLogRepository.findAllEvents(reservationId)
       val eventualMsg = eventualEvents.map(events => EventsFound(events))
-      pipe(eventualMsg) to sender
+      eventualMsg pipeTo sender
   }
 }
