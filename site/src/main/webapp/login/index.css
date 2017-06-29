@@ -1,0 +1,69 @@
+/* ::::: http://adsl.icerium.net/2.05.00/ics.php?idact=113&IDOBJ=aristo,indigo,/indigo,jquery.ui.theme,jquery.ui.core,jquery.ui.selectmenu,jquery.ui.datepicker ::::: */
+
+.ui-widget { font-size: 1.1em; }
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { border: 1px solid rgb(182, 182, 182); font-weight: normal; color: rgb(79, 79, 79); }
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { background: -moz-linear-gradient(center top , rgb(237, 237, 237) 0%, rgb(196, 196, 196) 100%) repeat scroll 0% 0% transparent; box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.6) inset; }
+.ui-widget :active { outline: medium none; }
+.ui-corner-all { border-radius: 3px; }
+.ui-button { display: inline-block ! important; position: relative ! important; padding: 0px ! important; margin-right: 0.1em ! important; text-decoration: none; cursor: pointer; text-align: center ! important; overflow: visible ! important; -moz-user-select: none; }
+.ui-button { transition: all 250ms ease-in-out 0s; }
+.ui-button .ui-button-text { display: block; line-height: 1.4 ! important; font-weight: bold; text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.6); }
+.ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text { padding: 0.4em 1em 0.4em 2.1em; }
+input.ui-button::-moz-focus-inner { border: 0px none; padding: 0px; }
+@media not all {
+}
+button.ui-button::-moz-focus-inner { border: 0px none; padding: 0px; }
+.ui-form textarea, .ui-form input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]) { padding: 3px; border-radius: 2px; border: 1px solid rgb(206, 206, 206); outline: medium none; box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1) inset, 0px 1px 0px rgba(255, 255, 255, 0.2); transition: all 250ms ease-in-out 0s; }
+.ui-form textarea:hover, .ui-form input:hover:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]) { border: 1px solid rgb(189, 189, 189); box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2) inset, 0px 1px 0px rgba(255, 255, 255, 0.2); }
+.ui-form textarea:focus, .ui-form input:focus:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]) { border: 1px solid rgb(149, 189, 212); box-shadow: 0px 2px 3px rgba(161, 202, 226, 0.5) inset, 0px 1px 0px rgba(255, 255, 255, 0.2); }
+a:link, a:visited, a:active { font-weight: normal; text-decoration: underline; color: black; font-family: "arial",sans-serif; vertical-align: middle; }
+a:hover { font-weight: normal; text-decoration: underline; color: rgb(158, 53, 46); font-family: "arial",sans-serif; vertical-align: middle; cursor: pointer; }
+body { height: 133%; overflow: visible; margin: auto; font-family: "arial",sans-serif; font-weight: normal; font-size: 12px; color: black; vertical-align: middle; background-image: url('background0.jpg'); background-repeat: no-repeat; background-attachment: scroll; background-position: right top; background-color: rgb(242, 242, 242); text-align: center; padding: 25px 0px 0px; }
+body * { font-family: "arial",sans-serif; font-weight: normal; font-size: 12px; color: black; }
+html { width: 99%; height: 100%; overflow: auto; }
+p, img { border: medium none; margin: 1px 5px; text-align: center; }
+table { border-collapse: collapse; border-spacing: 0px; border: medium none; background-image: none; background-color: transparent; margin: 0px auto; padding: 0px; z-index: 10; }
+table * { z-index: 10; }
+th { margin: 0px 0px 10px; border: medium none; text-align: center; font-weight: bold; padding: 0px; background-color: white; background-image: url('background3.jpg'); height: 26px; font-size: 16px; vertical-align: top; }
+td { background-color: transparent; background-image: none; padding: 0px; text-align: center; margin: 0px; border: medium none; }
+div * { vertical-align: middle; margin: auto; text-align: center; }
+button:hover { background: url('ui-bg_glass_75_dadada_1x400.png') repeat-x scroll 50% 50% rgb(218, 218, 218); border: 1px solid rgb(157, 157, 157); }
+select, input, textarea { margin: 1px; background-color: rgb(255, 255, 255); vertical-align: middle; border: 1px solid black; padding: 0px 1px 0px 2px; cursor: pointer; text-align: left; border-radius: 4px; }
+.maintenance, noscript { display: block; padding: 5px; background-color: transparent; border: medium none; width: 100%; height: 20px; position: absolute; top: 0px; left: 0px; z-index: 100; }
+.maintenance p, noscript p { text-align: center; font-weight: bold; font-size: 14px; color: red; }
+.logoclub { position: absolute; top: 10px; left: 0px; z-index: 0; }
+.adsl { position: absolute; bottom: 10px; left: 100px; z-index: 0; }
+.version { font-size: 9px; color: gray; border: medium none; position: absolute; left: 10px; bottom: 10px; z-index: 1; }
+.version * { font-size: 9px; text-decoration: underline; }
+.version a { color: gray; }
+.version a:hover { color: black; text-decoration: underline; }
+#workpage { position: relative; z-index: 5; background: none repeat scroll 0% 0% white; padding: 8px; border-radius: 10px; border: 1px solid rgb(211, 211, 211); margin: auto; width: 800px; box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.6); }
+#waitpage { position: relative; z-index: 5; background: none repeat scroll 0% 0% white; padding: 8px; border-radius: 10px; border: 1px solid rgb(211, 211, 211); margin: auto; width: 400px; box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.6); }
+#waitpage th { background: none repeat scroll 0% 0% transparent; }
+#HTML_AJAX_LOADING { position: absolute; top: 20px; right: 20px; z-index: 2000; background-color: yellow; border: 2px solid rgb(158, 53, 46); width: 200px; height: 30px; display: none; padding: 4px; text-align: center; vertical-align: middle; font-weight: bold; font-size: 14px; color: rgb(158, 53, 46); border-radius: 10px; box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.6); }
+.table_wait { width: 600px; background-color: transparent; position: relative; top: 0px; display: none; border: medium none; padding: 0px; z-index: 110; }
+.table_wait td { width: 600px; }
+.table_stop { width: 500px; height: 120px; background-color: transparent; position: absolute; left: 120px; top: 20px; display: none; border: medium none; padding: 0px; z-index: 110; }
+.table_stop td { width: 500px; }
+.identification { height: auto; width: 500px ! important; margin: 0px auto; }
+.identification .bloc { width: 270px; margin: auto; padding: 10px; background: none repeat scroll 0% 0% transparent; border: 1px solid rgb(211, 211, 211); border-radius: 10px; }
+.identification .bloc p { color: black; font-weight: bold; text-align: left; height: 28px; }
+.identification .bloc label { padding-top: 1px; float: left; width: 100px; text-align: right; vertical-align: top; }
+.identification .bloc input { vertical-align: top; margin: 0px 10px; }
+#titre_fenetre { margin: 0px 0px 10px; border: medium none; text-align: center; font-weight: bold; padding: 0px; background: none repeat scroll 0% 0% transparent; height: 30px; font-size: 16px; vertical-align: top; width: 100%; overflow: hidden; }
+#titre_fenetre * { vertical-align: top; white-space: nowrap; }
+#titre_fenetre .ulc { text-align: left; width: auto; float: left; }
+#titre_fenetre .urc { text-align: right; width: auto; float: right; }
+.ui-button-text { white-space: nowrap ! important; }
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { box-shadow: 1px 1px 0px rgba(255, 255, 255, 0.6) inset ! important; }
+#idgvkb, #idgopt, #idgver { display: none; }
+#idgvkb { position: absolute; z-index: 1000; border: 1px solid rgb(182, 182, 182); border-radius: 10px; padding: 10px; box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.6); background: none repeat scroll 0% 0% rgb(255, 255, 255); }
+.ui-button-fix2 { padding-left: 1em ! important; }
+#btn_identification { float: right; }
+.ui-widget { font-size: 1.1em; }
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { border: 1px solid rgb(211, 211, 211); background: url('ui-bg_glass_75_e6e6e6_1x400.png') repeat-x scroll 50% 50% rgb(230, 230, 230); font-weight: normal; color: rgb(85, 85, 85); }
+.ui-widget :active { outline: medium none; }
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl { border-top-left-radius: 4px; }
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr { border-top-right-radius: 4px; }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl { border-bottom-left-radius: 4px; }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br { border-bottom-right-radius: 4px; }

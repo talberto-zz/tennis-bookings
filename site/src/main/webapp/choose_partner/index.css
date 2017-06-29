@@ -1,0 +1,122 @@
+/* ::::: http://adsl.icerium.net/2.05.00/ics.php?idact=113&IDOBJ=aristo,indigo,/indigo,jquery.ui.theme,jquery.ui.core,jquery.ui.selectmenu,jquery.ui.datepicker ::::: */
+
+.ui-icon { display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat; }
+.ui-widget { font-size: 1.1em; }
+.ui-widget-content { border: 1px solid rgb(182, 182, 182); background: none repeat scroll 0% 0% rgb(255, 255, 255); color: rgb(79, 79, 79); }
+.ui-widget-content a { color: rgb(79, 79, 79); }
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { border: 1px solid rgb(182, 182, 182); font-weight: normal; color: rgb(79, 79, 79); }
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { background: -moz-linear-gradient(center top , rgb(237, 237, 237) 0%, rgb(196, 196, 196) 100%) repeat scroll 0% 0% transparent; box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.6) inset; }
+.ui-widget :active { outline: medium none; }
+.ui-icon { width: 16px; height: 16px; background-image: url('ui-icons_222222_256x240.png'); }
+.ui-state-default .ui-icon { background-image: url('ui-icons_454545_256x240.png'); }
+.ui-icon-triangle-1-s { background-position: -64px -16px; }
+.ui-corner-bottom { border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; }
+.ui-corner-all { border-radius: 3px; }
+.ui-button { display: inline-block ! important; position: relative ! important; padding: 0px ! important; margin-right: 0.1em ! important; text-decoration: none; cursor: pointer; text-align: center ! important; overflow: visible ! important; -moz-user-select: none; }
+.ui-button { transition: all 250ms ease-in-out 0s; }
+.ui-button .ui-button-text { display: block; line-height: 1.4 ! important; font-weight: bold; text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.6); }
+.ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text { padding: 0.4em 1em 0.4em 2.1em; }
+input.ui-button::-moz-focus-inner { border: 0px none; padding: 0px; }
+@media not all {
+}
+.ui-button-icon-only .ui-icon, .ui-button-text-icon-primary .ui-icon, .ui-button-text-icon-secondary .ui-icon, .ui-button-text-icons .ui-icon, .ui-button-icons-only .ui-icon { position: absolute; top: 50%; margin-top: -8px; }
+.ui-button-text-icon-primary .ui-button-icon-primary, .ui-button-text-icons .ui-button-icon-primary, .ui-button-icons-only .ui-button-icon-primary { left: 0.5em; }
+button.ui-button::-moz-focus-inner { border: 0px none; padding: 0px; }
+.ui-form textarea, .ui-form input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]) { padding: 3px; border-radius: 2px; border: 1px solid rgb(206, 206, 206); outline: medium none; box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1) inset, 0px 1px 0px rgba(255, 255, 255, 0.2); transition: all 250ms ease-in-out 0s; }
+.ui-form textarea:hover, .ui-form input:hover:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]) { border: 1px solid rgb(189, 189, 189); box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2) inset, 0px 1px 0px rgba(255, 255, 255, 0.2); }
+.ui-form textarea:focus, .ui-form input:focus:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]) { border: 1px solid rgb(149, 189, 212); box-shadow: 0px 2px 3px rgba(161, 202, 226, 0.5) inset, 0px 1px 0px rgba(255, 255, 255, 0.2); }
+a:link, a:visited, a:active { font-weight: normal; text-decoration: underline; color: black; font-family: "arial",sans-serif; vertical-align: middle; }
+a:hover { font-weight: normal; text-decoration: underline; color: rgb(158, 53, 46); font-family: "arial",sans-serif; vertical-align: middle; cursor: pointer; }
+body { height: 133%; overflow: visible; margin: auto; font-family: "arial",sans-serif; font-weight: normal; font-size: 12px; color: black; vertical-align: middle; background-image: url('background0.jpg'); background-repeat: no-repeat; background-attachment: scroll; background-position: right top; background-color: rgb(242, 242, 242); text-align: center; padding: 25px 0px 0px; }
+body * { font-family: "arial",sans-serif; font-weight: normal; font-size: 12px; color: black; }
+html { width: 99%; height: 100%; overflow: auto; }
+em { font-style: normal; }
+b { font-weight: bold; }
+p, img { border: medium none; margin: 1px 5px; text-align: center; }
+ul, ol { margin: 5px 10px; }
+ul li, ol li { margin: 1px 1px 1px 10px; line-height: 100%; text-align: left; }
+table { border-collapse: collapse; border-spacing: 0px; border: medium none; background-image: none; background-color: transparent; margin: 0px auto; padding: 0px; z-index: 10; }
+table * { z-index: 10; }
+th { margin: 0px 0px 10px; border: medium none; text-align: center; font-weight: bold; padding: 0px; background-color: white; background-image: url('background3.jpg'); height: 26px; font-size: 16px; vertical-align: top; }
+td { background-color: transparent; background-image: none; padding: 0px; text-align: center; margin: 0px; border: medium none; }
+div * { vertical-align: middle; margin: auto; text-align: center; }
+button:hover { background: url('ui-bg_glass_75_dadada_1x400.png') repeat-x scroll 50% 50% rgb(218, 218, 218); border: 1px solid rgb(157, 157, 157); }
+select, input, textarea { margin: 1px; background-color: rgb(255, 255, 255); vertical-align: middle; border: 1px solid black; padding: 0px 1px 0px 2px; cursor: pointer; text-align: left; border-radius: 4px; }
+option { text-align: left; }
+.maintenance, noscript { display: block; padding: 5px; background-color: transparent; border: medium none; width: 100%; height: 20px; position: absolute; top: 0px; left: 0px; z-index: 100; }
+.maintenance p, noscript p { text-align: center; font-weight: bold; font-size: 14px; color: red; }
+.logoclub { position: absolute; top: 10px; left: 0px; z-index: 0; }
+.adsl { position: absolute; bottom: 10px; left: 100px; z-index: 0; }
+.version { font-size: 9px; color: gray; border: medium none; position: absolute; left: 10px; bottom: 10px; z-index: 1; }
+.version * { font-size: 9px; text-decoration: underline; }
+.version a { color: gray; }
+.version a:hover { color: black; text-decoration: underline; }
+#workpage { position: relative; z-index: 5; background: none repeat scroll 0% 0% white; padding: 8px; border-radius: 10px; border: 1px solid rgb(211, 211, 211); margin: auto; width: 800px; box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.6); }
+#waitpage { position: relative; z-index: 5; background: none repeat scroll 0% 0% white; padding: 8px; border-radius: 10px; border: 1px solid rgb(211, 211, 211); margin: auto; width: 400px; box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.6); }
+#waitpage th { background: none repeat scroll 0% 0% transparent; }
+#HTML_AJAX_LOADING { position: absolute; top: 20px; right: 20px; z-index: 2000; background-color: yellow; border: 2px solid rgb(158, 53, 46); width: 200px; height: 30px; display: none; padding: 4px; text-align: center; vertical-align: middle; font-weight: bold; font-size: 14px; color: rgb(158, 53, 46); border-radius: 10px; box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.6); }
+.table_wait { width: 600px; background-color: transparent; position: relative; top: 0px; display: none; border: medium none; padding: 0px; z-index: 110; }
+.table_wait td { width: 600px; }
+.table_stop { width: 500px; height: 120px; background-color: transparent; position: absolute; left: 120px; top: 20px; display: none; border: medium none; padding: 0px; z-index: 110; }
+.table_stop td { width: 500px; }
+div.jqmWindow { display: none; position: fixed; top: 25%; left: 50%; margin-left: -200px; width: 400px; overflow: hidden; background-color: white; background-image: url('bg_top3_064.jpg'); background-repeat: repeat-x; border: 2px solid rgb(158, 53, 46); padding: 10px; z-index: 500; border-radius: 10px; box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.6); }
+div.jqmWindow p { padding: 10px; font-weight: bold; }
+div.jqmWindow .action { width: 300px; margin: auto; white-space: nowrap; }
+div.jqmWindow span {  }
+html div.jqmWindow { position: absolute; top: 50px; }
+div.jqmWindow { width: 800px ! important; margin-left: -420px ! important; }
+div.jqmWindow .action { width: 600px ! important; }
+div.jqmWindow .action button { overflow-x: visible; }
+.bouton_supprimer { background-color: transparent; background-image: url('backgroundbtnsupprimer.gif') ! important; background-repeat: no-repeat; border: medium none; margin-top: 0px ! important; top: 0px ! important; height: 26px ! important; width: 26px ! important; margin-right: 4px ! important; left: 0px ! important; }
+.bouton_valider { background-color: transparent; background-image: url('backgroundbtnvalider.gif') ! important; background-repeat: no-repeat; border: medium none; margin-top: 0px ! important; top: 0px ! important; height: 26px ! important; width: 26px ! important; margin-right: 4px ! important; left: 0px ! important; }
+.bouton_retour { background-color: transparent; background-image: url('backgroundbtnretour.gif') ! important; background-repeat: no-repeat; border: medium none; margin-top: 0px ! important; top: 0px ! important; height: 26px ! important; width: 26px ! important; margin-right: 4px ! important; left: 0px ! important; }
+#titre_fenetre { margin: 0px 0px 10px; border: medium none; text-align: center; font-weight: bold; padding: 0px; background: none repeat scroll 0% 0% transparent; height: 30px; font-size: 16px; vertical-align: top; width: 100%; overflow: hidden; }
+#titre_fenetre * { vertical-align: top; white-space: nowrap; }
+#titre_fenetre .ulc { text-align: left; width: auto; float: left; }
+#titre_fenetre .urc { text-align: right; width: auto; float: right; }
+input.ui-button, .ui-selectmenu { cursor: pointer ! important; height: 26px ! important; text-decoration: none ! important; }
+.ui-button-text { white-space: nowrap ! important; }
+.ui-selectmenu { height: 16px ! important; }
+.ui-selectmenu-menu li a, .ui-selectmenu-status { padding-bottom: 0px ! important; padding-top: 0px ! important; }
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { box-shadow: 1px 1px 0px rgba(255, 255, 255, 0.6) inset ! important; }
+#idgvkb, #idgopt, #idgver { display: none; }
+#idgvkb { position: absolute; z-index: 1000; border: 1px solid rgb(182, 182, 182); border-radius: 10px; padding: 10px; box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.6); background: none repeat scroll 0% 0% rgb(255, 255, 255); }
+.ui-widget { font-size: 1.1em; }
+.ui-widget-content { border: 1px solid rgb(170, 170, 170); background: url('ui-bg_flat_75_ffffff_40x100.png') repeat-x scroll 50% 50% rgb(255, 255, 255); color: rgb(34, 34, 34); }
+.ui-widget-content a { color: rgb(34, 34, 34); }
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { border: 1px solid rgb(211, 211, 211); background: url('ui-bg_glass_75_e6e6e6_1x400.png') repeat-x scroll 50% 50% rgb(230, 230, 230); font-weight: normal; color: rgb(85, 85, 85); }
+.ui-widget :active { outline: medium none; }
+.ui-icon { width: 16px; height: 16px; background-image: url('ui-icons_222222_256x240_001.png'); }
+.ui-state-default .ui-icon { background-image: url('ui-icons_888888_256x240.png'); }
+.ui-icon-triangle-1-s { background-position: -64px -16px; }
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl { border-top-left-radius: 4px; }
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr { border-top-right-radius: 4px; }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl { border-bottom-left-radius: 4px; }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br { border-bottom-right-radius: 4px; }
+.ui-icon { display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat; }
+.ui-selectmenu { display: inline-block; position: relative; height: 28px; vertical-align: middle; text-decoration: none; overflow: hidden; }
+.ui-selectmenu-icon { position: absolute; right: 6px; margin-top: -8px; top: 50%; }
+.ui-selectmenu-menu { padding: 0px; margin: 0px; position: absolute; top: 0px; display: none; z-index: 1005; }
+.ui-selectmenu-menu ul { padding: 0px; margin: 0px; list-style: none outside none; position: relative; overflow-y: auto; overflow-x: hidden; }
+.ui-selectmenu-menu li { padding: 0px; margin: 0px; display: block; border-top: 1px dotted transparent; border-bottom: 1px dotted transparent; border-right-width: 0px ! important; border-left-width: 0px ! important; font-weight: normal ! important; }
+.ui-selectmenu-menu li a, .ui-selectmenu-status { line-height: 1.4em; display: block; padding: 0.405em 2.1em 0.405em 1em; outline: medium none; text-decoration: none; }
+.ui-selectmenu-status { line-height: 1.4em; }
+/* ::::: http://adsl.icerium.net/2.05.00/ics.php?idact=113&IDOBJ=indigo.reservation,/indigo.reservation ::::: */
+
+.fic_adherent_reservation_modification { overflow: hidden; width: 750px; margin: auto; border: medium none; padding-bottom: 10px; }
+.fic_adherent_reservation_modification #entete { padding: 2px 10px; line-height: 200%; }
+.fic_adherent_reservation_modification #entete em { font-size: 12px; border: 1px solid rgb(158, 53, 46); background-color: white; padding: 2px 4px; margin: 2px; border-radius: 4px; }
+.fic_adherent_reservation_modification #entete em b { font-weight: bold; }
+.fic_adherent_reservation_modification #entete #portier, .fic_adherent_reservation_modification #entete #court, .fic_adherent_reservation_modification #entete #site { display: none; }
+.fic_adherent_reservation_modification #titre_partenaire { font-weight: bold; margin: 10px auto 4px; }
+.fic_adherent_reservation_modification #partenaire { margin: 0px auto; }
+.fic_adherent_reservation_modification #partenaire td { border-top: 1px solid rgb(158, 53, 46); padding: 2px; }
+.fic_adherent_reservation_modification #partenaire .td0 { width: 100px; text-align: right; padding-right: 2px; height: 32px; font-weight: bold; border-left: 1px solid rgb(158, 53, 46); }
+.fic_adherent_reservation_modification #partenaire .td1 { width: 100px; text-align: left; padding-left: 2px; height: 32px; }
+.fic_adherent_reservation_modification #partenaire .td2 { width: 200px; text-align: left; height: 32px; }
+.fic_adherent_reservation_modification #partenaire .td3 { width: 100px; text-align: left; height: 32px; border-right: 1px solid rgb(158, 53, 46); }
+.action .boutonfocus_supprimer, .action .bouton_supprimer, .action .boutonfocus_valider, .action .bouton_valider, .action .boutonfocus_annuler, .action .bouton_annuler, .action .boutonfocus_retour, .action .bouton_retour { margin-left: 0px; margin-right: auto; }
+.fic_adherent_reservation_modification b { position: relative; top: -1px; margin-left: 5px; }
+.ui-selectmenu { height: 26px ! important; position: relative ! important; top: -1px ! important; }
+.ui-selectmenu-menu li a, .ui-selectmenu-status { padding: 0.405em 2.1em 0.405em 1em ! important; }
+#workpage, #bloc_reservation { overflow: visible ! important; }
