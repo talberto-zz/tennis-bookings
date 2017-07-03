@@ -6,5 +6,5 @@
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # Resource booking
-POST	/bookings					controllers.ReservationsController.create
-GET	    /bookings/:id				controllers.ReservationsController.find(id: java.util.UUID)
+POST	/bookings					tech.trodriguez.tennisbookings.back.controllers.BookingsController.create
+GET	    /bookings/:id				tech.trodriguez.tennisbookings.back.controllers.BookingsController.find(id: java.util.UUID)
