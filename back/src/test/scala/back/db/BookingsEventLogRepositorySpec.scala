@@ -1,14 +1,13 @@
-package tech.trodriguez.tennisbookings.back.db
+package back.db
 
 import java.time.ZonedDateTime
 import java.util.UUID
 
-import tech.trodriguez.tennisbookings.back.actor.BookingAggregateActor.ReservationCreated
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.WsScalaTestClient
-import tech.trodriguez.tennisbookings.back.docker.WithConfiguredServerPerTest
-import tech.trodriguez.tennisbookings.back.util.ConfigurableScaleFactor
+import tech.trodriguez.tennisbookings.back.actor.BookingAggregateActor.BookingCreated
+import tech.trodriguez.tennisbookings.back.db.BookingsEventLogRepository
 
 /**
   * Created by trodriguez on 11/02/16.
@@ -18,18 +17,16 @@ class BookingsEventLogRepositorySpec extends WordSpec
   with OptionValues
   with ScalaFutures
   with WsScalaTestClient
-  with GivenWhenThen
-  with WithConfiguredServerPerTest
-  with ConfigurableScaleFactor {
+  with GivenWhenThen {
 
   import play.api.libs.concurrent.Execution.Implicits._
 
-  "ReservationsEventLogRepository" must {
+  "BookingsEventLogRepository" must {
     "save an event" in {
-      Given("A reservation event")
-      val reservationId = UUID.randomUUID()
-      val event = ReservationCreated(
-        reservationId = reservationId,
+      Given("A booking event")
+      val bookingId = UUID.randomUUID()
+      val event = BookingCreated(
+        bookingId = bookingId,
         eventDateTime = ZonedDateTime.now(),
         dateTime = ZonedDateTime.now(),
         court = 1
@@ -40,7 +37,7 @@ class BookingsEventLogRepositorySpec extends WordSpec
       eventualUnit.futureValue
 
       Then("We are able to get it later")
-      val eventualEvents = BookingsEventLogRepository.findAllEvents(reservationId)
+      val eventualEvents = BookingsEventLogRepository.findAllEvents(bookingId)
       val events = eventualEvents.futureValue
 
       events should have size 1

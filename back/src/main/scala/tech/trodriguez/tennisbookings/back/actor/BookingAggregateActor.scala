@@ -6,15 +6,15 @@ import java.util.UUID
 import akka.actor.{LoggingFSM, Props}
 import play.api.Logger
 import play.api.libs.json._
-import tech.trodriguez.tennisbookings.back.Reservation
+import tech.trodriguez.tennisbookings.back.Booking
 import tech.trodriguez.tennisbookings.back.controllers.BookingRequest
 
 object BookingAggregateActor {
 
-  type ReservationId = UUID
+  type BookingId = UUID
 
-  trait IdentifiedReservation {
-    def reservationId: ReservationId
+  trait IdentifiedBooking {
+    def bookingId: BookingId
   }
 
   // State
@@ -39,7 +39,7 @@ object BookingAggregateActor {
   // Commands
   sealed trait Command
 
-  case class CreateReservation(req: BookingRequest) extends Command
+  case class CreateBooking(req: BookingRequest) extends Command
 
   // Events
   object Event {
@@ -47,8 +47,8 @@ object BookingAggregateActor {
     implicit object JsonWrites extends Writes[Event] {
       def writes(event: Event) = event match {
 
-        case e: ReservationCreated =>
-          Json.toJson(e)(ReservationCreated.JsonWrites)
+        case e: BookingCreated =>
+          Json.toJson(e)(BookingCreated.JsonWrites)
 
         case e =>
           throw new RuntimeException(s"Unknown event $e")
@@ -59,8 +59,8 @@ object BookingAggregateActor {
       override def reads(json: JsValue): JsResult[Event] = {
         val className = (json \ "@class").get.as[String]
 
-        if (className == ReservationCreated.getClass.getName)
-          Json.fromJson[ReservationCreated](json)(ReservationCreated.JsonReads)
+        if (className == BookingCreated.getClass.getName)
+          Json.fromJson[BookingCreated](json)(BookingCreated.JsonReads)
         else
           throw new RuntimeException(s"Unknown class $className")
 
@@ -69,44 +69,44 @@ object BookingAggregateActor {
 
   }
 
-  sealed trait Event extends IdentifiedReservation {
+  sealed trait Event extends IdentifiedBooking {
     def eventDateTime: ZonedDateTime
   }
 
-  object ReservationCreated {
+  object BookingCreated {
 
-    implicit val JsonWrites: Writes[ReservationCreated] = new Writes[ReservationCreated] {
-      override def writes(event: ReservationCreated): JsValue = Json.obj(
-        "@class" -> ReservationCreated.getClass.getName,
+    implicit val JsonWrites: Writes[BookingCreated] = new Writes[BookingCreated] {
+      override def writes(event: BookingCreated): JsValue = Json.obj(
+        "@class" -> BookingCreated.getClass.getName,
         "eventDateTime" -> event.eventDateTime,
-        "reservationId" -> event.reservationId,
+        "bookingId" -> event.bookingId,
         "dateTime" -> event.dateTime,
         "court" -> event.court
       )
     }
 
-    implicit val JsonReads = Json.reads[ReservationCreated]
+    implicit val JsonReads = Json.reads[BookingCreated]
 
   }
 
-  case class ReservationCreated(
-                                 reservationId: ReservationId,
+  case class BookingCreated(
+                                 bookingId: BookingId,
                                  eventDateTime: ZonedDateTime,
                                  dateTime: ZonedDateTime,
                                  court: Int
                                ) extends Event
 
   // Other messages
-  case class GetReservationView()
+  case class GetBookingView()
 
-  case class ReservationViewComputed(reservation: Reservation)
+  case class BookingViewComputed(booking: Booking)
 
-  def props(reservationId: BookingAggregateActor.ReservationId) =
-    Props(classOf[BookingAggregateActor], reservationId)
+  def props(bookingId: BookingAggregateActor.BookingId) =
+    Props(classOf[BookingAggregateActor], bookingId)
 }
 
 class BookingAggregateActor(
-                                 reservationId: BookingAggregateActor.ReservationId
+                                 bookingId: BookingAggregateActor.BookingId
                                ) extends LoggingFSM[BookingAggregateActor.State, BookingAggregateActor.Data] {
 
   import BookingAggregateActor._
@@ -116,11 +116,11 @@ class BookingAggregateActor(
   startWith(Idle, Uninitialized)
 
   when(Idle) {
-    case Event(CreateReservation(req), Uninitialized) =>
+    case Event(CreateBooking(req), Uninitialized) =>
       logger.debug(s"Received creation request $req")
-      val event = ReservationCreated(
+      val event = BookingCreated(
         eventDateTime = ZonedDateTime.now(),
-        reservationId = reservationId,
+        bookingId = bookingId,
         dateTime = req.dateTime,
         court = req.court
       )
@@ -132,7 +132,7 @@ class BookingAggregateActor(
         court = event.court
       )
 
-    case Event(event: ReservationCreated, Uninitialized) =>
+    case Event(event: BookingCreated, Uninitialized) =>
       logger.debug(s"Replaying event $event")
       goto(New) using Created(
         creationDate = event.eventDateTime,
@@ -143,14 +143,14 @@ class BookingAggregateActor(
   }
 
   when(New) {
-    case Event(GetReservationView(), created: Created) =>
-      logger.debug(s"Will compute and return the reservation view to $sender")
-      val view = Reservation(
-        id = reservationId,
+    case Event(GetBookingView(), created: Created) =>
+      logger.debug(s"Will compute and return the booking view to $sender")
+      val view = Booking(
+        id = bookingId,
         dateTime = created.dateTime,
         court = created.court
       )
-      sender ! ReservationViewComputed(view)
+      sender ! BookingViewComputed(view)
       stay()
   }
 }

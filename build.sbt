@@ -12,6 +12,7 @@ lazy val root = (project in file("."))
 lazy val back = (project in file("back"))
   .enablePlugins(PlayScala)
   .disablePlugins(PlayLayoutPlugin)
+  .enablePlugins(AshScriptPlugin) // Use ash as the base image uses Busybox which doesn't contain bash but ash
   .configs(IntegrationTest)
   .settings(Defaults.itSettings: _*)
   .settings(
@@ -21,17 +22,10 @@ lazy val back = (project in file("back"))
     maintainer := "Tomas Rodriguez <rstomasalberto@gmail.com>",
     dockerUsername := Some(Configuration.dockerUsername),
     dockerUpdateLatest := true,
-    dockerBaseImage := "openjdk:latest",
-    dockerCommands := Seq(
-      Cmd("FROM", dockerBaseImage.value),
-      Cmd("MAINTAINER", maintainer.value),
-      Cmd("WORKDIR", "/opt/docker"),
-      Cmd("ADD", "opt", "/opt"),
-      ExecCmd("RUN", "chown", "-R", "daemon: daemon", "."),
-      Cmd("USER", "daemon"),
-      ExecCmd("ENTRYPOINT", "bin/tennis-bookings-back")
-    ),
+    dockerBaseImage := "openjdk:8-jre-alpine",
     testOptions in IntegrationTest += Tests.Argument(TestFrameworks.ScalaTest, "-F", "2.0"),
+    // Now it:test depends on docker publish
+    (test in IntegrationTest) := ((test in IntegrationTest) dependsOn (publishLocal in Docker)).value,
     libraryDependencies ++= Seq(
       ws,
       jdbc,
@@ -39,9 +33,11 @@ lazy val back = (project in file("back"))
       guice,
       Dependencies.selenium,
       Dependencies.slick,
+      Dependencies.slickHikariCp,
       Dependencies.hikariCp,
       Dependencies.postgres,
       Dependencies.scalaGuice,
+      Dependencies.kubernetesClient % IntegrationTest,
       Dependencies.selenium % IntegrationTest,
       Dependencies.scalaTest % IntegrationTest,
       Dependencies.scalaTestPlus % IntegrationTest,

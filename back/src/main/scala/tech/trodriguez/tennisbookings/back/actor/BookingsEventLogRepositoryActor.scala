@@ -16,7 +16,7 @@ object BookingsEventLogRepositoryActor {
 
   case class EventSaved(event: BookingAggregateActor.Event)
 
-  case class FindEvents(reservationId: UUID)
+  case class FindEvents(bookingId: UUID)
 
   case class EventsFound(events: Seq[BookingAggregateActor.Event])
 
@@ -38,9 +38,9 @@ class BookingsEventLogRepositoryActor extends Actor {
       val eventualResponse = BookingsEventLogRepository.add(event).map(_ => EventSaved(event))
       eventualResponse pipeTo sender
 
-    case FindEvents(reservationId) =>
-      logger.debug(s"Will find the events of the reservation $reservationId")
-      val eventualEvents = BookingsEventLogRepository.findAllEvents(reservationId)
+    case FindEvents(bookingId) =>
+      logger.debug(s"Will find the events of the booking $bookingId")
+      val eventualEvents = BookingsEventLogRepository.findAllEvents(bookingId)
       val eventualMsg = eventualEvents.map(events => EventsFound(events))
       eventualMsg pipeTo sender
   }

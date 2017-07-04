@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tennis-bookings
+  labels:
+    name: tennis-bookings
+spec:
+  containers:
+  - name: back
+    image: talberto/tennis-bookings-back:latest
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      tcpSocket:
+        port: 9000
+      initialDelaySeconds: 5
+      timeoutSeconds: 5
+    volumeMounts:
+    - name: config-volume
+      mountPath: /opt/docker/conf
+  - name: site
+    image: talberto/tennis-bookings-site:latest
+    imagePullPolicy: IfNotPresent
+  - name: db
+    image: postgres:9.6.3-alpine
+    imagePullPolicy: IfNotPresent
+    readynessProbe:
+      tcpSocket:
+        port: 5432
+      initialDelaySeconds: 5
+      timeoutSeconds: 5
+    env:
+    - name: POSTGRES_USER
+      value: tennisbookings
+    - name: POSTGRES_PASSWORD
+      value: tennisbookings
+  - name: webdriver
+    image: selenium/standalone-chrome:3.4.0
+    imagePullPolicy: IfNotPresent
+  volumes:
+  - name: config-volume
+    configMap:
+      name: tennis-bookings-config

@@ -15,11 +15,11 @@ import scala.language.implicitConversions
 private[db] case class BookingEvent(
                                          id: Long,
                                          eventDateTime: ZonedDateTime,
-                                         reservationId: UUID,
+                                         bookingId: UUID,
                                          event: BookingAggregateActor.Event
                                        )
 
-private[db] class BookingsEvents(tag: Tag) extends Table[BookingEvent](tag, "reservations_events") {
+private[db] class BookingsEvents(tag: Tag) extends Table[BookingEvent](tag, "bookings_events") {
 
   object Converters {
     implicit val jsonColumnType = MappedColumnType.base[BookingAggregateActor.Event, String](
@@ -34,11 +34,11 @@ private[db] class BookingsEvents(tag: Tag) extends Table[BookingEvent](tag, "res
 
   def eventDateTime = column[ZonedDateTime]("event_date_time")
 
-  def reservationId = column[UUID]("reservation_id")
+  def bookingId = column[UUID]("booking_id")
 
   def event = column[BookingAggregateActor.Event]("event")
 
-  def * = (id, eventDateTime, reservationId, event) <>((BookingEvent.apply _).tupled, BookingEvent.unapply)
+  def * = (id, eventDateTime, bookingId, event) <>((BookingEvent.apply _).tupled, BookingEvent.unapply)
 }
 
 object BookingsEventLogRepository {
@@ -46,19 +46,19 @@ object BookingsEventLogRepository {
   val logger: Logger = Logger(this.getClass)
   val db = Sandbox.db
 
-  private val reservationsEvent = TableQuery[BookingsEvents]
+  private val bookingsEvent = TableQuery[BookingsEvents]
 
   def add(event: BookingAggregateActor.Event)(implicit executionContext: ExecutionContext): Future[Unit] = {
     logger.debug(s"Will add event $event to event log")
-    val action = (reservationsEvent returning reservationsEvent.map(_.id) into ((b, id) => b.copy(id = id))) += BookingEvent(0, event.eventDateTime, event.reservationId, event)
+    val action = (bookingsEvent returning bookingsEvent.map(_.id) into ((b, id) => b.copy(id = id))) += BookingEvent(0, event.eventDateTime, event.bookingId, event)
     db.run(action).map(_ => ())
   }
 
-  def findAllEvents(reservationId: UUID)(implicit executionContext: ExecutionContext): Future[Seq[BookingAggregateActor.Event]] = {
-    logger.debug(s"Will find the events of the reservation $reservationId")
-    val action = reservationsEvent.filter(_.reservationId === reservationId).result
+  def findAllEvents(bookingId: UUID)(implicit executionContext: ExecutionContext): Future[Seq[BookingAggregateActor.Event]] = {
+    logger.debug(s"Will find the events of the booking $bookingId")
+    val action = bookingsEvent.filter(_.bookingId === bookingId).result
     db.run(action).map { seq =>
-      logger.debug(s"Found #${seq.size} events for reservation $reservationId")
+      logger.debug(s"Found #${seq.size} events for booking $bookingId")
       seq.map(evt => evt.event)
     }
   }
