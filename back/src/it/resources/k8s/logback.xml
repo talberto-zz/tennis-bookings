@@ -9,12 +9,13 @@
         </encoder>
     </appender>
 
-    <logger name="play" level="debug" />
-    <logger name="application" level="debug" />
+    <logger name="play" level="info" />
+    <logger name="application" level="info" />
 
     <logger name="com.gargoylesoftware.htmlunit.javascript" level="off" />
+    <logger name="tech.trodriguez.tennisbookings" level="debug" />
 
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="stdout" />
     </root>
 
